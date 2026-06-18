@@ -30,15 +30,15 @@ export default function App() {
         <Routes>
           {/* Rotas Públicas */}
 
-          {/* ===========================================
+          {/* =========================================
               ROTA TEMPORÁRIA PARA TESTES
               Troque AreaAssociado pela página que deseja testar.
               Acesse: http://localhost:5173/teste
               Remover antes da entrega final.
           =========================================== */}
-          <Route path="/" element={<LoginAssociado />} />
+          <Route path="/" element={<Mensalidades />} />
 
-          {/* ===========================================
+          {/* =========================================
               ROTA TEMPORÁRIA PARA TESTES
               Troque AreaAssociado pela página que deseja testar.
               Acesse: http://localhost:5173/teste
