@@ -1,4 +1,10 @@
-import { Lead, Contato, Documento, Task, HistoricoItem } from '../types';
+import type {
+  Lead,
+  Contato,
+  Documento,
+  Task,
+  HistoricoItem
+} from '../types';
 
 export const mockLeads: Lead[] = [
   {
