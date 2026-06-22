@@ -22,6 +22,7 @@ import AprovacaoCadastros from './pages/AprovacaoCadastros';
 import PagamentoPix from './pages/PagamentoPix';
 import BoasVindas from './pages/BoasVindas';
 import ErrorPage from './pages/ErrorPage';
+import LandingPage from './pages/LandingPage';
 
 export default function App() {
   return (
@@ -36,7 +37,7 @@ export default function App() {
               Acesse: http://localhost:5173/teste
               Remover antes da entrega final.
           =========================================== */}
-          <Route path="/" element={<PagamentoPix />} />
+          <Route path="/" element={<LandingPage />} />
 
           {/* =========================================
               ROTA TEMPORÁRIA PARA TESTES
