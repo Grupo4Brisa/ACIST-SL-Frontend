@@ -30,22 +30,6 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           {/* Rotas Públicas */}
-
-          {/* =========================================
-              ROTA TEMPORÁRIA PARA TESTES
-              Troque AreaAssociado pela página que deseja testar.
-              Acesse: http://localhost:5173/teste
-              Remover antes da entrega final.
-          =========================================== */}
-          <Route path="/" element={<AprovacaoCadastros/>} />
-
-          {/* =========================================
-              ROTA TEMPORÁRIA PARA TESTES
-              Troque AreaAssociado pela página que deseja testar.
-              Acesse: http://localhost:5173/teste
-              Remover antes da entrega final.
-          =========================================== */}
-
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/login-associado" element={<LoginAssociado />} />
