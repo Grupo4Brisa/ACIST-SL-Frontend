@@ -37,7 +37,7 @@ export default function App() {
               Acesse: http://localhost:5173/teste
               Remover antes da entrega final.
           =========================================== */}
-          <Route path="/" element={<Funil />} />
+          <Route path="/" element={<LeadDetail/>} />
 
           {/* =========================================
               ROTA TEMPORÁRIA PARA TESTES
