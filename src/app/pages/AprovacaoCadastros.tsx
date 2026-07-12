@@ -91,23 +91,21 @@ export default function AprovacaoCadastros() {
   };
 
   const handleReprovar = (id: number) => {
-    const motivo = prompt('Informe o motivo da reprovação:');
-    if (motivo && motivo.trim()) {
-      setCadastros(prev =>
-        prev.map(c =>
-          c.id === id
-            ? {
-                ...c,
-                status: 'reprovado',
-                dataReprovacao: new Date().toISOString().split('T')[0],
-                reprovadoPor: 'Você',
-                motivoReprovacao: motivo
-              }
-            : c
-        )
-      );
-      alert('Cadastro reprovado.');
-    }
+    console.log("Reprovar", id);
+
+    setCadastros(prev =>
+      prev.map(c =>
+        c.id === id
+          ? {
+              ...c,
+              status: 'reprovado',
+              dataReprovacao: new Date().toISOString().split('T')[0],
+              reprovadoPor: 'Teste',
+              motivoReprovacao: 'Teste'
+            }
+          : c
+      )
+    );
   };
 
   const cadastrosFiltrados = cadastros.filter(c => {
