@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Building2, Mail, Phone, Hash, MessageCircle, CheckCircle, Users, TrendingUp, Award, Calendar, Eye, EyeOff, Briefcase } from 'lucide-react';
+import { Building2, Mail, Phone, Hash, MessageCircle, Users, TrendingUp, Award, Calendar, Briefcase } from 'lucide-react';
 import Logo from '../components/Logo';
 import WhatsAppButton from '../components/WhatsAppButton';
 
@@ -11,19 +11,19 @@ export default function Home() {
     nomeEmpresa: '',
     razaoSocial: '',
     email: '',
-    senha: '',
     porteEmpresa: '',
     contato: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    localStorage.setItem('cadastroInicial', JSON.stringify(formData));
+
     setTimeout(() => {
-      navigate(`/pagamento-pix?porte=${formData.porteEmpresa}`);
+      navigate('/pagamento');
     }, 1500);
   };
 
@@ -62,12 +62,6 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <Logo size="md" theme="light" />
             <div className="flex gap-3">
-              <button
-                onClick={() => navigate('/login-associado')}
-                className="px-6 py-2.5 bg-[#5DA5FF] text-white hover:bg-[#226897] rounded-lg transition-colors"
-              >
-                Área do Associado
-              </button>
               <button
                 onClick={() => navigate('/login')}
                 className="px-6 py-2.5 bg-[#5DA5FF] text-white hover:bg-[#226897] rounded-lg transition-colors"
@@ -183,31 +177,6 @@ export default function Home() {
                   onChange={e => setFormData({ ...formData, email: e.target.value })}
                   disabled={isSubmitting}
                 />
-              </div>
-
-              <div>
-                <label className="block mb-2 text-[0.875rem]">
-                  <Eye className="inline h-4 w-4 mr-1.5" />
-                  Criar senha
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    required
-                    placeholder="Digite sua senha"
-                    className="w-full px-4 py-3.5 pr-12 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
-                    value={formData.senha}
-                    onChange={e => setFormData({ ...formData, senha: e.target.value })}
-                    disabled={isSubmitting}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
-                </div>
               </div>
 
               <div>
