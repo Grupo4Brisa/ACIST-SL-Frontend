@@ -1,6 +1,6 @@
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { CheckCircle, Copy, QrCode, ArrowRight, Users, Calendar, Award, ShieldCheck, Megaphone, Rocket } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Logo from '../components/Logo';
 
 const beneficios = [
@@ -45,12 +45,19 @@ const valoresPorPorte = {
 
 export default function PagamentoPix() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const porte = searchParams.get('porte') || 'pequena';
   const [copiado, setCopiado] = useState(false);
+  const [porte, setPorte] = useState('pequena');
+
+  useEffect(() => {
+    const dadosCadastro = localStorage.getItem('cadastroInicial');
+    if (dadosCadastro) {
+      const dados = JSON.parse(dadosCadastro);
+      setPorte(dados.porteEmpresa || 'pequena');
+    }
+  }, []);
 
   const valor = valoresPorPorte[porte as keyof typeof valoresPorPorte] || 103;
-  const chavePix = '00.000.000/0001-00'; // Chave PIX da ACIST
+  const chavePix = '00.000.000/0001-00';
 
   const handleCopiarChave = () => {
     navigator.clipboard.writeText(chavePix);
@@ -59,7 +66,7 @@ export default function PagamentoPix() {
   };
 
   const handleConfirmarPagamento = () => {
-    navigate('/boas-vindas');
+    navigate('/cadastro-iniciado');
   };
 
   return (
