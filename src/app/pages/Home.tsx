@@ -4,7 +4,7 @@ import { Building2, Mail, Phone, Hash, MessageCircle, Users, TrendingUp, Award, 
 import Logo from '../components/Logo';
 import WhatsAppButton from '../components/WhatsAppButton';
 
-export default function Home() {
+export default function BoasVindasHome() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     cnpj: '',
