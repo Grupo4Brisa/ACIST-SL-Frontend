@@ -12,12 +12,12 @@ export default function LandingPage() {
 
   const [formData, setFormData] = useState({
     cnpj: '',
-    nomeEmpresa: '',
-    razaoSocial: '',
+    companyName: '',
+    corporateName: '',
     email: '',
     senha: '',
-    porteEmpresa: '',
-    contato: ''
+    companySize: '',
+    phone: ''
   });
   const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +26,7 @@ export default function LandingPage() {
     e.preventDefault();
     setSubmitted(true);
     setTimeout(() => {
-      navigate(`/pagamento-pix?porte=${formData.porteEmpresa}`);
+      navigate(`/pagamento-pix?porte=${formData.companySize}`);
     }, 2000);
   };
 
@@ -91,7 +91,7 @@ export default function LandingPage() {
                   rel="noopener noreferrer"
                   className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
                 >
-                  Contato
+                  phone
                 </a>
                 <a
                   href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"
@@ -180,8 +180,8 @@ export default function LandingPage() {
                     required
                     placeholder="Sua empresa ou seu nome"
                     className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={formData.nomeEmpresa}
-                    onChange={e => setFormData({ ...formData, nomeEmpresa: e.target.value })}
+                    value={formData.companyName}
+                    onChange={e => setFormData({ ...formData, companyName: e.target.value })}
                   />
                 </div>
 
@@ -195,8 +195,8 @@ export default function LandingPage() {
                     required
                     placeholder="Razão social da empresa"
                     className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={formData.razaoSocial}
-                    onChange={e => setFormData({ ...formData, razaoSocial: e.target.value })}
+                    value={formData.corporateName}
+                    onChange={e => setFormData({ ...formData, corporateName: e.target.value })}
                   />
                 </div>
 
@@ -208,7 +208,7 @@ export default function LandingPage() {
                   <input
                     type="email"
                     required
-                    placeholder="contato@empresa.com.br"
+                    placeholder="phone@empresa.com.br"
                     className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
@@ -247,8 +247,8 @@ export default function LandingPage() {
                   <select
                     required
                     className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={formData.porteEmpresa}
-                    onChange={e => setFormData({ ...formData, porteEmpresa: e.target.value })}
+                    value={formData.companySize}
+                    onChange={e => setFormData({ ...formData, companySize: e.target.value })}
                   >
                     <option value="">Selecione o porte</option>
                     <option value="mei">MEI</option>
@@ -261,15 +261,15 @@ export default function LandingPage() {
                 <div>
                   <label className="block mb-2">
                     <Phone className="inline h-4 w-4 mr-2" />
-                    Contato / telefone
+                    phone / telefone
                   </label>
                   <input
                     type="tel"
                     required
                     placeholder="(51) 99999-9999"
                     className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={formData.contato}
-                    onChange={e => setFormData({ ...formData, contato: e.target.value })}
+                    value={formData.phone}
+                    onChange={e => setFormData({ ...formData, phone: e.target.value })}
                   />
                 </div>
 
@@ -324,7 +324,7 @@ export default function LandingPage() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                Contato
+                phone
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

@@ -3,7 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router';
 import { Check, Save, X, Plus, Trash2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import Logo from '../components/Logo';
 
-interface Contato {
+interface phone {
   nome: string;
   email: string;
   celular: string;
@@ -11,7 +11,7 @@ interface Contato {
 
 interface CadastroState {
   // 1. Dados Cadastrais
-  razaoSocial: string;
+  corporateName: string;
   nomeFantasia: string;
   cpfCnpj: string;
   inscricaoEstadual: string;
@@ -25,16 +25,16 @@ interface CadastroState {
   senha: string;
   confirmarSenha: string;
   site: string;
-  porteEmpresa: string;
+  companySize: string;
   tipoEstabelecimento: string;
   matrizFilial: string;
   numeroFuncionarios: string;
   dataFundacao: string;
 
-  // 2. Contatos
-  socios: Contato[];
-  financeiro: Contato[];
-  rh: Contato[];
+  // 2. phones
+  socios: phone[];
+  financeiro: phone[];
+  rh: phone[];
 
   // 3. Informações Adicionais
   divulgacao: string;
@@ -67,7 +67,7 @@ interface CadastroState {
 
 const steps = [
   { id: 1, name: 'Dados Cadastrais', required: true },
-  { id: 2, name: 'Contatos', required: true },
+  { id: 2, name: 'phones', required: true },
   { id: 3, name: 'Divulgação', required: false },
   { id: 4, name: 'Redes Sociais', required: false },
   { id: 5, name: 'Soluções', required: false },
@@ -112,7 +112,7 @@ export default function CadastroWizardNew() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [data, setData] = useState<CadastroState>({
-    razaoSocial: '',
+    corporateName: '',
     nomeFantasia: '',
     cpfCnpj: '',
     inscricaoEstadual: '',
@@ -126,7 +126,7 @@ export default function CadastroWizardNew() {
     senha: '',
     confirmarSenha: '',
     site: '',
-    porteEmpresa: '',
+    companySize: '',
     tipoEstabelecimento: '',
     matrizFilial: '',
     numeroFuncionarios: '',
@@ -161,21 +161,21 @@ export default function CadastroWizardNew() {
     setTimeout(() => navigate('/login-associado'), 1500);
   };
 
-  const addContato = (tipo: 'socios' | 'financeiro' | 'rh') => {
+  const addphone = (tipo: 'socios' | 'financeiro' | 'rh') => {
     setData({
       ...data,
       [tipo]: [...data[tipo], { nome: '', email: '', celular: '' }]
     });
   };
 
-  const removeContato = (tipo: 'socios' | 'financeiro' | 'rh', index: number) => {
+  const removephone = (tipo: 'socios' | 'financeiro' | 'rh', index: number) => {
     setData({
       ...data,
       [tipo]: data[tipo].filter((_, i) => i !== index)
     });
   };
 
-  const updateContato = (tipo: 'socios' | 'financeiro' | 'rh', index: number, field: keyof Contato, value: string) => {
+  const updatephone = (tipo: 'socios' | 'financeiro' | 'rh', index: number, field: keyof phone, value: string) => {
     const updated = [...data[tipo]];
     updated[index] = { ...updated[index], [field]: value };
     setData({ ...data, [tipo]: updated });
@@ -306,8 +306,8 @@ export default function CadastroWizardNew() {
                           <input
                             type="text"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.razaoSocial}
-                            onChange={e => setData({ ...data, razaoSocial: e.target.value })}
+                            value={data.corporateName}
+                            onChange={e => setData({ ...data, corporateName: e.target.value })}
                           />
                         </div>
                         <div>
@@ -398,9 +398,9 @@ export default function CadastroWizardNew() {
                       </div>
                     </div>
 
-                    {/* 1.3 Contato */}
+                    {/* 1.3 phone */}
                     <div className="mb-8">
-                      <h3 className="text-[#226897] mb-4 pb-2 border-b border-gray-200">1.3 Contato</h3>
+                      <h3 className="text-[#226897] mb-4 pb-2 border-b border-gray-200">1.3 phone</h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[0.875rem] mb-2">Telefone <span className="text-red-600">*</span></label>
@@ -483,8 +483,8 @@ export default function CadastroWizardNew() {
                           <label className="block text-[0.875rem] mb-2">Porte da Empresa <span className="text-red-600">*</span></label>
                           <select
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.porteEmpresa}
-                            onChange={e => setData({ ...data, porteEmpresa: e.target.value, planoSelecionado: e.target.value })}
+                            value={data.companySize}
+                            onChange={e => setData({ ...data, companySize: e.target.value, planoSelecionado: e.target.value })}
                           >
                             <option value="">Selecione</option>
                             <option value="MEI">MEI</option>
@@ -543,17 +543,17 @@ export default function CadastroWizardNew() {
                 </div>
               )}
 
-              {/* Etapa 2: Contatos */}
+              {/* Etapa 2: phones */}
               {currentStep === 2 && (
                 <div className="space-y-8">
-                  <h2 className="text-[#0C3A59] mb-6">Contatos</h2>
+                  <h2 className="text-[#0C3A59] mb-6">phones</h2>
 
                   {/* 2.1 Sócios */}
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-[#226897]">2.1 Sócios</h3>
                       <button
-                        onClick={() => addContato('socios')}
+                        onClick={() => addphone('socios')}
                         className="flex items-center gap-2 px-3 py-1.5 text-[0.875rem] text-[#5DA5FF] hover:bg-blue-50 rounded-lg transition-colors"
                       >
                         <Plus className="h-4 w-4" />
@@ -566,7 +566,7 @@ export default function CadastroWizardNew() {
                           <span className="text-[0.875rem] text-gray-600">Sócio {index + 1}</span>
                           {data.socios.length > 1 && (
                             <button
-                              onClick={() => removeContato('socios', index)}
+                              onClick={() => removephone('socios', index)}
                               className="text-red-600 hover:bg-red-50 p-1.5 rounded transition-colors"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -579,21 +579,21 @@ export default function CadastroWizardNew() {
                             placeholder="Nome"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                             value={socio.nome}
-                            onChange={e => updateContato('socios', index, 'nome', e.target.value)}
+                            onChange={e => updatephone('socios', index, 'nome', e.target.value)}
                           />
                           <input
                             type="email"
                             placeholder="E-mail"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                             value={socio.email}
-                            onChange={e => updateContato('socios', index, 'email', e.target.value)}
+                            onChange={e => updatephone('socios', index, 'email', e.target.value)}
                           />
                           <input
                             type="tel"
                             placeholder="Celular"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                             value={socio.celular}
-                            onChange={e => updateContato('socios', index, 'celular', e.target.value)}
+                            onChange={e => updatephone('socios', index, 'celular', e.target.value)}
                           />
                         </div>
                       </div>
@@ -605,20 +605,20 @@ export default function CadastroWizardNew() {
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-[#226897]">2.2 Financeiro</h3>
                       <button
-                        onClick={() => addContato('financeiro')}
+                        onClick={() => addphone('financeiro')}
                         className="flex items-center gap-2 px-3 py-1.5 text-[0.875rem] text-[#5DA5FF] hover:bg-blue-50 rounded-lg transition-colors"
                       >
                         <Plus className="h-4 w-4" />
-                        Adicionar Contato
+                        Adicionar phone
                       </button>
                     </div>
-                    {data.financeiro.map((contato, index) => (
+                    {data.financeiro.map((phone, index) => (
                       <div key={index} className="mb-4 p-4 border border-gray-200 rounded-lg">
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-[0.875rem] text-gray-600">Contato Financeiro {index + 1}</span>
+                          <span className="text-[0.875rem] text-gray-600">phone Financeiro {index + 1}</span>
                           {data.financeiro.length > 1 && (
                             <button
-                              onClick={() => removeContato('financeiro', index)}
+                              onClick={() => removephone('financeiro', index)}
                               className="text-red-600 hover:bg-red-50 p-1.5 rounded transition-colors"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -630,22 +630,22 @@ export default function CadastroWizardNew() {
                             type="text"
                             placeholder="Nome"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={contato.nome}
-                            onChange={e => updateContato('financeiro', index, 'nome', e.target.value)}
+                            value={phone.nome}
+                            onChange={e => updatephone('financeiro', index, 'nome', e.target.value)}
                           />
                           <input
                             type="email"
                             placeholder="E-mail"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={contato.email}
-                            onChange={e => updateContato('financeiro', index, 'email', e.target.value)}
+                            value={phone.email}
+                            onChange={e => updatephone('financeiro', index, 'email', e.target.value)}
                           />
                           <input
                             type="tel"
                             placeholder="Celular"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={contato.celular}
-                            onChange={e => updateContato('financeiro', index, 'celular', e.target.value)}
+                            value={phone.celular}
+                            onChange={e => updatephone('financeiro', index, 'celular', e.target.value)}
                           />
                         </div>
                       </div>
@@ -657,20 +657,20 @@ export default function CadastroWizardNew() {
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-[#226897]">2.3 Recursos Humanos</h3>
                       <button
-                        onClick={() => addContato('rh')}
+                        onClick={() => addphone('rh')}
                         className="flex items-center gap-2 px-3 py-1.5 text-[0.875rem] text-[#5DA5FF] hover:bg-blue-50 rounded-lg transition-colors"
                       >
                         <Plus className="h-4 w-4" />
-                        Adicionar Contato
+                        Adicionar phone
                       </button>
                     </div>
-                    {data.rh.map((contato, index) => (
+                    {data.rh.map((phone, index) => (
                       <div key={index} className="mb-4 p-4 border border-gray-200 rounded-lg">
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-[0.875rem] text-gray-600">Contato RH {index + 1}</span>
+                          <span className="text-[0.875rem] text-gray-600">phone RH {index + 1}</span>
                           {data.rh.length > 1 && (
                             <button
-                              onClick={() => removeContato('rh', index)}
+                              onClick={() => removephone('rh', index)}
                               className="text-red-600 hover:bg-red-50 p-1.5 rounded transition-colors"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -682,22 +682,22 @@ export default function CadastroWizardNew() {
                             type="text"
                             placeholder="Nome"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={contato.nome}
-                            onChange={e => updateContato('rh', index, 'nome', e.target.value)}
+                            value={phone.nome}
+                            onChange={e => updatephone('rh', index, 'nome', e.target.value)}
                           />
                           <input
                             type="email"
                             placeholder="E-mail"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={contato.email}
-                            onChange={e => updateContato('rh', index, 'email', e.target.value)}
+                            value={phone.email}
+                            onChange={e => updatephone('rh', index, 'email', e.target.value)}
                           />
                           <input
                             type="tel"
                             placeholder="Celular"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={contato.celular}
-                            onChange={e => updateContato('rh', index, 'celular', e.target.value)}
+                            value={phone.celular}
+                            onChange={e => updatephone('rh', index, 'celular', e.target.value)}
                           />
                         </div>
                       </div>
@@ -810,19 +810,19 @@ export default function CadastroWizardNew() {
 
               {/* Etapa 6: Valores */}
               {currentStep === 6 && (() => {
-                const planoCorrespondente = planos.find(p => p.tipo === data.porteEmpresa);
+                const planoCorrespondente = planos.find(p => p.tipo === data.companySize);
                 const valorMensal = planoCorrespondente?.valor || 0;
 
                 return (
                   <div className="space-y-6">
                     <h2 className="text-[#0C3A59] mb-6">Valores de Associação</h2>
 
-                    {data.porteEmpresa ? (
+                    {data.companySize ? (
                       <div className="max-w-2xl mx-auto">
                         <div className="bg-gradient-to-br from-[#0C3A59] to-[#226897] rounded-2xl p-8 text-white shadow-xl">
                           <div className="text-center mb-6">
                             <p className="text-white/80 text-sm mb-2">Seu plano</p>
-                            <h3 className="text-2xl font-semibold mb-1">{data.porteEmpresa}</h3>
+                            <h3 className="text-2xl font-semibold mb-1">{data.companySize}</h3>
                             <div className="h-1 w-20 bg-[#5DA5FF] mx-auto rounded-full"></div>
                           </div>
 
@@ -1118,7 +1118,7 @@ export default function CadastroWizardNew() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                Contato
+                phone
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

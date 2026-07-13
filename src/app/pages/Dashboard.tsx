@@ -5,7 +5,7 @@ import { mockLeads } from '../data/mockData';
 
 const conversionData = [
   { id: 'leads', etapa: 'Leads', total: 120, conversao: 100 },
-  { id: 'contato', etapa: 'Em Contato', total: 85, conversao: 71 },
+  { id: 'phone', etapa: 'Em phone', total: 85, conversao: 71 },
   { id: 'cadastro', etapa: 'Cadastro', total: 60, conversao: 50 },
   { id: 'docs', etapa: 'Documentação', total: 35, conversao: 29 },
   { id: 'validacao', etapa: 'Validação', total: 22, conversao: 18 },

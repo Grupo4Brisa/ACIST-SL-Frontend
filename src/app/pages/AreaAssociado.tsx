@@ -58,7 +58,7 @@ export default function AreaAssociado() {
 
   const associado = {
     nome: 'Tech Solutions Ltda',
-    email: 'contato@techsolutions.com.br',
+    email: 'phone@techsolutions.com.br',
     status: 'aprovado' // 'em_analise' | 'aprovado' | 'pendente_documentos'
   };
 
@@ -215,7 +215,7 @@ export default function AreaAssociado() {
             )}
             {associado.status === 'pendente_documentos' && (
               <p className="text-sm text-gray-600 mt-4">
-                ⚠️ Alguns documentos ainda precisam ser enviados. Entre em contato conosco.
+                ⚠️ Alguns documentos ainda precisam ser enviados. Entre em phone conosco.
               </p>
             )}
           </div>
@@ -538,7 +538,7 @@ export default function AreaAssociado() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                Contato
+                phone
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

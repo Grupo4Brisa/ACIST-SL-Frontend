@@ -32,7 +32,7 @@ export default function Funil() {
         lead.status === 'em_analise' ||
         lead.status === 'documentacao' ||
         lead.status === 'validacao' ||
-        lead.status === 'em-contato'
+        lead.status === 'em-phone'
       );
     }
     if (status === 'nao_aprovado') {

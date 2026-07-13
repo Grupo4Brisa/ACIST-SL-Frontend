@@ -7,12 +7,12 @@ import WhatsAppButton from '../components/WhatsAppButton';
 export default function BoasVindasHome() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    cnpj: '',
-    nomeEmpresa: '',
-    razaoSocial: '',
+    cnpjcpf: '',
+    companyName: '',
+    corporateName: '',
     email: '',
-    porteEmpresa: '',
-    contato: ''
+    companySize: '',
+    phone: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -125,8 +125,8 @@ export default function BoasVindasHome() {
                   required
                   placeholder="000.000.000-00 ou 00.000.000/0000-00"
                   className="w-full px-4 py-3.5 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
-                  value={formData.cnpj}
-                  onChange={e => setFormData({ ...formData, cnpj: e.target.value })}
+                  value={formData.cnpjcpf}
+                  onChange={e => setFormData({ ...formData, cnpjcpf: e.target.value })}
                   disabled={isSubmitting}
                 />
               </div>
@@ -141,8 +141,8 @@ export default function BoasVindasHome() {
                   required
                   placeholder="Sua empresa ou seu nome"
                   className="w-full px-4 py-3.5 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
-                  value={formData.nomeEmpresa}
-                  onChange={e => setFormData({ ...formData, nomeEmpresa: e.target.value })}
+                  value={formData.companyName}
+                  onChange={e => setFormData({ ...formData, companyName: e.target.value })}
                   disabled={isSubmitting}
                 />
               </div>
@@ -157,8 +157,8 @@ export default function BoasVindasHome() {
                   required
                   placeholder="Razão social da empresa"
                   className="w-full px-4 py-3.5 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
-                  value={formData.razaoSocial}
-                  onChange={e => setFormData({ ...formData, razaoSocial: e.target.value })}
+                  value={formData.corporateName}
+                  onChange={e => setFormData({ ...formData, corporateName: e.target.value })}
                   disabled={isSubmitting}
                 />
               </div>
@@ -171,7 +171,7 @@ export default function BoasVindasHome() {
                 <input
                   type="email"
                   required
-                  placeholder="contato@empresa.com.br"
+                  placeholder="phone@empresa.com.br"
                   className="w-full px-4 py-3.5 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
                   value={formData.email}
                   onChange={e => setFormData({ ...formData, email: e.target.value })}
@@ -187,8 +187,8 @@ export default function BoasVindasHome() {
                 <select
                   required
                   className="w-full px-4 py-3.5 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
-                  value={formData.porteEmpresa}
-                  onChange={e => setFormData({ ...formData, porteEmpresa: e.target.value })}
+                  value={formData.companySize}
+                  onChange={e => setFormData({ ...formData, companySize: e.target.value })}
                   disabled={isSubmitting}
                 >
                   <option value="">Selecione o porte</option>
@@ -202,15 +202,15 @@ export default function BoasVindasHome() {
               <div>
                 <label className="block mb-2 text-[0.875rem]">
                   <Phone className="inline h-4 w-4 mr-1.5" />
-                  Contato / telefone
+                  phone / telefone
                 </label>
                 <input
                   type="tel"
                   required
                   placeholder="(51) 99999-9999"
                   className="w-full px-4 py-3.5 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
-                  value={formData.contato}
-                  onChange={e => setFormData({ ...formData, contato: e.target.value })}
+                  value={formData.phone}
+                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
                   disabled={isSubmitting}
                 />
               </div>
@@ -313,7 +313,7 @@ export default function BoasVindasHome() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                Contato
+                phone
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

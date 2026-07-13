@@ -133,14 +133,14 @@ export default function BoasVindas() {
           {/* Informações Adicionais */}
           <div className="mt-8 text-center">
             <p className="text-blue-100 mb-4">
-              Precisa de ajuda? Entre em contato conosco
+              Precisa de ajuda? Entre em phone conosco
             </p>
             <div className="flex justify-center gap-4 text-sm">
               <a
-                href="mailto:contato@acistsl.com.br"
+                href="mailto:phone@acistsl.com.br"
                 className="text-white hover:text-blue-200 transition-colors underline"
               >
-                contato@acistsl.com.br
+                phone@acistsl.com.br
               </a>
               <span className="text-blue-300">•</span>
               <a
@@ -176,7 +176,7 @@ export default function BoasVindas() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                Contato
+                phone
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

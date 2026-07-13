@@ -108,7 +108,7 @@ export default function LeadDetail() {
       <div className="grid grid-cols-3 gap-6 p-8">
         <div className="col-span-2 space-y-6">
           <div className="bg-card rounded-lg border border-border p-6">
-            <h3 className="mb-4">Informações de Contato</h3>
+            <h3 className="mb-4">Informações de phone</h3>
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="text-muted-foreground text-[0.875rem] mb-1 block">Email</label>
@@ -341,7 +341,7 @@ export default function LeadDetail() {
                 ) : (
                   <Clock className="h-4 w-4 text-gray-400" />
                 )}
-                <span className={lead.progresso >= 25 ? '' : 'text-muted-foreground'}>Contatos</span>
+                <span className={lead.progresso >= 25 ? '' : 'text-muted-foreground'}>phones</span>
               </div>
               <div className="flex items-center gap-2 text-[0.875rem]">
                 {lead.progresso >= 37.5 ? (

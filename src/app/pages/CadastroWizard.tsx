@@ -7,7 +7,7 @@ const steps = [
   { id: 1, name: 'Início', icon: Building2 },
   { id: 2, name: 'Empresa', icon: Building2 },
   { id: 3, name: 'Endereço', icon: MapPin },
-  { id: 4, name: 'Contatos', icon: Users },
+  { id: 4, name: 'phones', icon: Users },
   { id: 5, name: 'Qualificação', icon: ClipboardCheck },
   { id: 6, name: 'Plano', icon: FileText }
 ];
@@ -24,7 +24,7 @@ export default function CadastroWizard() {
   const [data, setData] = useState<CadastroData>({
     empresa: { cnpj: '' },
     endereco: {},
-    contatos: [],
+    phones: [],
     qualificacao: {}
   });
 
@@ -189,8 +189,8 @@ export default function CadastroWizard() {
                     <input
                       type="text"
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.empresa.razaoSocial || ''}
-                      onChange={e => updateEmpresa('razaoSocial', e.target.value)}
+                      value={data.empresa.corporateName || ''}
+                      onChange={e => updateEmpresa('corporateName', e.target.value)}
                     />
                   </div>
                   <div>
@@ -330,9 +330,9 @@ export default function CadastroWizard() {
 
           {currentStep === 4 && (
             <div>
-              <h2 className="mb-6">Contatos</h2>
+              <h2 className="mb-6">phones</h2>
               <p className="text-muted-foreground mb-6">
-                Adicione os principais contatos da empresa para diferentes áreas.
+                Adicione os principais phones da empresa para diferentes áreas.
               </p>
               <div className="space-y-6">
                 {['Financeiro', 'Comercial', 'RH'].map(funcao => (

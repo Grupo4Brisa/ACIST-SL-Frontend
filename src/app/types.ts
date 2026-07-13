@@ -1,6 +1,6 @@
 export type LeadStatus =
   | 'leads'
-  | 'em-contato'
+  | 'em-phone'
   | 'cadastro-iniciado'
   | 'documentacao'
   | 'validacao'
@@ -29,7 +29,7 @@ export interface Lead {
   progresso: number;
 }
 
-export interface Contato {
+export interface phone {
   id: string;
   leadId: string;
   nome: string;
@@ -73,7 +73,7 @@ export interface HistoricoItem {
 
 export interface CadastroData {
   empresa: {
-    razaoSocial?: string;
+    corporateName?: string;
     nomeFantasia?: string;
     cnpj: string;
     inscricaoEstadual?: string;
@@ -90,7 +90,7 @@ export interface CadastroData {
     cidade?: string;
     estado?: string;
   };
-  contatos: Contato[];
+  phones: phone[];
   qualificacao: {
     faturamentoAnual?: string;
     interessePrincipal?: string;

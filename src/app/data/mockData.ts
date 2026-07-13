@@ -1,6 +1,6 @@
 import type {
   Lead,
-  Contato,
+  phone,
   Documento,
   Task,
   HistoricoItem
@@ -11,7 +11,7 @@ export const mockLeads: Lead[] = [
     id: '1',
     empresaNome: 'Tech Solutions LTDA',
     cnpj: '12.345.678/0001-90',
-    email: 'contato@techsolutions.com.br',
+    email: 'phone@techsolutions.com.br',
     telefone: '(51) 98765-4321',
     origem: 'QR Code - Evento Tech',
     campanha: 'Campanha Tecnologia 2026',
@@ -28,7 +28,7 @@ export const mockLeads: Lead[] = [
     email: 'metal@industriametal.com.br',
     telefone: '(51) 3333-4444',
     origem: 'Site - Formulário',
-    status: 'em-contato',
+    status: 'em-phone',
     responsavel: 'Carlos Santos',
     createdAt: new Date('2026-04-08'),
     updatedAt: new Date('2026-04-11'),
@@ -38,7 +38,7 @@ export const mockLeads: Lead[] = [
     id: '3',
     empresaNome: 'Comércio Varejo ME',
     cnpj: '34.567.890/0001-12',
-    email: 'contato@comerciovarejo.com.br',
+    email: 'phone@comerciovarejo.com.br',
     telefone: '(51) 99999-8888',
     origem: 'Indicação',
     status: 'cadastro-iniciado',
@@ -64,7 +64,7 @@ export const mockLeads: Lead[] = [
     id: '5',
     empresaNome: 'Transportadora Express',
     cnpj: '56.789.012/0001-34',
-    email: 'contato@transportadora.com.br',
+    email: 'phone@transportadora.com.br',
     telefone: '(51) 96666-5555',
     origem: 'LinkedIn Ads',
     status: 'validacao',
@@ -77,7 +77,7 @@ export const mockLeads: Lead[] = [
     id: '6',
     empresaNome: 'Alimentação Saudável',
     cnpj: '67.890.123/0001-45',
-    email: 'contato@alimentacaosaudavel.com.br',
+    email: 'phone@alimentacaosaudavel.com.br',
     telefone: '(51) 95555-4444',
     origem: 'Google Ads',
     status: 'aprovado',
@@ -88,7 +88,7 @@ export const mockLeads: Lead[] = [
   }
 ];
 
-export const mockContatos: Contato[] = [
+export const mockphones: phone[] = [
   {
     id: '1',
     leadId: '3',
@@ -152,7 +152,7 @@ export const mockTasks: Task[] = [
     id: '1',
     leadId: '2',
     titulo: 'Ligar para agendar reunião',
-    descricao: 'Fazer contato inicial e apresentar os benefícios',
+    descricao: 'Fazer phone inicial e apresentar os benefícios',
     responsavel: 'Carlos Santos',
     status: 'pending',
     dataVencimento: new Date('2026-04-13'),
@@ -192,7 +192,7 @@ export const mockHistorico: HistoricoItem[] = [
     id: '2',
     leadId: '3',
     tipo: 'status',
-    descricao: 'Status alterado para "Em contato"',
+    descricao: 'Status alterado para "Em phone"',
     usuario: 'Ana Silva',
     data: new Date('2026-04-06T14:20:00')
   },
@@ -224,7 +224,7 @@ export const mockHistorico: HistoricoItem[] = [
 
 export const statusLabels: Record<string, string> = {
   'leads': 'Leads',
-  'em-contato': 'Em Contato',
+  'em-phone': 'Em phone',
   'cadastro-iniciado': 'Cadastro Iniciado',
   'documentacao': 'Documentação',
   'validacao': 'Validação',

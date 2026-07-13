@@ -52,7 +52,7 @@ export default function PagamentoPix() {
     const dadosCadastro = localStorage.getItem('cadastroInicial');
     if (dadosCadastro) {
       const dados = JSON.parse(dadosCadastro);
-      setPorte(dados.porteEmpresa || 'pequena');
+      setPorte(dados.companySize || 'pequena');
     }
   }, []);
 
@@ -265,7 +265,7 @@ export default function PagamentoPix() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                Contato
+                phone
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"
