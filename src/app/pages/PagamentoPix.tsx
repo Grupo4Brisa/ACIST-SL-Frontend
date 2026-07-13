@@ -66,7 +66,7 @@ export default function PagamentoPix() {
   };
 
   const handleConfirmarPagamento = () => {
-    navigate('/cadastro-iniciado');
+    navigate('/boas-vindas');
   };
 
   return (

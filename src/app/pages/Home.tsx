@@ -23,7 +23,7 @@ export default function BoasVindasHome() {
     localStorage.setItem('cadastroInicial', JSON.stringify(formData));
 
     setTimeout(() => {
-      navigate('/pagamento');
+      navigate('/pagamento-pix');
     }, 1500);
   };
 
