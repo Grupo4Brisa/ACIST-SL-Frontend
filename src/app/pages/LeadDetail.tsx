@@ -78,7 +78,7 @@ export default function LeadDetail() {
           </Link>
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="mb-2">{lead.empresaNome}</h1>
+              <h1 className="mb-2">{lead.empresaname}</h1>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <span className="flex items-center gap-2">
                   <Building2 className="h-4 w-4" />
@@ -118,10 +118,10 @@ export default function LeadDetail() {
                 </div>
               </div>
               <div>
-                <label className="text-muted-foreground text-[0.875rem] mb-1 block">Telefone</label>
+                <label className="text-muted-foreground text-[0.875rem] mb-1 block">phone</label>
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-muted-foreground" />
-                  <span>{lead.telefone}</span>
+                  <span>{lead.phone}</span>
                 </div>
               </div>
               <div>
@@ -242,7 +242,7 @@ export default function LeadDetail() {
                             <FileText className="h-6 w-6 text-blue-600" />
                           </div>
                           <div>
-                            <p>{doc.nome}</p>
+                            <p>{doc.name}</p>
                             <p className="text-[0.875rem] text-muted-foreground">
                               {doc.tipo} • Versão {doc.versao}
                               {doc.uploadedAt && ` • ${formatDate(doc.uploadedAt)}`}

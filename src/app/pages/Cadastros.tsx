@@ -11,7 +11,7 @@ export default function Cadastros() {
 
   const filteredLeads = mockLeads.filter(lead => {
     const matchesSearch =
-      lead.empresaNome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.empresaname.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.cnpj.includes(searchTerm) ||
       lead.email.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -105,7 +105,7 @@ export default function Cadastros() {
                         <Building2 className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p>{lead.empresaNome}</p>
+                        <p>{lead.empresaname}</p>
                         <p className="text-[0.875rem] text-muted-foreground">{lead.cnpj}</p>
                       </div>
                     </div>
@@ -119,7 +119,7 @@ export default function Cadastros() {
                     </div>
                     <div className="flex items-center gap-2 text-[0.875rem]">
                       <Phone className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-muted-foreground">{lead.telefone}</span>
+                      <span className="text-muted-foreground">{lead.phone}</span>
                     </div>
                   </div>
                 </td>

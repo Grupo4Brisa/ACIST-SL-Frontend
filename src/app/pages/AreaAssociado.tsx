@@ -16,14 +16,14 @@ export default function AreaAssociado() {
 
   // Mock data - Lista de associados
   const associadosLista = [
-    { id: 1, nome: 'Tech Solutions Ltda', ramo: 'Tecnologia', telefone: '(51) 3456-7890', cidade: 'São Leopoldo' },
-    { id: 2, nome: 'Construção Forte', ramo: 'Indústria', telefone: '(51) 3456-7891', cidade: 'São Leopoldo' },
-    { id: 3, nome: 'Sabor da Terra', ramo: 'Alimentação', telefone: '(51) 3456-7892', cidade: 'São Leopoldo' },
-    { id: 4, nome: 'Moda & Estilo', ramo: 'Loja', telefone: '(51) 3456-7893', cidade: 'Novo Hamburgo' },
-    { id: 5, nome: 'Clínica Saúde Total', ramo: 'Saúde', telefone: '(51) 3456-7894', cidade: 'São Leopoldo' },
-    { id: 6, nome: 'DigitalMark Agência', ramo: 'Serviços', telefone: '(51) 3456-7895', cidade: 'São Leopoldo' },
-    { id: 7, nome: 'AutoTech Oficina', ramo: 'Serviços', telefone: '(51) 3456-7896', cidade: 'Portão' },
-    { id: 8, nome: 'Indústria MecaPro', ramo: 'Indústria', telefone: '(51) 3456-7897', cidade: 'São Leopoldo' }
+    { id: 1, name: 'Tech Solutions Ltda', ramo: 'Tecnologia', phone: '(51) 3456-7890', city: 'São Leopoldo' },
+    { id: 2, name: 'Construção Forte', ramo: 'Indústria', phone: '(51) 3456-7891', city: 'São Leopoldo' },
+    { id: 3, name: 'Sabor da Terra', ramo: 'Alimentação', phone: '(51) 3456-7892', city: 'São Leopoldo' },
+    { id: 4, name: 'Moda & Estilo', ramo: 'Loja', phone: '(51) 3456-7893', city: 'Novo Hamburgo' },
+    { id: 5, name: 'Clínica Saúde Total', ramo: 'Saúde', phone: '(51) 3456-7894', city: 'São Leopoldo' },
+    { id: 6, name: 'DigitalMark Agência', ramo: 'Serviços', phone: '(51) 3456-7895', city: 'São Leopoldo' },
+    { id: 7, name: 'AutoTech Oficina', ramo: 'Serviços', phone: '(51) 3456-7896', city: 'Portão' },
+    { id: 8, name: 'Indústria MecaPro', ramo: 'Indústria', phone: '(51) 3456-7897', city: 'São Leopoldo' }
   ];
 
   const ramos = ['Todos', 'Tecnologia', 'Loja', 'Indústria', 'Alimentação', 'Serviços', 'Saúde'];
@@ -31,7 +31,7 @@ export default function AreaAssociado() {
   // Filtrar associados
   const associadosFiltrados = associadosLista.filter(assoc => {
     const matchBusca = buscaTermo === '' ||
-      assoc.nome.toLowerCase().includes(buscaTermo.toLowerCase()) ||
+      assoc.name.toLowerCase().includes(buscaTermo.toLowerCase()) ||
       assoc.ramo.toLowerCase().includes(buscaTermo.toLowerCase());
 
     const matchRamo = ramoFiltro === 'Todos' || assoc.ramo === ramoFiltro;
@@ -57,7 +57,7 @@ export default function AreaAssociado() {
   };
 
   const associado = {
-    nome: 'Tech Solutions Ltda',
+    name: 'Tech Solutions Ltda',
     email: 'phone@techsolutions.com.br',
     status: 'aprovado' // 'em_analise' | 'aprovado' | 'pendente_documentos'
   };
@@ -65,19 +65,19 @@ export default function AreaAssociado() {
   const eventos = [
     {
       id: 1,
-      nome: 'Café de Negócios - Networking',
+      name: 'Café de Negócios - Networking',
       data: '2026-04-25',
       local: 'Sede ACIST'
     },
     {
       id: 2,
-      nome: 'Workshop: Marketing Digital para Empresas',
+      name: 'Workshop: Marketing Digital para Empresas',
       data: '2026-05-02',
       local: 'Auditório ACIST'
     },
     {
       id: 3,
-      nome: 'Assembleia Geral de Associados',
+      name: 'Assembleia Geral de Associados',
       data: '2026-05-15',
       local: 'Sede ACIST'
     }
@@ -161,7 +161,7 @@ export default function AreaAssociado() {
         {/* Welcome */}
         <div className="mb-8">
           <h1 className="text-white text-3xl font-semibold mb-2">
-            Bem-vindo, {associado.nome}!
+            Bem-vindo, {associado.name}!
           </h1>
           <p className="text-blue-100">
             Acompanhe aqui seu status de associação e as novidades da ACIST
@@ -242,7 +242,7 @@ export default function AreaAssociado() {
                 <Building2 className="h-5 w-5 text-gray-400 mt-0.5" />
                 <div>
                   <p className="text-sm text-gray-500">Empresa</p>
-                  <p className="text-gray-900 font-medium">{associado.nome}</p>
+                  <p className="text-gray-900 font-medium">{associado.name}</p>
                 </div>
               </div>
 
@@ -329,7 +329,7 @@ export default function AreaAssociado() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Buscar por nome ou ramo..."
+                  placeholder="Buscar por name ou ramo..."
                   className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                   value={buscaTermo}
                   onChange={(e) => handleBusca(e.target.value)}
@@ -361,7 +361,7 @@ export default function AreaAssociado() {
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-[#0C3A59] mb-2">{assoc.nome}</h3>
+                        <h3 className="font-semibold text-[#0C3A59] mb-2">{assoc.name}</h3>
                         <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-600">
                           <span className="flex items-center gap-1">
                             <Building2 className="h-4 w-4 text-gray-400" />
@@ -369,11 +369,11 @@ export default function AreaAssociado() {
                           </span>
                           <span className="flex items-center gap-1">
                             <Phone className="h-4 w-4 text-gray-400" />
-                            {assoc.telefone}
+                            {assoc.phone}
                           </span>
                           <span className="flex items-center gap-1">
                             <MapPin className="h-4 w-4 text-gray-400" />
-                            {assoc.cidade}
+                            {assoc.city}
                           </span>
                         </div>
                       </div>
@@ -460,7 +460,7 @@ export default function AreaAssociado() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-[#5DA5FF] transition-colors">
-                        {evento.nome}
+                        {evento.name}
                       </h3>
                       <div className="flex items-center gap-4 text-sm text-gray-600">
                         <span className="flex items-center gap-1">
@@ -538,7 +538,7 @@ export default function AreaAssociado() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                phone
+                Contato
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

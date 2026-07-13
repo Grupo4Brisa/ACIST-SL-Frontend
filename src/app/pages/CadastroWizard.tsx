@@ -23,7 +23,7 @@ export default function CadastroWizard() {
   const [saved, setSaved] = useState(false);
   const [data, setData] = useState<CadastroData>({
     empresa: { cnpj: '' },
-    endereco: {},
+    address: {},
     phones: [],
     qualificacao: {}
   });
@@ -50,8 +50,8 @@ export default function CadastroWizard() {
     setData({ ...data, empresa: { ...data.empresa, [field]: value } });
   };
 
-  const updateEndereco = (field: string, value: string) => {
-    setData({ ...data, endereco: { ...data.endereco, [field]: value } });
+  const updateaddress = (field: string, value: string) => {
+    setData({ ...data, address: { ...data.address, [field]: value } });
   };
 
   const updateQualificacao = (field: string, value: string) => {
@@ -194,12 +194,12 @@ export default function CadastroWizard() {
                     />
                   </div>
                   <div>
-                    <label className="block mb-2">Nome Fantasia</label>
+                    <label className="block mb-2">name Fantasia</label>
                     <input
                       type="text"
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.empresa.nomeFantasia || ''}
-                      onChange={e => updateEmpresa('nomeFantasia', e.target.value)}
+                      value={data.empresa.companyName || ''}
+                      onChange={e => updateEmpresa('companyName', e.target.value)}
                     />
                   </div>
                 </div>
@@ -218,8 +218,8 @@ export default function CadastroWizard() {
                     <input
                       type="text"
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.empresa.inscricaoEstadual || ''}
-                      onChange={e => updateEmpresa('inscricaoEstadual', e.target.value)}
+                      value={data.empresa.stateRegistration || ''}
+                      onChange={e => updateEmpresa('stateRegistration', e.target.value)}
                     />
                   </div>
                 </div>
@@ -242,8 +242,8 @@ export default function CadastroWizard() {
                     <label className="block mb-2">Número de Funcionários</label>
                     <select
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.empresa.numeroFuncionarios || ''}
-                      onChange={e => updateEmpresa('numeroFuncionarios', e.target.value)}
+                      value={data.empresa.employeesCount || ''}
+                      onChange={e => updateEmpresa('employeesCount', e.target.value)}
                     >
                       <option value="">Selecione</option>
                       <option value="1-10">1-10</option>
@@ -262,12 +262,12 @@ export default function CadastroWizard() {
               <h2 className="mb-6">Endereço</h2>
               <div className="space-y-6">
                 <div>
-                  <label className="block mb-2">CEP</label>
+                  <label className="block mb-2">zipCode</label>
                   <input
                     type="text"
                     className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={data.endereco.cep || ''}
-                    onChange={e => updateEndereco('cep', e.target.value)}
+                    value={data.address.zipCode || ''}
+                    onChange={e => updateaddress('zipCode', e.target.value)}
                     placeholder="00000-000"
                   />
                 </div>
@@ -276,8 +276,8 @@ export default function CadastroWizard() {
                   <input
                     type="text"
                     className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={data.endereco.logradouro || ''}
-                    onChange={e => updateEndereco('logradouro', e.target.value)}
+                    value={data.address.logradouro || ''}
+                    onChange={e => updateaddress('logradouro', e.target.value)}
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-6">
@@ -286,8 +286,8 @@ export default function CadastroWizard() {
                     <input
                       type="text"
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.endereco.numero || ''}
-                      onChange={e => updateEndereco('numero', e.target.value)}
+                      value={data.address.numero || ''}
+                      onChange={e => updateaddress('numero', e.target.value)}
                     />
                   </div>
                   <div className="col-span-2">
@@ -295,27 +295,27 @@ export default function CadastroWizard() {
                     <input
                       type="text"
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.endereco.complemento || ''}
-                      onChange={e => updateEndereco('complemento', e.target.value)}
+                      value={data.address.complemento || ''}
+                      onChange={e => updateaddress('complemento', e.target.value)}
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block mb-2">Cidade</label>
+                    <label className="block mb-2">city</label>
                     <input
                       type="text"
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.endereco.cidade || ''}
-                      onChange={e => updateEndereco('cidade', e.target.value)}
+                      value={data.address.city || ''}
+                      onChange={e => updateaddress('city', e.target.value)}
                     />
                   </div>
                   <div>
                     <label className="block mb-2">Estado</label>
                     <select
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.endereco.estado || ''}
-                      onChange={e => updateEndereco('estado', e.target.value)}
+                      value={data.address.estado || ''}
+                      onChange={e => updateaddress('estado', e.target.value)}
                     >
                       <option value="">Selecione</option>
                       <option value="RS">RS</option>
@@ -340,7 +340,7 @@ export default function CadastroWizard() {
                     <h4 className="mb-4">{funcao}</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block mb-2 text-[0.875rem]">Nome</label>
+                        <label className="block mb-2 text-[0.875rem]">name</label>
                         <input
                           type="text"
                           className="w-full px-3 py-2 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
@@ -403,7 +403,7 @@ export default function CadastroWizard() {
                     <option value="indicacao">Indicação</option>
                     <option value="evento">Evento</option>
                     <option value="redes-sociais">Redes Sociais</option>
-                    <option value="site">Site</option>
+                    <option value="website">website</option>
                   </select>
                 </div>
               </div>
@@ -415,20 +415,20 @@ export default function CadastroWizard() {
               <h2 className="mb-6">Escolha seu Plano</h2>
               <div className="grid grid-cols-3 gap-6 mb-8">
                 {[
-                  { nome: 'Básico', valor: 'R$ 350/mês', features: ['Networking', 'Eventos'] },
-                  { nome: 'Plus', valor: 'R$ 650/mês', features: ['Networking', 'Eventos', 'Capacitação'] },
-                  { nome: 'Premium', valor: 'R$ 950/mês', features: ['Tudo incluso', 'Assessoria'] }
+                  { name: 'Básico', valor: 'R$ 350/mês', features: ['Networking', 'Eventos'] },
+                  { name: 'Plus', valor: 'R$ 650/mês', features: ['Networking', 'Eventos', 'Capacitação'] },
+                  { name: 'Premium', valor: 'R$ 950/mês', features: ['Tudo incluso', 'Assessoria'] }
                 ].map(plano => (
                   <div
-                    key={plano.nome}
+                    key={plano.name}
                     className={`p-6 border-2 rounded-lg cursor-pointer transition-all ${
-                      data.plano === plano.nome
+                      data.plano === plano.name
                         ? 'border-primary bg-primary/5'
                         : 'border-border hover:border-primary/50'
                     }`}
-                    onClick={() => setData({ ...data, plano: plano.nome })}
+                    onClick={() => setData({ ...data, plano: plano.name })}
                   >
-                    <h4 className="mb-2">{plano.nome}</h4>
+                    <h4 className="mb-2">{plano.name}</h4>
                     <p className="text-[1.5rem] mb-4">{plano.valor}</p>
                     <ul className="space-y-2">
                       {plano.features.map(f => (
