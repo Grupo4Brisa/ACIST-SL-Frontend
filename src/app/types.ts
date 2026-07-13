@@ -16,8 +16,8 @@ export type TaskStatus = 'pending' | 'completed';
 
 export interface Lead {
   id: string;
-  empresaname: string;
-  cnpj: string;
+  companyName: string;
+  cnpjcpf: string;
   email: string;
   phone: string;
   origem: string;
@@ -75,10 +75,10 @@ export interface CadastroData {
   empresa: {
     corporateName?: string;
     companyName?: string;
-    cnpj: string;
+    cnpjcpf: string;
     stateRegistration?: string;
     foundationDate?: string;
-    ramoAtividade?: string;
+    establishmentType?: string;
     employeesCount?: string;
   };
   address: {
@@ -88,7 +88,7 @@ export interface CadastroData {
     complemento?: string;
     neighborhood?: string;
     city?: string;
-    estado?: string;
+    state?: string;
   };
   phones: phone[];
   qualificacao: {

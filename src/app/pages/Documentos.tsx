@@ -12,7 +12,7 @@ export default function Documentos() {
     const lead = mockLeads.find(l => l.id === doc.leadId);
     const matchesSearch =
       doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead?.empresaname.toLowerCase().includes(searchTerm.toLowerCase());
+      lead?.companyName.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = filterStatus === 'all' || doc.status === filterStatus;
 
@@ -128,7 +128,7 @@ export default function Documentos() {
                         <h4 className="mb-1">{doc.name}</h4>
                         {lead && (
                           <Link to={`/admin/lead/${lead.id}`} className="text-[0.875rem] text-primary hover:underline">
-                            {lead.empresaname}
+                            {lead.companyName}
                           </Link>
                         )}
                       </div>

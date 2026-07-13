@@ -13,7 +13,7 @@ interface CadastroState {
   // 1. Dados Cadastrais
   corporateName: string;
   companyName: string;
-  cpfCnpj: string;
+  cpfcnpj: string;
   stateRegistration: string;
   address: string;
   neighborhood: string;
@@ -52,7 +52,7 @@ interface CadastroState {
   // 5. Documentos
   documentos: {
     fichaCadastral: File | null;
-    cnpj: File | null;
+    cnpjcpf: File | null;
     comprovanteaddress: File | null;
     contratoSocial: File | null;
     rgSocios: File[];
@@ -114,7 +114,7 @@ export default function CadastroWizardNew() {
   const [data, setData] = useState<CadastroState>({
     corporateName: '',
     companyName: '',
-    cpfCnpj: '',
+    cpfcnpj: '',
     stateRegistration: '',
     address: '',
     neighborhood: '',
@@ -140,7 +140,7 @@ export default function CadastroWizardNew() {
     planoSelecionado: '',
     documentos: {
       fichaCadastral: null,
-      cnpj: null,
+      cnpjcpf: null,
       comprovanteaddress: null,
       contratoSocial: null,
       rgSocios: [],
@@ -320,13 +320,13 @@ export default function CadastroWizardNew() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[0.875rem] mb-2">CNPJ / CPF <span className="text-red-600">*</span></label>
+                          <label className="block text-[0.875rem] mb-2">cnpjcpf / CPF <span className="text-red-600">*</span></label>
                           <input
                             type="text"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                             placeholder="00.000.000/0000-00 ou 000.000.000-00"
-                            value={data.cpfCnpj}
-                            onChange={e => setData({ ...data, cpfCnpj: e.target.value })}
+                            value={data.cpfcnpj}
+                            onChange={e => setData({ ...data, cpfcnpj: e.target.value })}
                           />
                         </div>
                         <div>
@@ -928,19 +928,19 @@ export default function CadastroWizardNew() {
 
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-[0.875rem] mb-2 text-gray-600">Cópia do CNPJ (opcional)</label>
+                          <label className="block text-[0.875rem] mb-2 text-gray-600">Cópia do cnpjcpf (opcional)</label>
                           <input
                             type="file"
                             accept=".pdf,.jpg,.jpeg,.png"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                             onChange={e => {
                               if (e.target.files && e.target.files[0]) {
-                                setData({ ...data, documentos: { ...data.documentos, cnpj: e.target.files[0] } });
+                                setData({ ...data, documentos: { ...data.documentos, cnpjcpf: e.target.files[0] } });
                               }
                             }}
                           />
-                          {data.documentos.cnpj && (
-                            <p className="text-[0.75rem] text-green-600 mt-1">✓ Arquivo: {data.documentos.cnpj.name}</p>
+                          {data.documentos.cnpjcpf && (
+                            <p className="text-[0.75rem] text-green-600 mt-1">✓ Arquivo: {data.documentos.cnpjcpf.name}</p>
                           )}
                         </div>
 

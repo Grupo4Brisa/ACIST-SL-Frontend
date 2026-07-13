@@ -108,13 +108,13 @@ export default function Funil() {
                 className="block bg-card rounded-lg border border-border p-4 hover:shadow-lg hover:border-[#5DA5FF] transition-all"
               >
                 <div className="flex items-start justify-between mb-3">
-                  <h4 className="flex-1 pr-2 font-semibold">{lead.empresaname}</h4>
+                  <h4 className="flex-1 pr-2 font-semibold">{lead.companyName}</h4>
                 </div>
 
                 <div className="space-y-2 mb-3">
                   <div className="flex items-center gap-2 text-[0.875rem] text-muted-foreground">
                     <Building2 className="h-4 w-4" />
-                    <span className="truncate">{lead.cnpj}</span>
+                    <span className="truncate">{lead.cnpjcpf}</span>
                   </div>
                   <div className="flex items-center gap-2 text-[0.875rem] text-muted-foreground">
                     <Mail className="h-4 w-4" />

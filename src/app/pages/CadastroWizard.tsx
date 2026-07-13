@@ -22,7 +22,7 @@ export default function CadastroWizard() {
   const [currentStep, setCurrentStep] = useState(1);
   const [saved, setSaved] = useState(false);
   const [data, setData] = useState<CadastroData>({
-    empresa: { cnpj: '' },
+    empresa: { cnpjcpf: '' },
     address: {},
     phones: [],
     qualificacao: {}
@@ -169,7 +169,7 @@ export default function CadastroWizard() {
                 </li>
                 <li className="flex items-center gap-2 text-muted-foreground">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Cartão CNPJ
+                  Cartão cnpjcpf
                 </li>
                 <li className="flex items-center gap-2 text-muted-foreground">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -205,12 +205,12 @@ export default function CadastroWizard() {
                 </div>
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block mb-2">CNPJ</label>
+                    <label className="block mb-2">cnpjcpf</label>
                     <input
                       type="text"
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.empresa.cnpj}
-                      onChange={e => updateEmpresa('cnpj', e.target.value)}
+                      value={data.empresa.cnpjcpf}
+                      onChange={e => updateEmpresa('cnpjcpf', e.target.value)}
                     />
                   </div>
                   <div>
@@ -228,8 +228,8 @@ export default function CadastroWizard() {
                     <label className="block mb-2">Ramo de Atividade</label>
                     <select
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.empresa.ramoAtividade || ''}
-                      onChange={e => updateEmpresa('ramoAtividade', e.target.value)}
+                      value={data.empresa.establishmentType || ''}
+                      onChange={e => updateEmpresa('establishmentType', e.target.value)}
                     >
                       <option value="">Selecione</option>
                       <option value="comercio">Comércio</option>
@@ -311,11 +311,11 @@ export default function CadastroWizard() {
                     />
                   </div>
                   <div>
-                    <label className="block mb-2">Estado</label>
+                    <label className="block mb-2">state</label>
                     <select
                       className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={data.address.estado || ''}
-                      onChange={e => updateaddress('estado', e.target.value)}
+                      value={data.address.state || ''}
+                      onChange={e => updateaddress('state', e.target.value)}
                     >
                       <option value="">Selecione</option>
                       <option value="RS">RS</option>

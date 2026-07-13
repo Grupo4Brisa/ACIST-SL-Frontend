@@ -11,8 +11,8 @@ export default function Cadastros() {
 
   const filteredLeads = mockLeads.filter(lead => {
     const matchesSearch =
-      lead.empresaname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.cnpj.includes(searchTerm) ||
+      lead.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.cnpjcpf.includes(searchTerm) ||
       lead.email.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = filterStatus === 'all' || lead.status === filterStatus;
@@ -46,7 +46,7 @@ export default function Cadastros() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Buscar por empresa, CNPJ ou email..."
+              placeholder="Buscar por empresa, cnpjcpf ou email..."
               className="w-full pl-10 pr-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
@@ -105,8 +105,8 @@ export default function Cadastros() {
                         <Building2 className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p>{lead.empresaname}</p>
-                        <p className="text-[0.875rem] text-muted-foreground">{lead.cnpj}</p>
+                        <p>{lead.companyName}</p>
+                        <p className="text-[0.875rem] text-muted-foreground">{lead.cnpjcpf}</p>
                       </div>
                     </div>
                   </Link>

@@ -78,11 +78,11 @@ export default function LeadDetail() {
           </Link>
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="mb-2">{lead.empresaname}</h1>
+              <h1 className="mb-2">{lead.companyName}</h1>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <span className="flex items-center gap-2">
                   <Building2 className="h-4 w-4" />
-                  {lead.cnpj}
+                  {lead.cnpjcpf}
                 </span>
                 <span className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />

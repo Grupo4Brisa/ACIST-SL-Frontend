@@ -23,7 +23,7 @@ export default function AprovacaoCadastros() {
       dataSubmissao: '2026-04-14',
       status: 'pendente',
       progresso: 100,
-      cnpj: '12.345.678/0001-90',
+      cnpjcpf: '12.345.678/0001-90',
       segmento: 'Tecnologia'
     },
     {
@@ -36,7 +36,7 @@ export default function AprovacaoCadastros() {
       dataSubmissao: '2026-04-15',
       status: 'pendente',
       progresso: 100,
-      cnpj: '98.765.432/0001-10',
+      cnpjcpf: '98.765.432/0001-10',
       segmento: 'Comércio'
     },
     {
@@ -49,7 +49,7 @@ export default function AprovacaoCadastros() {
       dataSubmissao: '2026-04-13',
       status: 'aprovado',
       progresso: 100,
-      cnpj: '11.222.333/0001-44',
+      cnpjcpf: '11.222.333/0001-44',
       segmento: 'Indústria',
       dataAprovacao: '2026-04-14',
       aprovadoPor: 'Você'
@@ -64,7 +64,7 @@ export default function AprovacaoCadastros() {
       dataSubmissao: '2026-04-12',
       status: 'reprovado',
       progresso: 100,
-      cnpj: '55.666.777/0001-88',
+      cnpjcpf: '55.666.777/0001-88',
       segmento: 'Serviços',
       dataReprovacao: '2026-04-13',
       reprovadoPor: 'Você',
@@ -238,7 +238,7 @@ export default function AprovacaoCadastros() {
                       </div>
                     </div>
                     <p className="text-muted-foreground text-sm">
-                      CNPJ: {cadastro.cnpj} • Segmento: {cadastro.segmento}
+                      cnpjcpf: {cadastro.cnpjcpf} • Segmento: {cadastro.segmento}
                     </p>
                   </div>
                   <div className="text-right text-sm text-muted-foreground">

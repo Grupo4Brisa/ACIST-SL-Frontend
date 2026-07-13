@@ -133,7 +133,7 @@ export default function PagamentoPix() {
             {/* Chave PIX */}
             <div className="mb-6">
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Chave PIX (CNPJ)
+                Chave PIX (cnpjcpf)
               </label>
               <div className="flex gap-2">
                 <input

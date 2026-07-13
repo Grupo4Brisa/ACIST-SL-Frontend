@@ -7,7 +7,7 @@ import WhatsAppButton from '../components/WhatsAppButton';
 export default function BoasVindasHome() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    cnpjcpf: '',
+    cnpjcpfcpf: '',
     companyName: '',
     corporateName: '',
     email: '',
@@ -118,15 +118,15 @@ export default function BoasVindasHome() {
               <div>
                 <label className="block mb-2 text-[0.875rem]">
                   <Hash className="inline h-4 w-4 mr-1.5" />
-                  CPF ou CNPJ
+                  CPF ou cnpjcpf
                 </label>
                 <input
                   type="text"
                   required
                   placeholder="000.000.000-00 ou 00.000.000/0000-00"
                   className="w-full px-4 py-3.5 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
-                  value={formData.cnpjcpf}
-                  onChange={e => setFormData({ ...formData, cnpjcpf: e.target.value })}
+                  value={formData.cnpjcpfcpf}
+                  onChange={e => setFormData({ ...formData, cnpjcpfcpf: e.target.value })}
                   disabled={isSubmitting}
                 />
               </div>

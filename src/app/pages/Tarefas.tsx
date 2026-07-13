@@ -128,7 +128,7 @@ export default function Tarefas() {
                       </h4>
                       {lead && (
                         <Link to={`/admin/lead/${lead.id}`} className="text-[0.875rem] text-primary hover:underline">
-                          {lead.empresaname}
+                          {lead.companyName}
                         </Link>
                       )}
                     </div>

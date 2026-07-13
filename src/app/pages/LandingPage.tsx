@@ -11,7 +11,7 @@ export default function LandingPage() {
   const origem = searchParams.get('utm_source') || 'Direto';
 
   const [formData, setFormData] = useState({
-    cnpj: '',
+    cnpjcpf: '',
     companyName: '',
     corporateName: '',
     email: '',
@@ -158,15 +158,15 @@ export default function LandingPage() {
                 <div>
                   <label className="block mb-2">
                     <Hash className="inline h-4 w-4 mr-2" />
-                    CPF ou CNPJ
+                    CPF ou cnpjcpf
                   </label>
                   <input
                     type="text"
                     required
                     placeholder="000.000.000-00 ou 00.000.000/0000-00"
                     className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={formData.cnpj}
-                    onChange={e => setFormData({ ...formData, cnpj: e.target.value })}
+                    value={formData.cnpjcpf}
+                    onChange={e => setFormData({ ...formData, cnpjcpf: e.target.value })}
                   />
                 </div>
 
