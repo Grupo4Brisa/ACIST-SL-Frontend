@@ -17,7 +17,7 @@ export default function EventoDetalhe() {
       horario: '08:00 - 10:00',
       local: 'Sede ACIST',
       address: 'Rua Independência, 1234 - São Leopoldo/RS',
-      descricao: 'Encontro matinal para networking entre associados. Uma oportunidade única de conhecer other empresários, trocar experiências e criar novas parcerias de negócios.',
+      description: 'Encontro matinal para networking entre associados. Uma oportunidade única de conhecer other empresários, trocar experiências e criar novas parcerias de negócios.',
       vagas: 50,
       inscritos: 32,
       palestrante: null,
@@ -35,7 +35,7 @@ export default function EventoDetalhe() {
       horario: '14:00 - 18:00',
       local: 'Auditório ACIST',
       address: 'Rua Independência, 1234 - São Leopoldo/RS',
-      descricao: 'Workshop prático sobre estratégias de marketing digital aplicadas ao contexto empresarial. Aprenda técnicas de SEO, redes sociais, e-mail marketing e análise de métricas.',
+      description: 'Workshop prático sobre estratégias de marketing digital aplicadas ao contexto empresarial. Aprenda técnicas de SEO, redes sociais, e-mail marketing e análise de métricas.',
       vagas: 40,
       inscritos: 28,
       palestrante: 'Dr. Carlos Silva - Especialista em Marketing Digital',
@@ -56,7 +56,7 @@ export default function EventoDetalhe() {
       horario: '19:00 - 21:00',
       local: 'Sede ACIST',
       address: 'Rua Independência, 1234 - São Leopoldo/RS',
-      descricao: 'Assembleia Geral Ordinária para prestação de contas do exercício 2025 e apresentação do planejamento estratégico 2026.',
+      description: 'Assembleia Geral Ordinária para prestação de contas do exercício 2025 e apresentação do planejamento estratégico 2026.',
       vagas: 100,
       inscritos: 45,
       palestrante: null,
@@ -159,7 +159,7 @@ export default function EventoDetalhe() {
             {/* Descrição */}
             <div className="mb-8">
               <h2 className="text-2xl font-semibold text-[#0C3A59] mb-4">Sobre o Evento</h2>
-              <p className="text-gray-700 leading-relaxed">{evento.descricao}</p>
+              <p className="text-gray-700 leading-relaxed">{evento.description}</p>
             </div>
 
             {/* Local */}

@@ -126,10 +126,10 @@ export default function Funil() {
                   </div>
                 </div>
 
-                {lead.responsavel && (
+                {lead.assignedTo && (
                   <div className="flex items-center gap-2 text-[0.875rem] mb-3">
                     <User className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">{lead.responsavel}</span>
+                    <span className="text-muted-foreground">{lead.assignedTo}</span>
                   </div>
                 )}
 

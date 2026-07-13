@@ -23,7 +23,7 @@ export interface Lead {
   origem: string;
   campanha?: string;
   status: LeadStatus;
-  responsavel?: string;
+  assignedTo?: string;
   createdAt: Date;
   updatedAt: Date;
   progresso: number;
@@ -54,11 +54,11 @@ export interface Documento {
 export interface Task {
   id: string;
   leadId: string;
-  titulo: string;
-  descricao?: string;
-  responsavel: string;
+  title: string;
+  description?: string;
+  assignedTo: string;
   status: TaskStatus;
-  dataVencimento?: Date;
+  dueDate?: Date;
   createdAt: Date;
 }
 
@@ -66,7 +66,7 @@ export interface HistoricoItem {
   id: string;
   leadId: string;
   tipo: 'acao' | 'status' | 'documento' | 'comentario';
-  descricao: string;
+  description: string;
   usuario: string;
   data: Date;
 }

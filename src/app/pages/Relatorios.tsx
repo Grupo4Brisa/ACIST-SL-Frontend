@@ -13,16 +13,16 @@ const origemData = mockLeads.reduce((acc, lead) => {
   return acc;
 }, [] as { id: string; name: string; value: number }[]);
 
-const responsavelData = mockLeads.reduce((acc, lead) => {
-  if (lead.responsavel) {
-    const existing = acc.find(item => item.name === lead.responsavel);
+const assignedToData = mockLeads.reduce((acc, lead) => {
+  if (lead.assignedTo) {
+    const existing = acc.find(item => item.name === lead.assignedTo);
     if (existing) {
       existing.total += 1;
       if (lead.status === 'aprovado') existing.aprovados += 1;
     } else {
       acc.push({
-        id: lead.responsavel.toLowerCase().replace(/\s+/g, '-'),
-        name: lead.responsavel,
+        id: lead.assignedTo.toLowerCase().replace(/\s+/g, '-'),
+        name: lead.assignedTo,
         total: 1,
         aprovados: lead.status === 'aprovado' ? 1 : 0
       });
@@ -140,7 +140,7 @@ export default function Relatorios() {
       <div className="bg-card rounded-lg border border-border p-6 mb-6">
         <h3 className="mb-6">Performance por Responsável</h3>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={responsavelData}>
+          <BarChart data={assignedToData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
             <XAxis dataKey="name" tick={{ fontSize: 12 }} />
             <YAxis tick={{ fontSize: 12 }} />

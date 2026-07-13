@@ -131,12 +131,12 @@ export default function LeadDetail() {
                   <span>{lead.origem}</span>
                 </div>
               </div>
-              {lead.responsavel && (
+              {lead.assignedTo && (
                 <div>
                   <label className="text-muted-foreground text-[0.875rem] mb-1 block">Responsável</label>
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
-                    <span>{lead.responsavel}</span>
+                    <span>{lead.assignedTo}</span>
                   </div>
                 </div>
               )}
@@ -220,7 +220,7 @@ export default function LeadDetail() {
                           {index < historico.length - 1 && <div className="w-0.5 flex-1 bg-border mt-2" />}
                         </div>
                         <div className="flex-1 pb-6">
-                          <p className="mb-1">{item.descricao}</p>
+                          <p className="mb-1">{item.description}</p>
                           <p className="text-[0.875rem] text-muted-foreground">
                             {item.usuario} • {formatDate(item.data)}
                           </p>
@@ -281,20 +281,20 @@ export default function LeadDetail() {
                       <input type="checkbox" className="mt-1" checked={tarefa.status === 'completed'} readOnly />
                       <div className="flex-1">
                         <p className={tarefa.status === 'completed' ? 'line-through text-muted-foreground' : ''}>
-                          {tarefa.titulo}
+                          {tarefa.title}
                         </p>
-                        {tarefa.descricao && (
-                          <p className="text-[0.875rem] text-muted-foreground mt-1">{tarefa.descricao}</p>
+                        {tarefa.description && (
+                          <p className="text-[0.875rem] text-muted-foreground mt-1">{tarefa.description}</p>
                         )}
                         <div className="flex items-center gap-4 mt-2 text-[0.875rem] text-muted-foreground">
                           <span className="flex items-center gap-1.5">
                             <User className="h-3.5 w-3.5" />
-                            {tarefa.responsavel}
+                            {tarefa.assignedTo}
                           </span>
-                          {tarefa.dataVencimento && (
+                          {tarefa.dueDate && (
                             <span className="flex items-center gap-1.5">
                               <Calendar className="h-3.5 w-3.5" />
-                              {new Intl.DateTimeFormat('pt-BR').format(tarefa.dataVencimento)}
+                              {new Intl.DateTimeFormat('pt-BR').format(tarefa.dueDate)}
                             </span>
                           )}
                         </div>

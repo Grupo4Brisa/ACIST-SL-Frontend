@@ -6,15 +6,15 @@ import type { TaskStatus } from '../types';
 
 export default function Tarefas() {
   const [filterStatus, setFilterStatus] = useState<TaskStatus | 'all'>('all');
-  const [filterResponsavel, setFilterResponsavel] = useState('all');
+  const [filterassignedTo, setFilterassignedTo] = useState('all');
 
   const filteredTasks = mockTasks.filter(task => {
     const matchesStatus = filterStatus === 'all' || task.status === filterStatus;
-    const matchesResponsavel = filterResponsavel === 'all' || task.responsavel === filterResponsavel;
-    return matchesStatus && matchesResponsavel;
+    const matchesassignedTo = filterassignedTo === 'all' || task.assignedTo === filterassignedTo;
+    return matchesStatus && matchesassignedTo;
   });
 
-  const responsaveis = Array.from(new Set(mockTasks.map(t => t.responsavel)));
+  const responsaveis = Array.from(new Set(mockTasks.map(t => t.assignedTo)));
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
@@ -27,7 +27,7 @@ export default function Tarefas() {
 
   const pendingTasks = mockTasks.filter(t => t.status === 'pending').length;
   const completedTasks = mockTasks.filter(t => t.status === 'completed').length;
-  const overdueTasks = mockTasks.filter(t => t.status === 'pending' && isOverdue(t.dataVencimento)).length;
+  const overdueTasks = mockTasks.filter(t => t.status === 'pending' && isOverdue(t.dueDate)).length;
 
   return (
     <div className="p-8">
@@ -88,8 +88,8 @@ export default function Tarefas() {
           </select>
           <select
             className="px-4 py-2 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
-            value={filterResponsavel}
-            onChange={e => setFilterResponsavel(e.target.value)}
+            value={filterassignedTo}
+            onChange={e => setFilterassignedTo(e.target.value)}
           >
             <option value="all">Todos os Responsáveis</option>
             {responsaveis.map(resp => (
@@ -104,7 +104,7 @@ export default function Tarefas() {
       <div className="space-y-4">
         {filteredTasks.map(task => {
           const lead = mockLeads.find(l => l.id === task.leadId);
-          const overdue = isOverdue(task.dataVencimento);
+          const overdue = isOverdue(task.dueDate);
 
           return (
             <div
@@ -124,7 +124,7 @@ export default function Tarefas() {
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <h4 className={task.status === 'completed' ? 'line-through text-muted-foreground' : ''}>
-                        {task.titulo}
+                        {task.title}
                       </h4>
                       {lead && (
                         <Link to={`/admin/lead/${lead.id}`} className="text-[0.875rem] text-primary hover:underline">
@@ -139,20 +139,20 @@ export default function Tarefas() {
                     )}
                   </div>
 
-                  {task.descricao && (
-                    <p className="text-[0.875rem] text-muted-foreground mb-3">{task.descricao}</p>
+                  {task.description && (
+                    <p className="text-[0.875rem] text-muted-foreground mb-3">{task.description}</p>
                   )}
 
                   <div className="flex items-center gap-6 text-[0.875rem] text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4" />
-                      <span>{task.responsavel}</span>
+                      <span>{task.assignedTo}</span>
                     </div>
-                    {task.dataVencimento && (
+                    {task.dueDate && (
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4" />
                         <span className={overdue && task.status === 'pending' ? 'text-red-600' : ''}>
-                          {formatDate(task.dataVencimento)}
+                          {formatDate(task.dueDate)}
                         </span>
                       </div>
                     )}
