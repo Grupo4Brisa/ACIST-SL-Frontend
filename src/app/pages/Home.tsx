@@ -35,23 +35,23 @@ export default function BoasVindasHome() {
   const beneficios = [
     {
       icon: Users,
-      titulo: 'Networking Qualificado',
-      descricao: 'Conecte-se com empresários e líderes da região'
+      title: 'Networking Qualificado',
+      description: 'Conecte-se com empresários e líderes da região'
     },
     {
       icon: TrendingUp,
-      titulo: 'Crescimento de Negócios',
-      descricao: 'Acesso a oportunidades e parcerias estratégicas'
+      title: 'Crescimento de Negócios',
+      description: 'Acesso a oportunidades e parcerias estratégicas'
     },
     {
       icon: Award,
-      titulo: 'Capacitação Contínua',
-      descricao: 'Cursos, workshops e eventos exclusivos'
+      title: 'Capacitação Contínua',
+      description: 'Cursos, workshops e eventos exclusivos'
     },
     {
       icon: Calendar,
-      titulo: 'Eventos Exclusivos',
-      descricao: 'Participe de encontros, feiras e congressos'
+      title: 'Eventos Exclusivos',
+      description: 'Participe de encontros, feiras e congressos'
     }
   ];
 
@@ -260,8 +260,8 @@ export default function BoasVindasHome() {
                 <div className="w-14 h-14 bg-[#5DA5FF]/20 rounded-lg flex items-center justify-center mb-4">
                   <beneficio.icon className="h-7 w-7 text-[#0C3A59]" />
                 </div>
-                <h3 className="mb-2 text-[1.125rem] text-[#0C3A59]">{beneficio.titulo}</h3>
-                <p className="text-gray-600 text-[0.875rem]">{beneficio.descricao}</p>
+                <h3 className="mb-2 text-[1.125rem] text-[#0C3A59]">{beneficio.title}</h3>
+                <p className="text-gray-600 text-[0.875rem]">{beneficio.description}</p>
               </div>
             ))}
           </div>

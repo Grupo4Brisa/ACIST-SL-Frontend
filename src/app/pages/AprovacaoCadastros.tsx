@@ -16,7 +16,7 @@ export default function AprovacaoCadastros() {
     {
       id: 1,
       empresa: 'Tech Solutions Ltda',
-      responsavel: 'João Silva',
+      assignedTo: 'João Silva',
       email: 'joao@techsolutions.com.br',
       phone: '(51) 99999-9999',
       city: 'São Leopoldo',
@@ -29,7 +29,7 @@ export default function AprovacaoCadastros() {
     {
       id: 2,
       empresa: 'Comercial ABC S.A.',
-      responsavel: 'Maria Santos',
+      assignedTo: 'Maria Santos',
       email: 'maria@comercialabc.com.br',
       phone: '(51) 98888-8888',
       city: 'Novo Hamburgo',
@@ -42,7 +42,7 @@ export default function AprovacaoCadastros() {
     {
       id: 3,
       empresa: 'Indústria XYZ Ltda',
-      responsavel: 'Pedro Oliveira',
+      assignedTo: 'Pedro Oliveira',
       email: 'pedro@industriaxyz.com.br',
       phone: '(51) 97777-7777',
       city: 'Sapucaia do Sul',
@@ -57,7 +57,7 @@ export default function AprovacaoCadastros() {
     {
       id: 4,
       empresa: 'Serviços Beta ME',
-      responsavel: 'Ana Costa',
+      assignedTo: 'Ana Costa',
       email: 'ana@servicosbeta.com.br',
       phone: '(51) 96666-6666',
       city: 'Canoas',
@@ -254,7 +254,7 @@ export default function AprovacaoCadastros() {
                     <p className="flex items-center gap-2">
                       <Building2 className="h-4 w-4 text-gray-400" />
                       <span className="text-muted-foreground">Responsável:</span>
-                      <span className="font-medium">{cadastro.responsavel}</span>
+                      <span className="font-medium">{cadastro.assignedTo}</span>
                     </p>
                     <p className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-gray-400" />

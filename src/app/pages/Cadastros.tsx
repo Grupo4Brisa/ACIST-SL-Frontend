@@ -129,10 +129,10 @@ export default function Cadastros() {
                   </span>
                 </td>
                 <td className="px-6 py-4">
-                  {lead.responsavel && (
+                  {lead.assignedTo && (
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-[0.875rem]">{lead.responsavel}</span>
+                      <span className="text-[0.875rem]">{lead.assignedTo}</span>
                     </div>
                   )}
                 </td>

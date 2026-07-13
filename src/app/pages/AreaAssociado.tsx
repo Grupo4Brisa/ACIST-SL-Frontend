@@ -86,13 +86,13 @@ export default function AreaAssociado() {
   const avisos = [
     {
       id: 1,
-      titulo: 'Nova parceria com instituição financeira',
+      title: 'Nova parceria com instituição financeira',
       conteudo: 'Associados têm condições especiais de crédito. Consulte a secretaria.',
       data: '2026-04-10'
     },
     {
       id: 2,
-      titulo: 'Mensalidade de Maio',
+      title: 'Mensalidade de Maio',
       conteudo: 'Boleto disponível para download na área de documentos.',
       data: '2026-04-08'
     }
@@ -503,7 +503,7 @@ export default function AreaAssociado() {
                   className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-semibold text-gray-900">{aviso.titulo}</h3>
+                    <h3 className="font-semibold text-gray-900">{aviso.title}</h3>
                     <span className="text-xs text-gray-500">
                       {new Date(aviso.data).toLocaleDateString('pt-BR')}
                     </span>

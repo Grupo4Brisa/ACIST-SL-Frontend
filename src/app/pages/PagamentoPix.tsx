@@ -6,33 +6,33 @@ import Logo from '../components/Logo';
 const beneficios = [
   {
     icon: Users,
-    titulo: 'Networking Empresarial',
-    descricao: 'Conecte-se com empresários da região'
+    title: 'Networking Empresarial',
+    description: 'Conecte-se com empresários da região'
   },
   {
     icon: Calendar,
-    titulo: 'Eventos e Capacitações',
-    descricao: 'Acesso a workshops e palestras exclusivas'
+    title: 'Eventos e Capacitações',
+    description: 'Acesso a workshops e palestras exclusivas'
   },
   {
     icon: Award,
-    titulo: 'Convênios e Benefícios',
-    descricao: 'Descontos em produtos e serviços'
+    title: 'Convênios e Benefícios',
+    description: 'Descontos em produtos e serviços'
   },
   {
     icon: ShieldCheck,
-    titulo: 'Certificado Digital',
-    descricao: 'Facilite processos com certificação'
+    title: 'Certificado Digital',
+    description: 'Facilite processos com certificação'
   },
   {
     icon: Megaphone,
-    titulo: 'Divulgação da Empresa',
-    descricao: 'Visibilidade em eventos e materiais'
+    title: 'Divulgação da Empresa',
+    description: 'Visibilidade em eventos e materiais'
   },
   {
     icon: Rocket,
-    titulo: 'Programa Empreender',
-    descricao: 'Participe de núcleos e grupos setoriais'
+    title: 'Programa Empreender',
+    description: 'Participe de núcleos e grupos setoriais'
   }
 ];
 
@@ -226,10 +226,10 @@ export default function PagamentoPix() {
                   <beneficio.icon className="h-6 w-6 text-[#5DA5FF]" />
                 </div>
                 <h3 className="font-semibold text-[#0C3A59] mb-2 text-lg">
-                  {beneficio.titulo}
+                  {beneficio.title}
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  {beneficio.descricao}
+                  {beneficio.description}
                 </p>
               </div>
             ))}

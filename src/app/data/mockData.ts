@@ -16,7 +16,7 @@ export const mockLeads: Lead[] = [
     origem: 'QR Code - Evento Tech',
     campanha: 'Campanha Tecnologia 2026',
     status: 'leads',
-    responsavel: 'Ana Silva',
+    assignedTo: 'Ana Silva',
     createdAt: new Date('2026-04-10'),
     updatedAt: new Date('2026-04-10'),
     progresso: 10
@@ -29,7 +29,7 @@ export const mockLeads: Lead[] = [
     phone: '(51) 3333-4444',
     origem: 'website - Formulário',
     status: 'em-phone',
-    responsavel: 'Carlos Santos',
+    assignedTo: 'Carlos Santos',
     createdAt: new Date('2026-04-08'),
     updatedAt: new Date('2026-04-11'),
     progresso: 25
@@ -42,7 +42,7 @@ export const mockLeads: Lead[] = [
     phone: '(51) 99999-8888',
     origem: 'Indicação',
     status: 'cadastro-iniciado',
-    responsavel: 'Ana Silva',
+    assignedTo: 'Ana Silva',
     createdAt: new Date('2026-04-05'),
     updatedAt: new Date('2026-04-12'),
     progresso: 50
@@ -55,7 +55,7 @@ export const mockLeads: Lead[] = [
     phone: '(51) 97777-6666',
     origem: 'WhatsApp Business',
     status: 'documentacao',
-    responsavel: 'Carlos Santos',
+    assignedTo: 'Carlos Santos',
     createdAt: new Date('2026-04-01'),
     updatedAt: new Date('2026-04-10'),
     progresso: 70
@@ -68,7 +68,7 @@ export const mockLeads: Lead[] = [
     phone: '(51) 96666-5555',
     origem: 'LinkedIn Ads',
     status: 'validacao',
-    responsavel: 'Ana Silva',
+    assignedTo: 'Ana Silva',
     createdAt: new Date('2026-03-28'),
     updatedAt: new Date('2026-04-11'),
     progresso: 90
@@ -81,7 +81,7 @@ export const mockLeads: Lead[] = [
     phone: '(51) 95555-4444',
     origem: 'Google Ads',
     status: 'aprovado',
-    responsavel: 'Carlos Santos',
+    assignedTo: 'Carlos Santos',
     createdAt: new Date('2026-03-20'),
     updatedAt: new Date('2026-04-05'),
     progresso: 100
@@ -151,30 +151,30 @@ export const mockTasks: Task[] = [
   {
     id: '1',
     leadId: '2',
-    titulo: 'Ligar para agendar reunião',
-    descricao: 'Fazer phone inicial e apresentar os benefícios',
-    responsavel: 'Carlos Santos',
+    title: 'Ligar para agendar reunião',
+    description: 'Fazer phone inicial e apresentar os benefícios',
+    assignedTo: 'Carlos Santos',
     status: 'pending',
-    dataVencimento: new Date('2026-04-13'),
+    dueDate: new Date('2026-04-13'),
     createdAt: new Date('2026-04-11')
   },
   {
     id: '2',
     leadId: '4',
-    titulo: 'Validar documentação enviada',
-    descricao: 'Verificar autenticity dos documentos',
-    responsavel: 'Ana Silva',
+    title: 'Validar documentação enviada',
+    description: 'Verificar autenticity dos documentos',
+    assignedTo: 'Ana Silva',
     status: 'pending',
-    dataVencimento: new Date('2026-04-12'),
+    dueDate: new Date('2026-04-12'),
     createdAt: new Date('2026-04-10')
   },
   {
     id: '3',
     leadId: '5',
-    titulo: 'Aprovação final da diretoria',
-    responsavel: 'Carlos Santos',
+    title: 'Aprovação final da diretoria',
+    assignedTo: 'Carlos Santos',
     status: 'pending',
-    dataVencimento: new Date('2026-04-14'),
+    dueDate: new Date('2026-04-14'),
     createdAt: new Date('2026-04-11')
   }
 ];
@@ -184,7 +184,7 @@ export const mockHistorico: HistoricoItem[] = [
     id: '1',
     leadId: '3',
     tipo: 'acao',
-    descricao: 'Lead criado via formulário do website',
+    description: 'Lead criado via formulário do website',
     usuario: 'Sistema',
     data: new Date('2026-04-05T10:30:00')
   },
@@ -192,7 +192,7 @@ export const mockHistorico: HistoricoItem[] = [
     id: '2',
     leadId: '3',
     tipo: 'status',
-    descricao: 'Status alterado para "Em phone"',
+    description: 'Status alterado para "Em phone"',
     usuario: 'Ana Silva',
     data: new Date('2026-04-06T14:20:00')
   },
@@ -200,7 +200,7 @@ export const mockHistorico: HistoricoItem[] = [
     id: '3',
     leadId: '3',
     tipo: 'comentario',
-    descricao: 'Primeira reunião realizada. Cliente demonstrou interesse.',
+    description: 'Primeira reunião realizada. Cliente demonstrou interesse.',
     usuario: 'Ana Silva',
     data: new Date('2026-04-07T16:45:00')
   },
@@ -208,7 +208,7 @@ export const mockHistorico: HistoricoItem[] = [
     id: '4',
     leadId: '3',
     tipo: 'status',
-    descricao: 'Status alterado para "Cadastro iniciado"',
+    description: 'Status alterado para "Cadastro iniciado"',
     usuario: 'Ana Silva',
     data: new Date('2026-04-08T09:15:00')
   },
@@ -216,7 +216,7 @@ export const mockHistorico: HistoricoItem[] = [
     id: '5',
     leadId: '3',
     tipo: 'acao',
-    descricao: 'Cliente iniciou preenchimento do cadastro progressivo',
+    description: 'Cliente iniciou preenchimento do cadastro progressivo',
     usuario: 'João Pedro',
     data: new Date('2026-04-08T10:00:00')
   }
