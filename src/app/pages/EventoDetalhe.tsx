@@ -12,12 +12,12 @@ export default function EventoDetalhe() {
   const eventos: Record<string, any> = {
     '1': {
       id: 1,
-      nome: 'Café de Negócios - Networking',
+      name: 'Café de Negócios - Networking',
       data: '2026-04-25',
       horario: '08:00 - 10:00',
       local: 'Sede ACIST',
-      endereco: 'Rua Independência, 1234 - São Leopoldo/RS',
-      descricao: 'Encontro matinal para networking entre associados. Uma oportunidade única de conhecer outros empresários, trocar experiências e criar novas parcerias de negócios.',
+      address: 'Rua Independência, 1234 - São Leopoldo/RS',
+      descricao: 'Encontro matinal para networking entre associados. Uma oportunidade única de conhecer other empresários, trocar experiências e criar novas parcerias de negócios.',
       vagas: 50,
       inscritos: 32,
       palestrante: null,
@@ -30,11 +30,11 @@ export default function EventoDetalhe() {
     },
     '2': {
       id: 2,
-      nome: 'Workshop: Marketing Digital para Empresas',
+      name: 'Workshop: Marketing Digital para Empresas',
       data: '2026-05-02',
       horario: '14:00 - 18:00',
       local: 'Auditório ACIST',
-      endereco: 'Rua Independência, 1234 - São Leopoldo/RS',
+      address: 'Rua Independência, 1234 - São Leopoldo/RS',
       descricao: 'Workshop prático sobre estratégias de marketing digital aplicadas ao contexto empresarial. Aprenda técnicas de SEO, redes sociais, e-mail marketing e análise de métricas.',
       vagas: 40,
       inscritos: 28,
@@ -51,11 +51,11 @@ export default function EventoDetalhe() {
     },
     '3': {
       id: 3,
-      nome: 'Assembleia Geral de Associados',
+      name: 'Assembleia Geral de Associados',
       data: '2026-05-15',
       horario: '19:00 - 21:00',
       local: 'Sede ACIST',
-      endereco: 'Rua Independência, 1234 - São Leopoldo/RS',
+      address: 'Rua Independência, 1234 - São Leopoldo/RS',
       descricao: 'Assembleia Geral Ordinária para prestação de contas do exercício 2025 e apresentação do planejamento estratégico 2026.',
       vagas: 100,
       inscritos: 45,
@@ -128,7 +128,7 @@ export default function EventoDetalhe() {
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Header do Evento */}
           <div className="bg-gradient-to-r from-[#0C3A59] to-[#226897] p-8 text-white">
-            <h1 className="text-3xl font-bold mb-4">{evento.nome}</h1>
+            <h1 className="text-3xl font-bold mb-4">{evento.name}</h1>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="flex items-center gap-3">
                 <Calendar className="h-5 w-5" />
@@ -169,7 +169,7 @@ export default function EventoDetalhe() {
                 <MapPin className="h-5 w-5 text-[#5DA5FF] mt-1" />
                 <div>
                   <p className="font-semibold">{evento.local}</p>
-                  <p>{evento.endereco}</p>
+                  <p>{evento.address}</p>
                 </div>
               </div>
             </div>

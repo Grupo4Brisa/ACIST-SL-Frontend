@@ -16,10 +16,10 @@ export type TaskStatus = 'pending' | 'completed';
 
 export interface Lead {
   id: string;
-  empresaNome: string;
+  empresaname: string;
   cnpj: string;
   email: string;
-  telefone: string;
+  phone: string;
   origem: string;
   campanha?: string;
   status: LeadStatus;
@@ -32,17 +32,17 @@ export interface Lead {
 export interface phone {
   id: string;
   leadId: string;
-  nome: string;
+  name: string;
   email: string;
-  telefone: string;
+  phone: string;
   cargo?: string;
-  funcao: 'financeiro' | 'comercial' | 'rh' | 'outros';
+  funcao: 'financeiro' | 'comercial' | 'rh' | 'other';
 }
 
 export interface Documento {
   id: string;
   leadId: string;
-  nome: string;
+  name: string;
   tipo: string;
   status: DocumentStatus;
   url?: string;
@@ -74,20 +74,20 @@ export interface HistoricoItem {
 export interface CadastroData {
   empresa: {
     corporateName?: string;
-    nomeFantasia?: string;
+    companyName?: string;
     cnpj: string;
-    inscricaoEstadual?: string;
-    dataFundacao?: string;
+    stateRegistration?: string;
+    foundationDate?: string;
     ramoAtividade?: string;
-    numeroFuncionarios?: string;
+    employeesCount?: string;
   };
-  endereco: {
-    cep?: string;
+  address: {
+    zipCode?: string;
     logradouro?: string;
     numero?: string;
     complemento?: string;
-    bairro?: string;
-    cidade?: string;
+    neighborhood?: string;
+    city?: string;
     estado?: string;
   };
   phones: phone[];

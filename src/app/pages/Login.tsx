@@ -241,7 +241,7 @@ export default function Login() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                phone
+                Contato
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

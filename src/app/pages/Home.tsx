@@ -134,7 +134,7 @@ export default function BoasVindasHome() {
               <div>
                 <label className="block mb-2 text-[0.875rem]">
                   <Building2 className="inline h-4 w-4 mr-1.5" />
-                  Nome da empresa ou nome completo
+                  Nome da empresa ou Nome completo
                 </label>
                 <input
                   type="text"
@@ -171,7 +171,7 @@ export default function BoasVindasHome() {
                 <input
                   type="email"
                   required
-                  placeholder="phone@empresa.com.br"
+                  placeholder="email@empresa.com.br"
                   className="w-full px-4 py-3.5 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
                   value={formData.email}
                   onChange={e => setFormData({ ...formData, email: e.target.value })}
@@ -202,7 +202,7 @@ export default function BoasVindasHome() {
               <div>
                 <label className="block mb-2 text-[0.875rem]">
                   <Phone className="inline h-4 w-4 mr-1.5" />
-                  phone / telefone
+                  Telefone / Celular
                 </label>
                 <input
                   type="tel"
@@ -313,7 +313,7 @@ export default function BoasVindasHome() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                phone
+                Contato
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

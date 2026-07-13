@@ -24,20 +24,20 @@ const trendData = [
 
 // Dados de origem dos associados
 const origemData = [
-  { id: 'site', nome: 'Site', value: 45, color: '#5DA5FF' },
-  { id: 'vendedor', nome: 'Vendedores', value: 32, color: '#10b981' },
-  { id: 'evento', nome: 'Eventos', value: 18, color: '#f59e0b' },
-  { id: 'indicacao', nome: 'Indicação', value: 15, color: '#8b5cf6' },
-  { id: 'outro', nome: 'Outros', value: 10, color: '#6b7280' }
+  { id: 'website', name: 'website', value: 45, color: '#5DA5FF' },
+  { id: 'vendedor', name: 'Vendedores', value: 32, color: '#10b981' },
+  { id: 'evento', name: 'Eventos', value: 18, color: '#f59e0b' },
+  { id: 'indicacao', name: 'Indicação', value: 15, color: '#8b5cf6' },
+  { id: 'outro', name: 'other', value: 10, color: '#6b7280' }
 ];
 
 // Ranking de vendedores
 const vendedoresData = [
-  { id: '1', nome: 'Carlos Silva', associados: 12, conversao: 75, meta: 15 },
-  { id: '2', nome: 'Maria Santos', associados: 10, conversao: 80, meta: 15 },
-  { id: '3', nome: 'João Oliveira', associados: 8, conversao: 67, meta: 12 },
-  { id: '4', nome: 'Ana Costa', associados: 7, conversao: 70, meta: 10 },
-  { id: '5', nome: 'Pedro Souza', associados: 5, conversao: 63, meta: 10 }
+  { id: '1', name: 'Carlos Silva', associados: 12, conversao: 75, meta: 15 },
+  { id: '2', name: 'Maria Santos', associados: 10, conversao: 80, meta: 15 },
+  { id: '3', name: 'João Oliveira', associados: 8, conversao: 67, meta: 12 },
+  { id: '4', name: 'Ana Costa', associados: 7, conversao: 70, meta: 10 },
+  { id: '5', name: 'Pedro Souza', associados: 5, conversao: 63, meta: 10 }
 ];
 
 // Dados de porte da empresa
@@ -59,7 +59,7 @@ export default function Dashboard() {
   const emAnalise = mockLeads.filter(l => l.status === 'em_analise' || l.status === 'documentacao' || l.status === 'validacao').length;
 
   // Métricas de captação
-  const totalOrigemSite = origemData.find(o => o.id === 'site')?.value || 0;
+  const totalOrigemwebsite = origemData.find(o => o.id === 'website')?.value || 0;
   const totalOrigemVendedor = origemData.find(o => o.id === 'vendedor')?.value || 0;
   const taxaConversao = Math.round((aprovados / totalLeads) * 100);
   const melhorVendedor = vendedoresData[0];
@@ -147,8 +147,8 @@ export default function Dashboard() {
               </div>
             </div>
             <div>
-              <p className="text-muted-foreground mb-1">Captados pelo Site</p>
-              <p className="text-[2rem] leading-none mb-2">{totalOrigemSite}</p>
+              <p className="text-muted-foreground mb-1">Captados pelo website</p>
+              <p className="text-[2rem] leading-none mb-2">{totalOrigemwebsite}</p>
               <p className="text-muted-foreground text-[0.875rem]">37.5% do total</p>
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-muted-foreground mb-1">Melhor Vendedor</p>
-              <p className="text-[1.125rem] leading-none mb-2 font-semibold">{melhorVendedor.nome}</p>
+              <p className="text-[1.125rem] leading-none mb-2 font-semibold">{melhorVendedor.name}</p>
               <p className="text-muted-foreground text-[0.875rem]">{melhorVendedor.associados} associados</p>
             </div>
           </div>
@@ -245,7 +245,7 @@ export default function Dashboard() {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ nome, value }) => `${nome}: ${value}`}
+                label={({ name, value }) => `${name}: ${value}`}
                 outerRadius={100}
                 fill="#8884d8"
                 dataKey="value"
@@ -261,7 +261,7 @@ export default function Dashboard() {
             {origemData.map((origem) => (
               <div key={origem.id} className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: origem.color }} />
-                <span className="text-[0.875rem] text-muted-foreground">{origem.nome}</span>
+                <span className="text-[0.875rem] text-muted-foreground">{origem.name}</span>
               </div>
             ))}
           </div>
@@ -301,9 +301,9 @@ export default function Dashboard() {
                 {index + 1}°
               </div>
 
-              {/* Nome */}
+              {/* name */}
               <div className="flex-1">
-                <p className="font-semibold">{vendedor.nome}</p>
+                <p className="font-semibold">{vendedor.name}</p>
                 <p className="text-sm text-muted-foreground">
                   {vendedor.associados} associados • Taxa de conversão: {vendedor.conversao}%
                 </p>

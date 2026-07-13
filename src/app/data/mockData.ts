@@ -9,10 +9,10 @@ import type {
 export const mockLeads: Lead[] = [
   {
     id: '1',
-    empresaNome: 'Tech Solutions LTDA',
+    empresaname: 'Tech Solutions LTDA',
     cnpj: '12.345.678/0001-90',
     email: 'phone@techsolutions.com.br',
-    telefone: '(51) 98765-4321',
+    phone: '(51) 98765-4321',
     origem: 'QR Code - Evento Tech',
     campanha: 'Campanha Tecnologia 2026',
     status: 'leads',
@@ -23,11 +23,11 @@ export const mockLeads: Lead[] = [
   },
   {
     id: '2',
-    empresaNome: 'Indústria Metal S.A.',
+    empresaname: 'Indústria Metal S.A.',
     cnpj: '23.456.789/0001-01',
     email: 'metal@industriametal.com.br',
-    telefone: '(51) 3333-4444',
-    origem: 'Site - Formulário',
+    phone: '(51) 3333-4444',
+    origem: 'website - Formulário',
     status: 'em-phone',
     responsavel: 'Carlos Santos',
     createdAt: new Date('2026-04-08'),
@@ -36,10 +36,10 @@ export const mockLeads: Lead[] = [
   },
   {
     id: '3',
-    empresaNome: 'Comércio Varejo ME',
+    empresaname: 'Comércio Varejo ME',
     cnpj: '34.567.890/0001-12',
     email: 'phone@comerciovarejo.com.br',
-    telefone: '(51) 99999-8888',
+    phone: '(51) 99999-8888',
     origem: 'Indicação',
     status: 'cadastro-iniciado',
     responsavel: 'Ana Silva',
@@ -49,10 +49,10 @@ export const mockLeads: Lead[] = [
   },
   {
     id: '4',
-    empresaNome: 'Serviços Profissionais LTDA',
+    empresaname: 'Serviços Profissionais LTDA',
     cnpj: '45.678.901/0001-23',
     email: 'admin@servicospro.com.br',
-    telefone: '(51) 97777-6666',
+    phone: '(51) 97777-6666',
     origem: 'WhatsApp Business',
     status: 'documentacao',
     responsavel: 'Carlos Santos',
@@ -62,10 +62,10 @@ export const mockLeads: Lead[] = [
   },
   {
     id: '5',
-    empresaNome: 'Transportadora Express',
+    empresaname: 'Transportadora Express',
     cnpj: '56.789.012/0001-34',
     email: 'phone@transportadora.com.br',
-    telefone: '(51) 96666-5555',
+    phone: '(51) 96666-5555',
     origem: 'LinkedIn Ads',
     status: 'validacao',
     responsavel: 'Ana Silva',
@@ -75,10 +75,10 @@ export const mockLeads: Lead[] = [
   },
   {
     id: '6',
-    empresaNome: 'Alimentação Saudável',
+    empresaname: 'Alimentação Saudável',
     cnpj: '67.890.123/0001-45',
     email: 'phone@alimentacaosaudavel.com.br',
-    telefone: '(51) 95555-4444',
+    phone: '(51) 95555-4444',
     origem: 'Google Ads',
     status: 'aprovado',
     responsavel: 'Carlos Santos',
@@ -92,18 +92,18 @@ export const mockphones: phone[] = [
   {
     id: '1',
     leadId: '3',
-    nome: 'João Pedro',
+    name: 'João Pedro',
     email: 'joao@comerciovarejo.com.br',
-    telefone: '(51) 99999-8888',
+    phone: '(51) 99999-8888',
     cargo: 'Diretor Comercial',
     funcao: 'comercial'
   },
   {
     id: '2',
     leadId: '3',
-    nome: 'Maria Fernanda',
+    name: 'Maria Fernanda',
     email: 'maria@comerciovarejo.com.br',
-    telefone: '(51) 98888-7777',
+    phone: '(51) 98888-7777',
     cargo: 'Gerente Financeiro',
     funcao: 'financeiro'
   }
@@ -113,7 +113,7 @@ export const mockDocumentos: Documento[] = [
   {
     id: '1',
     leadId: '4',
-    nome: 'Contrato Social',
+    name: 'Contrato Social',
     tipo: 'PDF',
     status: 'aprovado',
     uploadedAt: new Date('2026-04-08'),
@@ -122,7 +122,7 @@ export const mockDocumentos: Documento[] = [
   {
     id: '2',
     leadId: '4',
-    nome: 'Cartão CNPJ',
+    name: 'Cartão CNPJ',
     tipo: 'PDF',
     status: 'aprovado',
     uploadedAt: new Date('2026-04-08'),
@@ -131,7 +131,7 @@ export const mockDocumentos: Documento[] = [
   {
     id: '3',
     leadId: '4',
-    nome: 'Comprovante de Endereço',
+    name: 'Comprovante de Endereço',
     tipo: 'PDF',
     status: 'enviado',
     uploadedAt: new Date('2026-04-09'),
@@ -140,7 +140,7 @@ export const mockDocumentos: Documento[] = [
   {
     id: '4',
     leadId: '3',
-    nome: 'Contrato Social',
+    name: 'Contrato Social',
     tipo: 'PDF',
     status: 'pendente',
     versao: 0
@@ -162,7 +162,7 @@ export const mockTasks: Task[] = [
     id: '2',
     leadId: '4',
     titulo: 'Validar documentação enviada',
-    descricao: 'Verificar autenticidade dos documentos',
+    descricao: 'Verificar autenticity dos documentos',
     responsavel: 'Ana Silva',
     status: 'pending',
     dataVencimento: new Date('2026-04-12'),
@@ -184,7 +184,7 @@ export const mockHistorico: HistoricoItem[] = [
     id: '1',
     leadId: '3',
     tipo: 'acao',
-    descricao: 'Lead criado via formulário do site',
+    descricao: 'Lead criado via formulário do website',
     usuario: 'Sistema',
     data: new Date('2026-04-05T10:30:00')
   },

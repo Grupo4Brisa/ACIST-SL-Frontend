@@ -18,8 +18,8 @@ export default function AprovacaoCadastros() {
       empresa: 'Tech Solutions Ltda',
       responsavel: 'João Silva',
       email: 'joao@techsolutions.com.br',
-      telefone: '(51) 99999-9999',
-      cidade: 'São Leopoldo',
+      phone: '(51) 99999-9999',
+      city: 'São Leopoldo',
       dataSubmissao: '2026-04-14',
       status: 'pendente',
       progresso: 100,
@@ -31,8 +31,8 @@ export default function AprovacaoCadastros() {
       empresa: 'Comercial ABC S.A.',
       responsavel: 'Maria Santos',
       email: 'maria@comercialabc.com.br',
-      telefone: '(51) 98888-8888',
-      cidade: 'Novo Hamburgo',
+      phone: '(51) 98888-8888',
+      city: 'Novo Hamburgo',
       dataSubmissao: '2026-04-15',
       status: 'pendente',
       progresso: 100,
@@ -44,8 +44,8 @@ export default function AprovacaoCadastros() {
       empresa: 'Indústria XYZ Ltda',
       responsavel: 'Pedro Oliveira',
       email: 'pedro@industriaxyz.com.br',
-      telefone: '(51) 97777-7777',
-      cidade: 'Sapucaia do Sul',
+      phone: '(51) 97777-7777',
+      city: 'Sapucaia do Sul',
       dataSubmissao: '2026-04-13',
       status: 'aprovado',
       progresso: 100,
@@ -59,8 +59,8 @@ export default function AprovacaoCadastros() {
       empresa: 'Serviços Beta ME',
       responsavel: 'Ana Costa',
       email: 'ana@servicosbeta.com.br',
-      telefone: '(51) 96666-6666',
-      cidade: 'Canoas',
+      phone: '(51) 96666-6666',
+      city: 'Canoas',
       dataSubmissao: '2026-04-12',
       status: 'reprovado',
       progresso: 100,
@@ -265,13 +265,13 @@ export default function AprovacaoCadastros() {
                   <div className="space-y-2 text-sm">
                     <p className="flex items-center gap-2">
                       <Phone className="h-4 w-4 text-gray-400" />
-                      <span className="text-muted-foreground">Telefone:</span>
-                      <span className="font-medium">{cadastro.telefone}</span>
+                      <span className="text-muted-foreground">phone:</span>
+                      <span className="font-medium">{cadastro.phone}</span>
                     </p>
                     <p className="flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-gray-400" />
-                      <span className="text-muted-foreground">Cidade:</span>
-                      <span className="font-medium">{cadastro.cidade}</span>
+                      <span className="text-muted-foreground">city:</span>
+                      <span className="font-medium">{cadastro.city}</span>
                     </p>
                   </div>
                 </div>

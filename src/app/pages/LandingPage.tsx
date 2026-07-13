@@ -173,12 +173,12 @@ export default function LandingPage() {
                 <div>
                   <label className="block mb-2">
                     <Building2 className="inline h-4 w-4 mr-2" />
-                    Nome da empresa ou nome completo
+                    name da empresa ou name completo
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="Sua empresa ou seu nome"
+                    placeholder="Sua empresa ou seu name"
                     className="w-full px-4 py-3 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-primary"
                     value={formData.companyName}
                     onChange={e => setFormData({ ...formData, companyName: e.target.value })}
@@ -261,7 +261,7 @@ export default function LandingPage() {
                 <div>
                   <label className="block mb-2">
                     <Phone className="inline h-4 w-4 mr-2" />
-                    phone / telefone
+                    phone / phone
                   </label>
                   <input
                     type="tel"
@@ -297,7 +297,7 @@ export default function LandingPage() {
           </div>
 
           <p className="text-center text-blue-100 mt-8 text-[0.875rem]">
-            Ao prosseguir, você concorda com nossos termos de uso e política de privacidade
+            Ao prosseguir, você concorda com nossos termos de uso e política de Privacidade
           </p>
         </div>
       </div>
@@ -324,7 +324,7 @@ export default function LandingPage() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                phone
+                Contato
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

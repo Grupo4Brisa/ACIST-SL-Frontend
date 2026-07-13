@@ -9,7 +9,7 @@ export default function EventosLista() {
   const eventos = [
     {
       id: 1,
-      nome: 'Café de Negócios - Networking',
+      name: 'Café de Negócios - Networking',
       data: '2026-04-25',
       horario: '08:00 - 10:00',
       local: 'Sede ACIST',
@@ -19,7 +19,7 @@ export default function EventosLista() {
     },
     {
       id: 2,
-      nome: 'Workshop: Marketing Digital para Empresas',
+      name: 'Workshop: Marketing Digital para Empresas',
       data: '2026-05-02',
       horario: '14:00 - 18:00',
       local: 'Auditório ACIST',
@@ -29,7 +29,7 @@ export default function EventosLista() {
     },
     {
       id: 3,
-      nome: 'Assembleia Geral de Associados',
+      name: 'Assembleia Geral de Associados',
       data: '2026-05-15',
       horario: '19:00 - 21:00',
       local: 'Sede ACIST',
@@ -39,7 +39,7 @@ export default function EventosLista() {
     },
     {
       id: 4,
-      nome: 'Palestra: Inovação e Tecnologia',
+      name: 'Palestra: Inovação e Tecnologia',
       data: '2026-05-20',
       horario: '19:00 - 21:00',
       local: 'Auditório ACIST',
@@ -49,7 +49,7 @@ export default function EventosLista() {
     },
     {
       id: 5,
-      nome: 'Encontro de Mulheres Empreendedoras',
+      name: 'Encontro de Mulheres Empreendedoras',
       data: '2026-06-01',
       horario: '09:00 - 12:00',
       local: 'Sede ACIST',
@@ -59,7 +59,7 @@ export default function EventosLista() {
     },
     {
       id: 6,
-      nome: 'Happy Hour Empresarial',
+      name: 'Happy Hour Empresarial',
       data: '2026-06-08',
       horario: '18:00 - 21:00',
       local: 'Rancho da ACIST',
@@ -141,7 +141,7 @@ export default function EventosLista() {
                     {evento.categoria}
                   </div>
                   <h3 className="text-lg font-bold mb-2 group-hover:text-blue-100 transition-colors">
-                    {evento.nome}
+                    {evento.name}
                   </h3>
                 </div>
 

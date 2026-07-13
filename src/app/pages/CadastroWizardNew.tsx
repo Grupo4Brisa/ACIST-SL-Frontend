@@ -4,32 +4,32 @@ import { Check, Save, X, Plus, Trash2, ArrowLeft, Eye, EyeOff } from 'lucide-rea
 import Logo from '../components/Logo';
 
 interface phone {
-  nome: string;
+  name: string;
   email: string;
-  celular: string;
+  phone: string;
 }
 
 interface CadastroState {
   // 1. Dados Cadastrais
   corporateName: string;
-  nomeFantasia: string;
+  companyName: string;
   cpfCnpj: string;
-  inscricaoEstadual: string;
-  endereco: string;
-  bairro: string;
-  cidade: string;
-  uf: string;
-  cep: string;
-  telefone: string;
+  stateRegistration: string;
+  address: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  phone: string;
   email: string;
   senha: string;
   confirmarSenha: string;
-  site: string;
+  website: string;
   companySize: string;
-  tipoEstabelecimento: string;
-  matrizFilial: string;
-  numeroFuncionarios: string;
-  dataFundacao: string;
+  establishmentType: string;
+  headquartersType: string;
+  employeesCount: string;
+  foundationDate: string;
 
   // 2. phones
   socios: phone[];
@@ -37,12 +37,12 @@ interface CadastroState {
   rh: phone[];
 
   // 3. Informações Adicionais
-  divulgacao: string;
+  eventPresentation: string;
   redesSociais: {
     facebook: string;
     instagram: string;
     linkedin: string;
-    outros: string;
+    other: string;
   };
   solucoes: string[];
 
@@ -53,7 +53,7 @@ interface CadastroState {
   documentos: {
     fichaCadastral: File | null;
     cnpj: File | null;
-    comprovanteEndereco: File | null;
+    comprovanteaddress: File | null;
     contratoSocial: File | null;
     rgSocios: File[];
     guiaFGTS: File | null;
@@ -113,35 +113,35 @@ export default function CadastroWizardNew() {
 
   const [data, setData] = useState<CadastroState>({
     corporateName: '',
-    nomeFantasia: '',
+    companyName: '',
     cpfCnpj: '',
-    inscricaoEstadual: '',
-    endereco: '',
-    bairro: '',
-    cidade: '',
-    uf: '',
-    cep: '',
-    telefone: '',
+    stateRegistration: '',
+    address: '',
+    neighborhood: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    phone: '',
     email: '',
     senha: '',
     confirmarSenha: '',
-    site: '',
+    website: '',
     companySize: '',
-    tipoEstabelecimento: '',
-    matrizFilial: '',
-    numeroFuncionarios: '',
-    dataFundacao: '',
-    socios: [{ nome: '', email: '', celular: '' }],
-    financeiro: [{ nome: '', email: '', celular: '' }],
-    rh: [{ nome: '', email: '', celular: '' }],
-    divulgacao: '',
-    redesSociais: { facebook: '', instagram: '', linkedin: '', outros: '' },
+    establishmentType: '',
+    headquartersType: '',
+    employeesCount: '',
+    foundationDate: '',
+    socios: [{ name: '', email: '', phone: '' }],
+    financeiro: [{ name: '', email: '', phone: '' }],
+    rh: [{ name: '', email: '', phone: '' }],
+    eventPresentation: '',
+    redesSociais: { facebook: '', instagram: '', linkedin: '', other: '' },
     solucoes: [],
     planoSelecionado: '',
     documentos: {
       fichaCadastral: null,
       cnpj: null,
-      comprovanteEndereco: null,
+      comprovanteaddress: null,
       contratoSocial: null,
       rgSocios: [],
       guiaFGTS: null,
@@ -164,7 +164,7 @@ export default function CadastroWizardNew() {
   const addphone = (tipo: 'socios' | 'financeiro' | 'rh') => {
     setData({
       ...data,
-      [tipo]: [...data[tipo], { nome: '', email: '', celular: '' }]
+      [tipo]: [...data[tipo], { name: '', email: '', phone: '' }]
     });
   };
 
@@ -311,12 +311,12 @@ export default function CadastroWizardNew() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[0.875rem] mb-2">Nome Fantasia <span className="text-red-600">*</span></label>
+                          <label className="block text-[0.875rem] mb-2">name Fantasia <span className="text-red-600">*</span></label>
                           <input
                             type="text"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.nomeFantasia}
-                            onChange={e => setData({ ...data, nomeFantasia: e.target.value })}
+                            value={data.companyName}
+                            onChange={e => setData({ ...data, companyName: e.target.value })}
                           />
                         </div>
                         <div>
@@ -334,8 +334,8 @@ export default function CadastroWizardNew() {
                           <input
                             type="text"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.inscricaoEstadual}
-                            onChange={e => setData({ ...data, inscricaoEstadual: e.target.value })}
+                            value={data.stateRegistration}
+                            onChange={e => setData({ ...data, stateRegistration: e.target.value })}
                           />
                         </div>
                       </div>
@@ -350,34 +350,34 @@ export default function CadastroWizardNew() {
                           <input
                             type="text"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.endereco}
-                            onChange={e => setData({ ...data, endereco: e.target.value })}
+                            value={data.address}
+                            onChange={e => setData({ ...data, address: e.target.value })}
                           />
                         </div>
                         <div>
-                          <label className="block text-[0.875rem] mb-2">Bairro <span className="text-red-600">*</span></label>
+                          <label className="block text-[0.875rem] mb-2">neighborhood <span className="text-red-600">*</span></label>
                           <input
                             type="text"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.bairro}
-                            onChange={e => setData({ ...data, bairro: e.target.value })}
+                            value={data.neighborhood}
+                            onChange={e => setData({ ...data, neighborhood: e.target.value })}
                           />
                         </div>
                         <div>
-                          <label className="block text-[0.875rem] mb-2">Cidade <span className="text-red-600">*</span></label>
+                          <label className="block text-[0.875rem] mb-2">city <span className="text-red-600">*</span></label>
                           <input
                             type="text"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.cidade}
-                            onChange={e => setData({ ...data, cidade: e.target.value })}
+                            value={data.city}
+                            onChange={e => setData({ ...data, city: e.target.value })}
                           />
                         </div>
                         <div>
-                          <label className="block text-[0.875rem] mb-2">UF <span className="text-red-600">*</span></label>
+                          <label className="block text-[0.875rem] mb-2">state <span className="text-red-600">*</span></label>
                           <select
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.uf}
-                            onChange={e => setData({ ...data, uf: e.target.value })}
+                            value={data.state}
+                            onChange={e => setData({ ...data, state: e.target.value })}
                           >
                             <option value="">Selecione</option>
                             <option value="RS">RS</option>
@@ -386,13 +386,13 @@ export default function CadastroWizardNew() {
                           </select>
                         </div>
                         <div>
-                          <label className="block text-[0.875rem] mb-2">CEP <span className="text-red-600">*</span></label>
+                          <label className="block text-[0.875rem] mb-2">zipCode <span className="text-red-600">*</span></label>
                           <input
                             type="text"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                             placeholder="00000-000"
-                            value={data.cep}
-                            onChange={e => setData({ ...data, cep: e.target.value })}
+                            value={data.zipCode}
+                            onChange={e => setData({ ...data, zipCode: e.target.value })}
                           />
                         </div>
                       </div>
@@ -403,13 +403,13 @@ export default function CadastroWizardNew() {
                       <h3 className="text-[#226897] mb-4 pb-2 border-b border-gray-200">1.3 phone</h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-[0.875rem] mb-2">Telefone <span className="text-red-600">*</span></label>
+                          <label className="block text-[0.875rem] mb-2">phone <span className="text-red-600">*</span></label>
                           <input
                             type="tel"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                             placeholder="(51) 99999-9999"
-                            value={data.telefone}
-                            onChange={e => setData({ ...data, telefone: e.target.value })}
+                            value={data.phone}
+                            onChange={e => setData({ ...data, phone: e.target.value })}
                           />
                         </div>
                         <div>
@@ -463,13 +463,13 @@ export default function CadastroWizardNew() {
                           )}
                         </div>
                         <div className="col-span-2">
-                          <label className="block text-[0.875rem] mb-2">Site</label>
+                          <label className="block text-[0.875rem] mb-2">website</label>
                           <input
                             type="url"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            placeholder="https://www.seusite.com.br"
-                            value={data.site}
-                            onChange={e => setData({ ...data, site: e.target.value })}
+                            placeholder="https://www.seuwebsite.com.br"
+                            value={data.website}
+                            onChange={e => setData({ ...data, website: e.target.value })}
                           />
                         </div>
                       </div>
@@ -502,16 +502,16 @@ export default function CadastroWizardNew() {
                           <input
                             type="text"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.tipoEstabelecimento}
-                            onChange={e => setData({ ...data, tipoEstabelecimento: e.target.value })}
+                            value={data.establishmentType}
+                            onChange={e => setData({ ...data, establishmentType: e.target.value })}
                           />
                         </div>
                         <div>
                           <label className="block text-[0.875rem] mb-2">Matriz ou Filial</label>
                           <select
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.matrizFilial}
-                            onChange={e => setData({ ...data, matrizFilial: e.target.value })}
+                            value={data.headquartersType}
+                            onChange={e => setData({ ...data, headquartersType: e.target.value })}
                           >
                             <option value="">Selecione</option>
                             <option value="Matriz">Matriz</option>
@@ -524,8 +524,8 @@ export default function CadastroWizardNew() {
                             type="number"
                             min="0"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.numeroFuncionarios}
-                            onChange={e => setData({ ...data, numeroFuncionarios: e.target.value })}
+                            value={data.employeesCount}
+                            onChange={e => setData({ ...data, employeesCount: e.target.value })}
                           />
                         </div>
                         <div className="col-span-2">
@@ -533,8 +533,8 @@ export default function CadastroWizardNew() {
                           <input
                             type="date"
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={data.dataFundacao}
-                            onChange={e => setData({ ...data, dataFundacao: e.target.value })}
+                            value={data.foundationDate}
+                            onChange={e => setData({ ...data, foundationDate: e.target.value })}
                           />
                         </div>
                       </div>
@@ -576,10 +576,10 @@ export default function CadastroWizardNew() {
                         <div className="grid grid-cols-3 gap-3">
                           <input
                             type="text"
-                            placeholder="Nome"
+                            placeholder="name"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={socio.nome}
-                            onChange={e => updatephone('socios', index, 'nome', e.target.value)}
+                            value={socio.name}
+                            onChange={e => updatephone('socios', index, 'name', e.target.value)}
                           />
                           <input
                             type="email"
@@ -590,10 +590,10 @@ export default function CadastroWizardNew() {
                           />
                           <input
                             type="tel"
-                            placeholder="Celular"
+                            placeholder="phone"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={socio.celular}
-                            onChange={e => updatephone('socios', index, 'celular', e.target.value)}
+                            value={socio.phone}
+                            onChange={e => updatephone('socios', index, 'phone', e.target.value)}
                           />
                         </div>
                       </div>
@@ -628,10 +628,10 @@ export default function CadastroWizardNew() {
                         <div className="grid grid-cols-3 gap-3">
                           <input
                             type="text"
-                            placeholder="Nome"
+                            placeholder="name"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={phone.nome}
-                            onChange={e => updatephone('financeiro', index, 'nome', e.target.value)}
+                            value={phone.name}
+                            onChange={e => updatephone('financeiro', index, 'name', e.target.value)}
                           />
                           <input
                             type="email"
@@ -642,10 +642,10 @@ export default function CadastroWizardNew() {
                           />
                           <input
                             type="tel"
-                            placeholder="Celular"
+                            placeholder="phone"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={phone.celular}
-                            onChange={e => updatephone('financeiro', index, 'celular', e.target.value)}
+                            value={phone.phone}
+                            onChange={e => updatephone('financeiro', index, 'phone', e.target.value)}
                           />
                         </div>
                       </div>
@@ -680,10 +680,10 @@ export default function CadastroWizardNew() {
                         <div className="grid grid-cols-3 gap-3">
                           <input
                             type="text"
-                            placeholder="Nome"
+                            placeholder="name"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={phone.nome}
-                            onChange={e => updatephone('rh', index, 'nome', e.target.value)}
+                            value={phone.name}
+                            onChange={e => updatephone('rh', index, 'name', e.target.value)}
                           />
                           <input
                             type="email"
@@ -694,10 +694,10 @@ export default function CadastroWizardNew() {
                           />
                           <input
                             type="tel"
-                            placeholder="Celular"
+                            placeholder="phone"
                             className="px-3 py-2 border border-gray-300 rounded-lg text-[0.875rem] focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
-                            value={phone.celular}
-                            onChange={e => updatephone('rh', index, 'celular', e.target.value)}
+                            value={phone.phone}
+                            onChange={e => updatephone('rh', index, 'phone', e.target.value)}
                           />
                         </div>
                       </div>
@@ -721,11 +721,11 @@ export default function CadastroWizardNew() {
                       maxLength={200}
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                       placeholder="Divulgue sua empresa em até 200 caracteres"
-                      value={data.divulgacao}
-                      onChange={e => setData({ ...data, divulgacao: e.target.value })}
+                      value={data.eventPresentation}
+                      onChange={e => setData({ ...data, eventPresentation: e.target.value })}
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      {data.divulgacao.length}/200 caracteres
+                      {data.eventPresentation.length}/200 caracteres
                     </p>
                   </div>
                 </div>
@@ -771,13 +771,13 @@ export default function CadastroWizardNew() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[0.875rem] mb-2">Outros</label>
+                      <label className="block text-[0.875rem] mb-2">other</label>
                       <input
                         type="url"
                         className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                         placeholder="Outras redes sociais..."
-                        value={data.redesSociais.outros}
-                        onChange={e => setData({ ...data, redesSociais: { ...data.redesSociais, outros: e.target.value }})}
+                        value={data.redesSociais.other}
+                        onChange={e => setData({ ...data, redesSociais: { ...data.redesSociais, other: e.target.value }})}
                       />
                     </div>
                   </div>
@@ -952,12 +952,12 @@ export default function CadastroWizardNew() {
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5DA5FF]"
                             onChange={e => {
                               if (e.target.files && e.target.files[0]) {
-                                setData({ ...data, documentos: { ...data.documentos, comprovanteEndereco: e.target.files[0] } });
+                                setData({ ...data, documentos: { ...data.documentos, comprovanteaddress: e.target.files[0] } });
                               }
                             }}
                           />
-                          {data.documentos.comprovanteEndereco && (
-                            <p className="text-[0.75rem] text-green-600 mt-1">✓ Arquivo: {data.documentos.comprovanteEndereco.name}</p>
+                          {data.documentos.comprovanteaddress && (
+                            <p className="text-[0.75rem] text-green-600 mt-1">✓ Arquivo: {data.documentos.comprovanteaddress.name}</p>
                           )}
                         </div>
 
