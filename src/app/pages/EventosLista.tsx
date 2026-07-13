@@ -204,7 +204,7 @@ export default function EventosLista() {
             <li>• Os eventos são exclusivos para associados da ACIST</li>
             <li>• Confirme sua presença com antecedência para garantir sua vaga</li>
             <li>• Em caso de cancelamento, avise com 24h de antecedência</li>
-            <li>• Dúvidas? Entre em contato através do (51) 99999-9999</li>
+            <li>• Dúvidas? Entre em phone através do (51) 99999-9999</li>
           </ul>
         </div>
       </div>
@@ -231,7 +231,7 @@ export default function EventosLista() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                Contato
+                phone
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

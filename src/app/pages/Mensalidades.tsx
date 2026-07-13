@@ -245,7 +245,7 @@ export default function Mensalidades() {
           <ul className="text-blue-100 text-sm space-y-1">
             <li>• Boleto bancário (disponível para download acima)</li>
             <li>• PIX: Utilize o QR Code presente no boleto</li>
-            <li>• Débito automático: Entre em contato com a secretaria</li>
+            <li>• Débito automático: Entre em phone com a secretaria</li>
           </ul>
         </div>
       </div>
@@ -272,7 +272,7 @@ export default function Mensalidades() {
                 rel="noopener noreferrer"
                 className="hover:text-[#5DA5FF] transition-colors underline decoration-transparent hover:decoration-[#5DA5FF]"
               >
-                Contato
+                phone
               </a>
               <a
                 href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"

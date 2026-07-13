@@ -88,7 +88,7 @@ export default function Cadastros() {
           <thead className="bg-muted/50 border-b border-border">
             <tr>
               <th className="px-6 py-4 text-left">Empresa</th>
-              <th className="px-6 py-4 text-left">Contato</th>
+              <th className="px-6 py-4 text-left">phone</th>
               <th className="px-6 py-4 text-left">Status</th>
               <th className="px-6 py-4 text-left">Responsável</th>
               <th className="px-6 py-4 text-left">Progresso</th>
