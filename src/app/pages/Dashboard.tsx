@@ -1,366 +1,2376 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, Users, CheckCircle, Clock, AlertCircle, ArrowRight, Globe, UserCheck, Award, Target } from 'lucide-react';
-import { useNavigate } from 'react-router';
-import { mockLeads } from '../data/mockData';
+import { useEffect, useState } from 'react';
 
-const conversionData = [
-  { id: 'leads', etapa: 'Leads', total: 120, conversao: 100 },
-  { id: 'phone', etapa: 'Em phone', total: 85, conversao: 71 },
-  { id: 'cadastro', etapa: 'Cadastro', total: 60, conversao: 50 },
-  { id: 'docs', etapa: 'Documentação', total: 35, conversao: 29 },
-  { id: 'validacao', etapa: 'Validação', total: 22, conversao: 18 },
-  { id: 'aprovado', etapa: 'Aprovado', total: 18, conversao: 15 }
-];
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts';
+
+import {
+  TrendingUp,
+  Users,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  ArrowRight,
+  Globe,
+  Target,
+} from 'lucide-react';
+
+import { useNavigate } from 'react-router';
+
+import api from '../services/api';
+
+
+// =====================================================
+// TIPAGEM DO DASHBOARD
+// =====================================================
+
+
+interface DashboardResponse {
+
+
+  companies: {
+
+    total: number;
+
+    active: number;
+
+    pendingApproval: number;
+
+    incomplete: number;
+
+    inactive: number;
+
+  };
+
+
+
+  events: {
+
+    total: number;
+
+  };
+
+
+
+  documents: {
+
+    total: number;
+
+  };
+
+
+
+  announcements: {
+
+    total: number;
+
+  };
+
+
+
+  companySize: {
+
+    porte: string;
+
+    quantidade: number;
+
+  }[];
+
+
+}
+
+
+
+
+
+// =====================================================
+// MOCK TEMPORÁRIO
+// Backend ainda não possui esses dados
+// =====================================================
+
+
 
 const trendData = [
-  { id: 'out', mes: 'Out', leads: 45, aprovados: 12 },
-  { id: 'nov', mes: 'Nov', leads: 52, aprovados: 15 },
-  { id: 'dez', mes: 'Dez', leads: 61, aprovados: 18 },
-  { id: 'jan', mes: 'Jan', leads: 58, aprovados: 16 },
-  { id: 'fev', mes: 'Fev', leads: 68, aprovados: 21 },
-  { id: 'mar', mes: 'Mar', leads: 75, aprovados: 24 },
-  { id: 'abr', mes: 'Abr', leads: 82, aprovados: 28 }
+
+  {
+    id: 'out',
+    mes: 'Out',
+    leads: 45,
+    aprovados: 12,
+  },
+
+
+  {
+    id: 'nov',
+    mes: 'Nov',
+    leads: 52,
+    aprovados: 15,
+  },
+
+
+  {
+    id: 'dez',
+    mes: 'Dez',
+    leads: 61,
+    aprovados: 18,
+  },
+
+
+  {
+    id: 'jan',
+    mes: 'Jan',
+    leads: 58,
+    aprovados: 16,
+  },
+
+
+  {
+    id: 'fev',
+    mes: 'Fev',
+    leads: 68,
+    aprovados: 21,
+  },
+
+
+  {
+    id: 'mar',
+    mes: 'Mar',
+    leads: 75,
+    aprovados: 24,
+  },
+
+
+  {
+    id: 'abr',
+    mes: 'Abr',
+    leads: 82,
+    aprovados: 28,
+  },
+
 ];
 
-// Dados de origem dos associados
+
+
+
+
+// Origem dos associados
+// Futuramente backend
+
+
 const origemData = [
-  { id: 'website', name: 'website', value: 45, color: '#5DA5FF' },
-  { id: 'vendedor', name: 'Vendedores', value: 32, color: '#10b981' },
-  { id: 'evento', name: 'Eventos', value: 18, color: '#f59e0b' },
-  { id: 'indicacao', name: 'Indicação', value: 15, color: '#8b5cf6' },
-  { id: 'outro', name: 'other', value: 10, color: '#6b7280' }
+
+  {
+    id: 'website',
+    name: 'Website',
+    value: 45,
+    color: '#5DA5FF',
+  },
+
+
+  {
+    id: 'evento',
+    name: 'Eventos',
+    value: 18,
+    color: '#10b981',
+  },
+
+
+  {
+    id: 'indicacao',
+    name: 'Indicação',
+    value: 15,
+    color: '#f59e0b',
+  },
+
+
+  {
+    id: 'outro',
+    name: 'Outros',
+    value: 10,
+    color: '#6b7280',
+  },
+
 ];
 
-// Ranking de vendedores
-const vendedoresData = [
-  { id: '1', name: 'Carlos Silva', associados: 12, conversao: 75, meta: 15 },
-  { id: '2', name: 'Maria Santos', associados: 10, conversao: 80, meta: 15 },
-  { id: '3', name: 'João Oliveira', associados: 8, conversao: 67, meta: 12 },
-  { id: '4', name: 'Ana Costa', associados: 7, conversao: 70, meta: 10 },
-  { id: '5', name: 'Pedro Souza', associados: 5, conversao: 63, meta: 10 }
-];
 
-// Dados de porte da empresa
-const porteData = [
-  { id: 'mei', porte: 'MEI', quantidade: 28 },
-  { id: 'pequena', porte: 'Pequena', quantidade: 45 },
-  { id: 'media', porte: 'Média', quantidade: 32 },
-  { id: 'grande', porte: 'Grande', quantidade: 15 }
-];
+
+
+
+// =====================================================
+// COMPONENTE
+// =====================================================
+
 
 export default function Dashboard() {
+
+
   const navigate = useNavigate();
-  const totalLeads = mockLeads.length;
-  const emAndamento = mockLeads.filter(l => !['aprovado', 'leads'].includes(l.status)).length;
-  const aprovados = mockLeads.filter(l => l.status === 'aprovado').length;
-  const cadastrosIncompletos = mockLeads.filter(l => l.progresso < 100 && l.progresso > 0).length;
 
-  const naoAprovados = mockLeads.filter(l => l.status === 'nao_aprovado' || l.status === 'rejeitado').length;
-  const emAnalise = mockLeads.filter(l => l.status === 'em_analise' || l.status === 'documentacao' || l.status === 'validacao').length;
 
-  // Métricas de captação
-  const totalOrigemwebsite = origemData.find(o => o.id === 'website')?.value || 0;
-  const totalOrigemVendedor = origemData.find(o => o.id === 'vendedor')?.value || 0;
-  const taxaConversao = Math.round((aprovados / totalLeads) * 100);
-  const melhorVendedor = vendedoresData[0];
+
+  const [dashboard, setDashboard] =
+    useState<DashboardResponse | null>(null);
+
+
+
+  const [loading, setLoading] =
+    useState(true);
+
+
+
+
+
+  useEffect(() => {
+
+
+    async function loadDashboard() {
+
+
+      try {
+
+
+        const response =
+          await api.get('/dashboard');
+
+
+
+        setDashboard(response.data);
+
+
+
+      } catch (error) {
+
+
+        console.error(
+          'Erro ao carregar dashboard:',
+          error,
+        );
+
+
+
+      } finally {
+
+
+        setLoading(false);
+
+
+      }
+
+
+    }
+
+
+
+    loadDashboard();
+
+
+
+  }, []);
+
+
+
+
+
+
+  if (loading) {
+
+
+    return (
+
+      <div className="p-8">
+
+        Carregando dashboard...
+
+      </div>
+
+    );
+
+
+  }
+
+
+
+
+
+
+  const totalEmpresas =
+    dashboard?.companies?.total ?? 0;
+
+
+
+  const empresasAtivas =
+    dashboard?.companies?.active ?? 0;
+
+
+
+  const empresasPendentes =
+    dashboard?.companies?.pendingApproval ?? 0;
+
+
+
+  const empresasIncompletas =
+    dashboard?.companies?.incomplete ?? 0;
+
+
+
+  const empresasInativas =
+    dashboard?.companies?.inactive ?? 0;
+
+
+
+
+
+  const totalEventos =
+    dashboard?.events?.total ?? 0;
+
+
+
+  const totalDocumentos =
+    dashboard?.documents?.total ?? 0;
+
+
+
+  const totalComunicados =
+    dashboard?.announcements?.total ?? 0;
+
+
+
+
+
+
+  // Agora vem do backend
+  // companiesSize do DTO
+
+
+  const porteData =
+    dashboard?.companySize ?? [];
+
+
+
+
+
+  const taxaConversao =
+
+    totalEmpresas > 0
+
+      ? Math.round(
+          (empresasAtivas / totalEmpresas) * 100,
+        )
+
+      : 0;
+
+
+
+
+
 
   const stats = [
+
+
     {
+
       name: 'Total de Empresas',
-      value: totalLeads,
+
+      value: totalEmpresas,
+
       icon: Users,
+
       color: 'bg-blue-500',
-      change: '+12% vs mês anterior',
-      onClick: () => navigate('/admin/funil')
+
+      change: 'Empresas cadastradas',
+
+
+      onClick: () =>
+        navigate('/admin/funil'),
+
     },
+
+
+
     {
-      name: 'Aprovados',
-      value: aprovados,
+
+      name: 'Empresas Ativas',
+
+      value: empresasAtivas,
+
       icon: CheckCircle,
+
       color: 'bg-green-500',
-      change: 'Taxa de conversão: 15%',
-      onClick: () => navigate('/admin/funil?status=aprovado')
+
+      change: 'Empresas aprovadas',
+
+
+      onClick: () =>
+        navigate('/admin/funil?status=ativo'),
+
     },
+
+
+
     {
+
       name: 'Em Análise',
-      value: emAnalise,
+
+      value: empresasPendentes,
+
       icon: Clock,
+
       color: 'bg-yellow-500',
-      change: `${emAnalise} em processo`,
-      onClick: () => navigate('/admin/funil?status=em_analise')
+
+      change: 'Aguardando aprovação',
+
+
+      onClick: () =>
+        navigate('/admin/funil?status=pending'),
+
     },
+
+
+
     {
-      name: 'Não Aprovados',
-      value: naoAprovados,
-      icon: AlertCircle,
-      color: 'bg-red-500',
-      change: 'Necessitam revisão',
-      onClick: () => navigate('/admin/funil?status=nao_aprovado')
-    },
-    {
+
       name: 'Cadastros Incompletos',
-      value: cadastrosIncompletos,
+
+      value: empresasIncompletas,
+
       icon: AlertCircle,
+
       color: 'bg-orange-500',
-      change: 'Necessitam atenção',
-      onClick: () => navigate('/admin/funil?status=incompleto')
-    }
+
+      change: 'Necessitam completar cadastro',
+
+
+      onClick: () =>
+        navigate('/admin/funil?status=incompleto'),
+
+    },
+
+
+
+    {
+
+      name: 'Empresas Inativas',
+
+      value: empresasInativas,
+
+      icon: AlertCircle,
+
+      color: 'bg-red-500',
+
+      change: 'Empresas desativadas',
+
+
+      onClick: () =>
+        navigate('/admin/funil?status=inativo'),
+
+    },
+
+
   ];
 
+
   return (
+
     <div className="p-8">
+
+
+      {/* ==========================
+          TÍTULO
+      =========================== */}
+
+
       <div className="mb-8">
-        <h1>Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Visão geral do funil de conversão</p>
+
+
+        <h1>
+
+          Dashboard
+
+        </h1>
+
+
+
+        <p className="text-muted-foreground mt-1">
+
+          Visão geral das empresas associadas
+
+        </p>
+
+
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5 mb-8">
-        {stats.map((stat) => (
-          <div
-            key={stat.name}
-            onClick={stat.onClick}
-            className="bg-card rounded-lg border border-border p-6 cursor-pointer hover:border-[#5DA5FF] hover:shadow-lg transition-all group"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className={`${stat.color} rounded-lg p-3`}>
-                <stat.icon className="h-6 w-6 text-white" />
-              </div>
-              <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-[#5DA5FF] transition-colors" />
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-1">{stat.name}</p>
-              <p className="text-[2rem] leading-none mb-2">{stat.value}</p>
-              <p className="text-muted-foreground text-[0.875rem]">{stat.change}</p>
-            </div>
-          </div>
-        ))}
-      </div>
 
-      {/* Métricas de Captação */}
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold mb-4">Métricas de Captação</h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="bg-card rounded-lg border border-border p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="bg-blue-500 rounded-lg p-3">
-                <Globe className="h-6 w-6 text-white" />
-              </div>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-1">Captados pelo website</p>
-              <p className="text-[2rem] leading-none mb-2">{totalOrigemwebsite}</p>
-              <p className="text-muted-foreground text-[0.875rem]">37.5% do total</p>
-            </div>
-          </div>
 
-          <div className="bg-card rounded-lg border border-border p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="bg-green-500 rounded-lg p-3">
-                <UserCheck className="h-6 w-6 text-white" />
-              </div>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-1">Captados por Vendedores</p>
-              <p className="text-[2rem] leading-none mb-2">{totalOrigemVendedor}</p>
-              <p className="text-muted-foreground text-[0.875rem]">26.7% do total</p>
-            </div>
-          </div>
 
-          <div className="bg-card rounded-lg border border-border p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="bg-purple-500 rounded-lg p-3">
-                <Target className="h-6 w-6 text-white" />
-              </div>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-1">Taxa de Conversão</p>
-              <p className="text-[2rem] leading-none mb-2">{taxaConversao}%</p>
-              <p className="text-muted-foreground text-[0.875rem]">+2% vs mês anterior</p>
-            </div>
-          </div>
 
-          <div className="bg-card rounded-lg border border-border p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="bg-yellow-500 rounded-lg p-3">
-                <Award className="h-6 w-6 text-white" />
-              </div>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-1">Melhor Vendedor</p>
-              <p className="text-[1.125rem] leading-none mb-2 font-semibold">{melhorVendedor.name}</p>
-              <p className="text-muted-foreground text-[0.875rem]">{melhorVendedor.associados} associados</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-card rounded-lg border border-border p-6">
-          <h3 className="mb-6">Conversão por Etapa</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={conversionData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="etapa" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip />
-              <Bar dataKey="total" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Total" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+      {/* ==========================
+          CARDS PRINCIPAIS
+      =========================== */}
 
-        <div className="bg-card rounded-lg border border-border p-6">
-          <h3 className="mb-6">Tendência de Leads e Aprovações</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="mes" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip />
-              <Line type="monotone" dataKey="leads" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} name="Leads" />
-              <Line type="monotone" dataKey="aprovados" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} name="Aprovados" />
-            </LineChart>
-          </ResponsiveContainer>
-          <div className="flex gap-6 mt-4 justify-center">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-blue-500" />
-              <span className="text-[0.875rem] text-muted-foreground">Leads</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-green-500" />
-              <span className="text-[0.875rem] text-muted-foreground">Aprovados</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Novos Gráficos de Captação */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Gráfico de Origem */}
-        <div className="bg-card rounded-lg border border-border p-6">
-          <h3 className="mb-6">Origem dos Associados</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={origemData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, value }) => `${name}: ${value}`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {origemData.map((entry, index) => (
-                  <Cell key={`cell-${entry.id}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="flex flex-wrap gap-4 mt-4 justify-center">
-            {origemData.map((origem) => (
-              <div key={origem.id} className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: origem.color }} />
-                <span className="text-[0.875rem] text-muted-foreground">{origem.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Quantidade por Porte */}
-        <div className="bg-card rounded-lg border border-border p-6">
-          <h3 className="mb-6">Associados por Porte</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={porteData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="porte" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip />
-              <Bar dataKey="quantidade" fill="#5DA5FF" radius={[4, 4, 0, 0]} name="Quantidade" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      <div
 
-      {/* Ranking de Vendedores */}
-      <div className="bg-card rounded-lg border border-border p-6 mb-8">
-        <h3 className="mb-6">Ranking de Vendedores</h3>
-        <div className="space-y-4">
-          {vendedoresData.map((vendedor, index) => (
+        className="
+          grid
+          grid-cols-1
+          gap-6
+          sm:grid-cols-2
+          lg:grid-cols-5
+          mb-8
+        "
+
+      >
+
+
+
+        {
+          stats.map((stat) => (
+
+
             <div
-              key={vendedor.id}
-              className="flex items-center gap-4 p-4 border border-border rounded-lg hover:border-[#5DA5FF] transition-colors"
+
+
+              key={stat.name}
+
+
+              onClick={stat.onClick}
+
+
+              className="
+                bg-card
+                rounded-lg
+                border
+                border-border
+                p-6
+                cursor-pointer
+                hover:border-[#5DA5FF]
+                hover:shadow-lg
+                transition-all
+                group
+              "
+
+
             >
-              {/* Posição */}
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                index === 0 ? 'bg-yellow-100 text-yellow-700' :
-                index === 1 ? 'bg-gray-100 text-gray-700' :
-                index === 2 ? 'bg-orange-100 text-orange-700' :
-                'bg-blue-50 text-blue-700'
-              }`}>
-                {index + 1}°
-              </div>
 
-              {/* name */}
-              <div className="flex-1">
-                <p className="font-semibold">{vendedor.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {vendedor.associados} associados • Taxa de conversão: {vendedor.conversao}%
-                </p>
-              </div>
 
-              {/* Progresso da Meta */}
-              <div className="w-48">
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-muted-foreground">Meta</span>
-                  <span className="font-semibold">{vendedor.associados}/{vendedor.meta}</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${
-                      (vendedor.associados / vendedor.meta) * 100 >= 100 ? 'bg-green-500' :
-                      (vendedor.associados / vendedor.meta) * 100 >= 80 ? 'bg-yellow-500' :
-                      'bg-blue-500'
-                    }`}
-                    style={{ width: `${Math.min((vendedor.associados / vendedor.meta) * 100, 100)}%` }}
+
+              <div
+
+                className="
+                  flex
+                  items-center
+                  justify-between
+                  mb-4
+                "
+
+              >
+
+
+
+                <div
+
+                  className={`
+                    ${stat.color}
+                    rounded-lg
+                    p-3
+                  `}
+
+                >
+
+
+
+                  <stat.icon
+
+                    className="
+                      h-6
+                      w-6
+                      text-white
+                    "
+
                   />
+
+
                 </div>
+
+
+
+
+
+                <ArrowRight
+
+                  className="
+                    h-5
+                    w-5
+                    text-gray-400
+                    group-hover:text-[#5DA5FF]
+                  "
+
+                />
+
+
               </div>
 
-              {/* Badge se atingiu meta */}
-              {vendedor.associados >= vendedor.meta && (
-                <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                  Meta atingida
-                </div>
-              )}
+
+
+
+
+
+              <p
+
+                className="
+                  text-muted-foreground
+                  mb-1
+                "
+
+              >
+
+                {stat.name}
+
+              </p>
+
+
+
+
+
+
+              <p
+
+                className="
+                  text-[2rem]
+                  leading-none
+                  mb-2
+                "
+
+              >
+
+                {stat.value}
+
+              </p>
+
+
+
+
+
+
+              <p
+
+                className="
+                  text-muted-foreground
+                  text-[0.875rem]
+                "
+
+              >
+
+                {stat.change}
+
+              </p>
+
+
+
+
             </div>
-          ))}
-        </div>
+
+
+
+          ))
+
+        }
+
+
+
       </div>
 
-      <div className="bg-card rounded-lg border border-border p-6">
-        <h3 className="mb-4">Gargalos Identificados</h3>
-        <div className="space-y-4">
-          <div className="flex items-start gap-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
-            <div>
-              <p className="text-yellow-900">Conversão Cadastro → Documentação</p>
-              <p className="text-yellow-700 text-[0.875rem] mt-1">
-                Taxa de conversão de 58%. {cadastrosIncompletos} cadastros estão parados há mais de 3 dias.
-              </p>
+
+
+
+
+
+
+
+      {/* ==========================
+          MÉTRICAS GERAIS
+      =========================== */}
+
+
+
+
+
+      <div className="mb-8">
+
+
+
+        <h2
+
+          className="
+            text-lg
+            font-semibold
+            mb-4
+          "
+
+        >
+
+          Métricas Gerais
+
+        </h2>
+
+
+
+
+
+
+
+        <div
+
+          className="
+            grid
+            grid-cols-1
+            gap-6
+            sm:grid-cols-2
+            lg:grid-cols-4
+          "
+
+        >
+
+
+
+
+
+
+          {/* =====================
+              EVENTOS
+          ====================== */}
+
+
+
+
+          <div
+
+            className="
+              bg-card
+              rounded-lg
+              border
+              border-border
+              p-6
+            "
+
+          >
+
+
+
+            <div
+
+              className="
+                bg-blue-500
+                rounded-lg
+                p-3
+                w-fit
+                mb-4
+              "
+
+            >
+
+
+              <Target
+
+                className="
+                  h-6
+                  w-6
+                  text-white
+                "
+
+              />
+
+
             </div>
+
+
+
+
+
+            <p className="text-muted-foreground mb-1">
+
+              Eventos cadastrados
+
+            </p>
+
+
+
+
+            <p className="text-[2rem] leading-none mb-2">
+
+              {totalEventos}
+
+            </p>
+
+
+
+
+            <p className="text-muted-foreground text-[0.875rem]">
+
+              Eventos disponíveis
+
+            </p>
+
+
+
           </div>
-          <div className="flex items-start gap-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <TrendingUp className="h-5 w-5 text-blue-600 mt-0.5" />
-            <div>
-              <p className="text-blue-900">Oportunidade de Melhoria</p>
-              <p className="text-blue-700 text-[0.875rem] mt-1">
-                Leads vindos de QR Code têm 25% mais taxa de conversão. Considere expandir essa estratégia.
-              </p>
+
+
+
+
+
+
+
+
+
+          {/* =====================
+              DOCUMENTOS
+          ====================== */}
+
+
+
+
+          <div
+
+            className="
+              bg-card
+              rounded-lg
+              border
+              border-border
+              p-6
+            "
+
+          >
+
+
+
+            <div
+
+              className="
+                bg-green-500
+                rounded-lg
+                p-3
+                w-fit
+                mb-4
+              "
+
+            >
+
+
+              <CheckCircle
+
+
+                className="
+                  h-6
+                  w-6
+                  text-white
+                "
+
+
+              />
+
+
             </div>
+
+
+
+
+
+
+            <p className="text-muted-foreground mb-1">
+
+              Documentos
+
+            </p>
+
+
+
+
+
+            <p className="text-[2rem] leading-none mb-2">
+
+              {totalDocumentos}
+
+            </p>
+
+
+
+
+
+            <p className="text-muted-foreground text-[0.875rem]">
+
+              Arquivos cadastrados
+
+            </p>
+
+
+
           </div>
+
+
+
+
+
+
+
+
+
+          {/* =====================
+              COMUNICADOS
+          ====================== */}
+
+
+
+
+
+          <div
+
+            className="
+              bg-card
+              rounded-lg
+              border
+              border-border
+              p-6
+            "
+
+          >
+
+
+
+            <div
+
+              className="
+                bg-purple-500
+                rounded-lg
+                p-3
+                w-fit
+                mb-4
+              "
+
+            >
+
+
+
+              <Globe
+
+
+                className="
+                  h-6
+                  w-6
+                  text-white
+                "
+
+
+              />
+
+
+            </div>
+
+
+
+
+
+
+            <p className="text-muted-foreground mb-1">
+
+              Comunicados
+
+            </p>
+
+
+
+
+
+            <p className="text-[2rem] leading-none mb-2">
+
+              {totalComunicados}
+
+            </p>
+
+
+
+
+
+            <p className="text-muted-foreground text-[0.875rem]">
+
+              Publicados
+
+            </p>
+
+
+
+          </div>
+
+
+
+
+
+
+
+
+
+          {/* =====================
+              TAXA APROVAÇÃO
+          ====================== */}
+
+
+
+
+
+          <div
+
+            className="
+              bg-card
+              rounded-lg
+              border
+              border-border
+              p-6
+            "
+
+          >
+
+
+
+            <div
+
+              className="
+                bg-yellow-500
+                rounded-lg
+                p-3
+                w-fit
+                mb-4
+              "
+
+            >
+
+
+
+              <TrendingUp
+
+
+                className="
+                  h-6
+                  w-6
+                  text-white
+                "
+
+
+              />
+
+
+            </div>
+
+
+
+
+
+
+
+            <p className="text-muted-foreground mb-1">
+
+              Taxa de aprovação
+
+            </p>
+
+
+
+
+
+            <p className="text-[2rem] leading-none mb-2">
+
+              {taxaConversao}%
+
+            </p>
+
+
+
+
+
+            <p className="text-muted-foreground text-[0.875rem]">
+
+              Empresas ativas / total
+
+            </p>
+
+
+
+          </div>
+
+
+
+
+
+
         </div>
+
+
+
       </div>
+            {/* ==========================
+          GRÁFICOS
+      =========================== */}
+
+
+
+      <div
+
+        className="
+          grid
+          grid-cols-1
+          lg:grid-cols-2
+          gap-6
+          mb-8
+        "
+
+      >
+
+
+
+
+
+        {/* ==========================
+            STATUS DAS EMPRESAS
+            BACKEND
+        =========================== */}
+
+
+
+        <div
+
+          className="
+            bg-card
+            rounded-lg
+            border
+            border-border
+            p-6
+          "
+
+        >
+
+
+
+          <h3 className="mb-6">
+
+            Empresas por Status
+
+          </h3>
+
+
+
+
+
+
+          <ResponsiveContainer
+
+            width="100%"
+
+            height={300}
+
+          >
+
+
+
+            <BarChart
+
+
+              data={[
+
+
+                {
+
+                  status: 'Ativas',
+
+                  quantidade: empresasAtivas,
+
+                },
+
+
+
+                {
+
+                  status: 'Pendentes',
+
+                  quantidade: empresasPendentes,
+
+                },
+
+
+
+                {
+
+                  status: 'Incompletas',
+
+                  quantidade: empresasIncompletas,
+
+                },
+
+
+
+                {
+
+                  status: 'Inativas',
+
+                  quantidade: empresasInativas,
+
+                },
+
+
+              ]}
+
+
+            >
+
+
+
+
+
+              <CartesianGrid
+
+                strokeDasharray="3 3"
+
+              />
+
+
+
+
+
+
+              <XAxis
+
+                dataKey="status"
+
+              />
+
+
+
+
+
+
+              <YAxis />
+
+
+
+
+
+
+
+              <Tooltip />
+
+
+
+
+
+
+
+              <Bar
+
+
+                dataKey="quantidade"
+
+
+                fill="#3b82f6"
+
+
+                radius={[
+
+                  4,
+
+                  4,
+
+                  0,
+
+                  0,
+
+                ]}
+
+
+                name="Empresas"
+
+
+              />
+
+
+
+
+
+            </BarChart>
+
+
+
+
+          </ResponsiveContainer>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        {/* ==========================
+            TENDÊNCIA
+            MOCK TEMPORÁRIO
+        =========================== */}
+
+
+
+
+
+        <div
+
+          className="
+            bg-card
+            rounded-lg
+            border
+            border-border
+            p-6
+          "
+
+        >
+
+
+
+
+          <h3 className="mb-6">
+
+            Tendência de Cadastros
+
+          </h3>
+
+
+
+
+
+
+
+          <ResponsiveContainer
+
+            width="100%"
+
+            height={300}
+
+          >
+
+
+
+
+            <LineChart
+
+              data={trendData}
+
+            >
+
+
+
+
+
+              <CartesianGrid
+
+                strokeDasharray="3 3"
+
+              />
+
+
+
+
+
+
+
+              <XAxis
+
+                dataKey="mes"
+
+              />
+
+
+
+
+
+
+
+              <YAxis />
+
+
+
+
+
+
+
+              <Tooltip />
+
+
+
+
+
+
+
+              <Line
+
+
+                type="monotone"
+
+
+                dataKey="leads"
+
+
+                stroke="#3b82f6"
+
+
+                strokeWidth={2}
+
+
+                name="Cadastros"
+
+
+
+              />
+
+
+
+
+
+
+
+
+              <Line
+
+
+                type="monotone"
+
+
+                dataKey="aprovados"
+
+
+                stroke="#10b981"
+
+
+                strokeWidth={2}
+
+
+                name="Aprovados"
+
+
+
+              />
+
+
+
+
+
+            </LineChart>
+
+
+
+
+          </ResponsiveContainer>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+      {/* ==========================
+          ORIGEM + PORTE
+      =========================== */}
+
+
+
+
+
+      <div
+
+        className="
+          grid
+          grid-cols-1
+          lg:grid-cols-2
+          gap-6
+          mb-8
+        "
+
+      >
+
+
+
+
+
+
+
+        {/* ==========================
+            ORIGEM DOS ASSOCIADOS
+            MOCK TEMPORÁRIO
+        =========================== */}
+
+
+
+
+
+        <div
+
+          className="
+            bg-card
+            rounded-lg
+            border
+            border-border
+            p-6
+          "
+
+        >
+
+
+
+
+
+          <h3 className="mb-6">
+
+            Origem dos Associados
+
+          </h3>
+
+
+
+
+
+
+
+          <ResponsiveContainer
+
+            width="100%"
+
+            height={300}
+
+          >
+
+
+
+
+            <PieChart>
+
+
+
+
+
+              <Pie
+
+
+
+                data={origemData}
+
+
+
+                cx="50%"
+
+
+
+                cy="50%"
+
+
+
+                outerRadius={100}
+
+
+
+                dataKey="value"
+
+
+
+                label={({ name, value }) =>
+
+                  `${name}: ${value}`
+
+                }
+
+
+
+              >
+
+
+
+
+
+                {
+
+                  origemData.map((item) => (
+
+
+
+                    <Cell
+
+
+
+                      key={item.id}
+
+
+
+                      fill={item.color}
+
+
+
+                    />
+
+
+
+                  ))
+
+                }
+
+
+
+
+
+              </Pie>
+
+
+
+
+
+
+
+              <Tooltip />
+
+
+
+
+
+
+            </PieChart>
+
+
+
+
+
+          </ResponsiveContainer>
+
+
+
+
+
+
+
+
+          <p
+
+            className="
+              text-sm
+              text-muted-foreground
+              text-center
+              mt-4
+            "
+
+          >
+
+
+
+            Campo ainda não disponível no backend.
+            Será integrado posteriormente.
+
+
+
+          </p>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        {/* ==========================
+            EMPRESAS POR PORTE
+            BACKEND
+        =========================== */}
+
+
+
+
+
+        <div
+
+          className="
+            bg-card
+            rounded-lg
+            border
+            border-border
+            p-6
+          "
+
+        >
+
+
+
+
+
+          <h3 className="mb-6">
+
+            Empresas por Porte
+
+          </h3>
+
+
+
+
+
+
+
+          <ResponsiveContainer
+
+
+            width="100%"
+
+
+            height={300}
+
+
+          >
+
+
+
+
+
+            <BarChart
+
+
+              data={porteData}
+
+
+
+            >
+
+
+
+
+
+              <CartesianGrid
+
+
+                strokeDasharray="3 3"
+
+
+              />
+
+
+
+
+
+
+
+              <XAxis
+
+
+                dataKey="porte"
+
+
+              />
+
+
+
+
+
+
+
+              <YAxis />
+
+
+
+
+
+
+
+              <Tooltip />
+
+
+
+
+
+
+
+              <Bar
+
+
+
+                dataKey="quantidade"
+
+
+
+                fill="#5DA5FF"
+
+
+
+                radius={[
+
+                  4,
+
+                  4,
+
+                  0,
+
+                  0,
+
+                ]}
+
+
+
+                name="Quantidade"
+
+
+
+              />
+
+
+
+
+
+            </BarChart>
+
+
+
+
+
+          </ResponsiveContainer>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+            {/* ==========================
+          GARGALOS IDENTIFICADOS
+          BACKEND
+      =========================== */}
+
+
+
+      <div
+
+        className="
+          bg-card
+          rounded-lg
+          border
+          border-border
+          p-6
+          mb-8
+        "
+
+      >
+
+
+
+        <h3 className="mb-4">
+
+          Gargalos Identificados
+
+        </h3>
+
+
+
+
+
+
+
+        <div className="space-y-4">
+
+
+
+
+
+
+          {
+            empresasIncompletas > 0 && (
+
+
+              <div
+
+                className="
+                  flex
+                  items-start
+                  gap-4
+                  p-4
+                  bg-yellow-50
+                  border
+                  border-yellow-200
+                  rounded-lg
+                "
+
+              >
+
+
+
+
+                <AlertCircle
+
+
+                  className="
+                    h-5
+                    w-5
+                    text-yellow-600
+                    mt-0.5
+                  "
+
+
+                />
+
+
+
+
+
+
+                <div>
+
+
+
+
+                  <p className="text-yellow-900">
+
+
+                    Cadastros incompletos
+
+
+                  </p>
+
+
+
+
+
+
+
+                  <p
+
+                    className="
+                      text-yellow-700
+                      text-sm
+                    "
+
+                  >
+
+
+
+                    Existem {empresasIncompletas}
+                    empresas aguardando finalização.
+
+
+
+                  </p>
+
+
+
+
+
+                </div>
+
+
+
+
+
+              </div>
+
+
+
+            )
+
+          }
+
+
+
+
+
+
+
+
+
+          {
+            empresasPendentes > 0 && (
+
+
+              <div
+
+                className="
+                  flex
+                  items-start
+                  gap-4
+                  p-4
+                  bg-blue-50
+                  border
+                  border-blue-200
+                  rounded-lg
+                "
+
+              >
+
+
+
+
+
+                <Clock
+
+
+                  className="
+                    h-5
+                    w-5
+                    text-blue-600
+                    mt-0.5
+                  "
+
+
+                />
+
+
+
+
+
+
+
+                <div>
+
+
+
+
+                  <p className="text-blue-900">
+
+
+                    Empresas aguardando aprovação
+
+
+                  </p>
+
+
+
+
+
+
+
+
+                  <p
+
+                    className="
+                      text-blue-700
+                      text-sm
+                    "
+
+                  >
+
+
+
+                    Existem {empresasPendentes}
+                    empresas pendentes de validação.
+
+
+
+                  </p>
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+              </div>
+
+
+
+            )
+
+          }
+
+
+
+
+
+
+
+
+
+          {
+            empresasInativas > 0 && (
+
+
+              <div
+
+                className="
+                  flex
+                  items-start
+                  gap-4
+                  p-4
+                  bg-red-50
+                  border
+                  border-red-200
+                  rounded-lg
+                "
+
+              >
+
+
+
+
+
+                <AlertCircle
+
+
+                  className="
+                    h-5
+                    w-5
+                    text-red-600
+                    mt-0.5
+                  "
+
+
+                />
+
+
+
+
+
+
+
+                <div>
+
+
+
+
+                  <p className="text-red-900">
+
+
+                    Empresas inativas
+
+
+                  </p>
+
+
+
+
+
+
+
+
+                  <p
+
+                    className="
+                      text-red-700
+                      text-sm
+                    "
+
+                  >
+
+
+
+                    Existem {empresasInativas}
+                    empresas marcadas como inativas.
+
+
+
+                  </p>
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+              </div>
+
+
+
+            )
+
+          }
+
+
+
+
+
+
+
+
+
+          {
+            empresasIncompletas === 0 &&
+            empresasPendentes === 0 &&
+            empresasInativas === 0 && (
+
+
+
+
+              <div
+
+                className="
+                  flex
+                  items-start
+                  gap-4
+                  p-4
+                  bg-green-50
+                  border
+                  border-green-200
+                  rounded-lg
+                "
+
+              >
+
+
+
+
+
+
+                <CheckCircle
+
+
+                  className="
+                    h-5
+                    w-5
+                    text-green-600
+                    mt-0.5
+                  "
+
+
+                />
+
+
+
+
+
+
+
+
+                <div>
+
+
+
+
+                  <p className="text-green-900">
+
+
+                    Tudo em ordem
+
+
+                  </p>
+
+
+
+
+
+
+
+
+                  <p
+
+                    className="
+                      text-green-700
+                      text-sm
+                    "
+
+                  >
+
+
+
+                    Nenhum gargalo identificado no momento.
+
+
+
+                  </p>
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+              </div>
+
+
+
+
+            )
+
+          }
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
     </div>
+
   );
+
 }
