@@ -15,9 +15,9 @@ import {
   LogOut,
 } from 'lucide-react';
 
-import Logo from '../components/Logo';
-
 import api from '../services/api';
+
+import Header from '../components/Header/Header';
 
 import Footer from '../components/Footer/Footer';
 
@@ -518,106 +518,7 @@ export default function CadastroDados() {
       "
 
     >
-
-
-
-
-      {/* =========================
-          HEADER
-          LOGO + VOLTAR
-      ========================== */}
-
-
-
-      <header
-
-        className="
-
-          bg-white
-
-          shadow-sm
-
-        "
-
-      >
-
-
-
-        <div
-
-          className="
-
-            max-w-6xl
-
-            mx-auto
-
-            px-6
-
-            py-5
-
-            flex
-
-            items-center
-
-            justify-between
-
-          "
-
-        >
-
-
-
-          <Logo />
-
-
-
-          <button
-
-            type="button"
-
-            onClick={() =>
-              navigate('/')
-            }
-
-            className="
-
-              px-4
-
-              py-2
-
-              rounded-lg
-
-              border
-
-              border-gray-300
-
-              hover:bg-gray-100
-
-              text-gray-700
-
-            "
-
-          >
-
-            Voltar ao início
-
-
-          </button>
-
-
-
-        </div>
-
-
-
-      </header>
-
-
-
-
-
-
-
+      <Header />
       {/* =========================
           CONTEÚDO
       ========================== */}
@@ -919,21 +820,21 @@ export default function CadastroDados() {
 
                 [
 
-                  'Dados',
+                  'Dados Cadastrais',
 
                   'Contatos',
 
+                  'Divulgação',
+
+                  'Rede Social',
+
                   'Soluções',
+
+                  'Valores',
 
                   'Documentos',
 
-                  'Pagamento',
-
-                  'Aprovação',
-
-                  'Revisão',
-
-                  'Finalização'
+                  'Termo de Adesão'
 
 
                 ]
