@@ -21,7 +21,7 @@ import WhatsAppButton from '../components/WhatsAppButton';
 
 import api from '../services/api';
 
-
+import Footer from '../components/Footer/Footer';
 
 export default function BoasVindasHome() {
 
@@ -1420,101 +1420,9 @@ export default function BoasVindasHome() {
 
 
 
-
-      <footer className="bg-white border-t border-gray-200 mt-20">
-
-
-        <div className="max-w-7xl mx-auto px-6 py-8">
-
-
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-
-
-
-            <p className="text-gray-600 text-[0.875rem]">
-
-
-              © 2026 ACIST São Leopoldo. Todos os direitos reservados.
-
-
-            </p>
-
-
-
-
-
-            <div className="flex gap-6 text-gray-600 text-[0.875rem]">
-
-
-              <a
-
-                href="https://www.acistsl.com.br/"
-
-                target="_blank"
-
-                rel="noopener noreferrer"
-
-                className="hover:text-[#5DA5FF] transition-colors"
-
-              >
-
-                Sobre
-
-              </a>
-
-
-
-
-
-              <a
-
-                href="https://wa.me/5551999999999"
-
-                target="_blank"
-
-                rel="noopener noreferrer"
-
-                className="hover:text-[#5DA5FF] transition-colors"
-
-              >
-
-                Contato
-
-              </a>
-
-
-
-
-
-              <a
-
-                href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"
-
-                target="_blank"
-
-                rel="noopener noreferrer"
-
-                className="hover:text-[#5DA5FF] transition-colors"
-
-              >
-
-                Privacidade
-
-              </a>
-
-
-
-            </div>
-
-
-          </div>
-
-
-        </div>
-
-
-      </footer>
-
+      {/* Footer */}
+      
+      <Footer />
 
 
     </div>

@@ -7,7 +7,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 
-
+import Footer from '../components/Footer/Footer';
 
 export default function CadastroTermos() {
 
@@ -504,46 +504,9 @@ export default function CadastroTermos() {
       </main>
 
 
-
-
-
-
-
-
-
       {/* FOOTER */}
 
-      <footer
-        className="
-          bg-white
-          border-t
-          border-border
-        "
-      >
-
-
-        <div
-          className="
-            max-w-5xl
-            mx-auto
-            px-6
-            py-6
-            text-center
-            text-sm
-            text-muted-foreground
-          "
-        >
-
-          © 2026 ACIST São Leopoldo.
-          Todos os direitos reservados.
-
-        </div>
-
-
-      </footer>
-
-
-
+      <Footer />
 
 
     </div>

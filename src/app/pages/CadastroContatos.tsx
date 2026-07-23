@@ -1229,12 +1229,9 @@ export default function CadastroContatos() {
 
         </div>
 
+      {/* Footer */}
 
       </footer>
-
-
-
-
 
     </div>
 

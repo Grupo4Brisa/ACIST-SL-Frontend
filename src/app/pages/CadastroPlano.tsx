@@ -8,7 +8,7 @@ import {
   Check
 } from 'lucide-react';
 
-
+import Footer from '../components/Footer/Footer';
 
 interface Plano {
   nome: string;
@@ -583,38 +583,7 @@ export default function CadastroPlano() {
 
       {/* FOOTER */}
 
-      <footer
-        className="
-          bg-white
-          border-t
-          border-border
-        "
-      >
-
-
-        <div
-          className="
-            max-w-5xl
-            mx-auto
-            px-6
-            py-6
-            text-center
-            text-sm
-            text-muted-foreground
-          "
-        >
-
-          © 2026 ACIST São Leopoldo.
-          Todos os direitos reservados.
-
-        </div>
-
-
-      </footer>
-
-
-
-
+      <Footer />
 
     </div>
 

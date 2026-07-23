@@ -19,7 +19,7 @@ import Logo from '../components/Logo';
 
 import api from '../services/api';
 
-
+import Footer from '../components/Footer/Footer';
 
 export default function CadastroDados() {
 
@@ -2612,64 +2612,9 @@ export default function CadastroDados() {
 
 
 
-      {/* =========================
-          FOOTER
-      ========================== */}
+      {/* FOOTER*/}
 
-
-
-      <footer
-
-        className="
-
-          bg-white
-
-          py-6
-
-          text-center
-
-          text-sm
-
-          text-gray-500
-
-        "
-
-      >
-
-
-
-        <div
-
-          className="
-
-            max-w-6xl
-
-            mx-auto
-
-            px-6
-
-          "
-
-        >
-
-
-          © 2026 ACIST São Leopoldo.
-          Todos os direitos reservados.
-
-
-
-        </div>
-
-
-
-
-      </footer>
-
-
-
-
-
-
+      <Footer />
 
     </div>
 
