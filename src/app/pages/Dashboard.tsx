@@ -24,6 +24,7 @@ import {
   ArrowRight,
   Globe,
   Target,
+  DollarSign,
 } from 'lucide-react';
 
 import { useNavigate } from 'react-router';
@@ -1022,6 +1023,236 @@ export default function Dashboard() {
             <p className="text-muted-foreground text-[0.875rem]">
 
               Publicados
+
+            </p>
+
+
+
+          </div>
+
+
+
+
+
+
+
+
+
+          {/* =====================
+              COLABORADORES
+          ====================== */}
+
+
+
+
+
+          <div
+
+            onClick={() =>
+              navigate('/admin/colaboradores')
+            }
+
+            className="
+              bg-card
+              rounded-lg
+              border
+              border-border
+              p-6
+              cursor-pointer
+              hover:border-[#5DA5FF]
+              hover:shadow-lg
+              transition-all
+              group
+            "
+
+          >
+
+
+
+            <div
+
+              className="
+                flex
+                items-center
+                justify-between
+                mb-4
+              "
+
+            >
+
+              <div
+
+                className="
+                  bg-indigo-500
+                  rounded-lg
+                  p-3
+                  w-fit
+                "
+
+              >
+
+
+                <Users
+
+
+                  className="
+                    h-6
+                    w-6
+                    text-white
+                  "
+
+
+                />
+
+
+              </div>
+
+              <ArrowRight
+
+                className="
+                  h-5
+                  w-5
+                  text-gray-400
+                  group-hover:text-[#5DA5FF]
+                "
+
+              />
+
+            </div>
+
+
+
+
+
+
+            <p className="text-muted-foreground mb-1">
+
+              Colaboradores
+
+            </p>
+
+
+
+
+
+            <p className="text-[0.875rem] text-muted-foreground">
+
+              Gerenciar administradores e aprovadores
+
+            </p>
+
+
+
+          </div>
+
+
+
+
+
+
+
+
+
+          {/* =====================
+              PAGAMENTOS
+          ====================== */}
+
+
+
+
+
+          <div
+
+            onClick={() =>
+              navigate('/admin/pagamentos')
+            }
+
+            className="
+              bg-card
+              rounded-lg
+              border
+              border-border
+              p-6
+              cursor-pointer
+              hover:border-[#5DA5FF]
+              hover:shadow-lg
+              transition-all
+              group
+            "
+
+          >
+
+
+
+            <div
+
+              className="
+                flex
+                items-center
+                justify-between
+                mb-4
+              "
+
+            >
+
+              <div
+
+                className="
+                  bg-teal-500
+                  rounded-lg
+                  p-3
+                  w-fit
+                "
+
+              >
+
+
+                <DollarSign
+
+
+                  className="
+                    h-6
+                    w-6
+                    text-white
+                  "
+
+
+                />
+
+
+              </div>
+
+              <ArrowRight
+
+                className="
+                  h-5
+                  w-5
+                  text-gray-400
+                  group-hover:text-[#5DA5FF]
+                "
+
+              />
+
+            </div>
+
+
+
+
+
+
+            <p className="text-muted-foreground mb-1">
+
+              Pagamentos
+
+            </p>
+
+
+
+
+
+            <p className="text-[0.875rem] text-muted-foreground">
+
+              Aprovar pagamentos das associações
 
             </p>
 

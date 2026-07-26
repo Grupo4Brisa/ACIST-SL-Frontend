@@ -1,5 +1,3 @@
-// src/app/pages/CadastroDados.tsx
-
 import {
   useEffect,
   useState,
@@ -177,6 +175,68 @@ export default function CadastroDados() {
 
 
 
+  // =========================
+  // Validação completa dos campos obrigatórios
+  // usada apenas ao AVANÇAR de etapa, não ao salvar rascunho
+  // =========================
+
+  function validarCamposObrigatorios(): string | null {
+
+    const camposObrigatorios: [string, string][] = [
+      [formData.companyName,    'Razão Social'],
+      [formData.corporateName,  'Nome Fantasia'],
+      [formData.cnpjcpf,        'CNPJ/CPF'],
+      [formData.email,          'Email'],
+      [formData.phone,          'Telefone'],
+      [formData.companySize,    'Porte da Empresa'],
+      [formData.address,        'Endereço'],
+      [formData.neighborhood,   'Bairro'],
+      [formData.city,           'Cidade'],
+      [formData.state,          'Estado'],
+      [formData.zipCode,        'CEP'],
+    ];
+
+    const campoVazio = camposObrigatorios.find(([val]) => !val);
+
+    return campoVazio ? campoVazio[1] : null;
+
+  }
+
+
+
+
+  // =========================
+  // Validação de senha
+  // só se aplica quando ainda não existe cadastro (empresa nova)
+  // =========================
+
+  function validarSenhaNovoCadastro(): string | null {
+
+    const storedIdCheck = localStorage.getItem('companyId');
+    const isEditing = !!(companyId || (storedIdCheck && storedIdCheck !== 'null'));
+
+    if(isEditing){
+      return null;
+    }
+
+    if(!formData.password){
+      return 'Preencha a senha para criar seu acesso.';
+    }
+
+    if(formData.password.length < 8){
+      return 'A senha deve possuir no mínimo 8 caracteres.';
+    }
+
+    if(formData.password !== formData.confirmPassword){
+      return 'As senhas não conferem.';
+    }
+
+    return null;
+
+  }
+
+
+
 
 
 
@@ -190,47 +250,15 @@ export default function CadastroDados() {
 
 
 
-      const camposObrigatorios: [string, string][] = [
-        [formData.companyName,    'Razão Social'],
-        [formData.corporateName,  'Nome Fantasia'],
-        [formData.cnpjcpf,        'CNPJ/CPF'],
-        [formData.email,          'Email'],
-        [formData.phone,          'Telefone'],
-        [formData.companySize,    'Porte da Empresa'],
-        [formData.address,        'Endereço'],
-        [formData.neighborhood,   'Bairro'],
-        [formData.city,           'Cidade'],
-        [formData.state,          'Estado'],
-        [formData.zipCode,        'CEP'],
-      ];
-      const campoVazio = camposObrigatorios.find(([val]) => !val);
-      if(campoVazio){
-        alert('Campo obrigatório não preenchido: ' + campoVazio[1]);
+      // "Salvar Rascunho" não exige todos os campos obrigatórios —
+      // salva o progresso parcial. Só validamos a senha quando é
+      // um cadastro novo, pois o backend precisa dela para criar a conta.
+
+      const erroSenha = validarSenhaNovoCadastro();
+
+      if(erroSenha){
+        alert(erroSenha);
         return false;
-
-
-      }
-
-      const storedIdCheck = localStorage.getItem('companyId');
-      const isEditing = !!(companyId || (storedIdCheck && storedIdCheck !== 'null'));
-
-      if(!isEditing){
-
-        if(!formData.password){
-          alert('Preencha todos os campos obrigatórios.');
-          return false;
-        }
-
-        if(formData.password.length < 8){
-          alert('A senha deve possuir no mínimo 8 caracteres.');
-          return false;
-        }
-
-        if(formData.password !== formData.confirmPassword){
-          alert('As senhas não conferem.');
-          return false;
-        }
-
       }
 
 
@@ -413,6 +441,7 @@ export default function CadastroDados() {
 
 
 
+      alert('Rascunho salvo com sucesso!');
 
 
 
@@ -463,6 +492,16 @@ export default function CadastroDados() {
 
 
   async function handleNext(){
+
+
+    // Ao avançar de etapa, sim, exigimos todos os campos obrigatórios
+
+    const campoFaltando = validarCamposObrigatorios();
+
+    if(campoFaltando){
+      alert('Campo obrigatório não preenchido: ' + campoFaltando);
+      return;
+    }
 
 
     const saved =

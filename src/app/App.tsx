@@ -84,6 +84,8 @@ import Eventos from './pages/Eventos';
 
 import Colaboradores from './pages/Colaboradores';
 
+import Pagamentos from './pages/Pagamentos';
+
 
 
 
@@ -406,6 +408,14 @@ export default function App() {
               path="documentos"
 
               element={<Documentos />}
+
+            />
+
+            <Route
+
+              path="pagamentos"
+
+              element={<Pagamentos />}
 
             />
 

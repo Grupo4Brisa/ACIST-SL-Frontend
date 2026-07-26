@@ -1,5 +1,3 @@
-// src/app/pages/PagamentoPix.tsx
-
 import {
   useEffect,
   useState,
@@ -22,6 +20,8 @@ import {
   Megaphone,
   Rocket,
 } from 'lucide-react';
+
+import api from '../services/api';
 
 import Logo from '../components/Logo';
 
@@ -139,6 +139,11 @@ export default function PagamentoPix(){
 
 
 
+  const companyId =
+    localStorage.getItem('companyId');
+
+
+
   const [
     searchParams
   ] =
@@ -152,6 +157,22 @@ export default function PagamentoPix(){
     setCopiado
   ] =
     useState(false);
+
+
+
+  const [
+    enviando,
+    setEnviando
+  ] =
+    useState(false);
+
+
+
+  const [
+    error,
+    setError
+  ] =
+    useState('');
 
 
 
@@ -292,12 +313,72 @@ export default function PagamentoPix(){
 
 
 
-  const handleConfirmarPagamento = () => {
+  const handleConfirmarPagamento = async () => {
 
 
-    navigate(
-      '/boas-vindas'
-    );
+    if(!companyId){
+
+      setError(
+        'Não foi possível identificar o cadastro. Volte e tente novamente.',
+      );
+
+      return;
+
+    }
+
+
+
+    setError('');
+
+    setEnviando(true);
+
+
+
+    try {
+
+
+      await api.post('/payments', {
+
+        companyId: Number(companyId),
+
+        amount: valor,
+
+        paymentType: 'PIX',
+
+        // Vencimento no momento da confirmação —
+        // o pagamento fica PENDING até o aprovador
+        // validar manualmente (sem gateway PIX real
+        // integrado ainda).
+        dueDate: new Date().toISOString(),
+
+      });
+
+
+
+      navigate(
+        '/boas-vindas'
+      );
+
+
+    } catch (err: any) {
+
+
+      setError(
+
+        err.response?.data?.message ??
+
+        'Erro ao registrar o pagamento. Tente novamente.',
+
+      );
+
+
+    } finally {
+
+
+      setEnviando(false);
+
+
+    }
 
 
   };
@@ -336,7 +417,7 @@ export default function PagamentoPix(){
       showAssociateArea={false}
       rightContent={
         <button
-            onClick={() => navigate("/pagamento")}
+            onClick={() => navigate("/associar")}
             className="px-6 py-2.5 bg-[#5DA5FF] text-white hover:bg-[#226897] rounded-lg transition-colors"
         >
           Voltar
@@ -995,6 +1076,37 @@ export default function PagamentoPix(){
 
 
 
+            {error && (
+
+              <div
+
+                className="
+                  bg-red-50
+                  border
+                  border-red-200
+                  rounded-lg
+                  p-4
+                  mb-6
+                  text-red-700
+                  text-sm
+                "
+
+              >
+
+                {error}
+
+              </div>
+
+            )}
+
+
+
+
+
+
+
+
+
             {/* CONFIRMAÇÃO */}
 
 
@@ -1005,6 +1117,9 @@ export default function PagamentoPix(){
               onClick={
                 handleConfirmarPagamento
               }
+
+
+              disabled={enviando}
 
 
 
@@ -1020,24 +1135,35 @@ export default function PagamentoPix(){
                 items-center
                 justify-center
                 gap-2
+                disabled:opacity-50
               "
 
 
             >
 
 
-              Já fiz o pagamento
+              {
+                enviando
+
+                ? 'Registrando pagamento...'
+
+                : 'Já fiz o pagamento'
+              }
 
 
 
-              <ArrowRight
+              {!enviando && (
 
-                className="
-                  h-5
-                  w-5
-                "
+                <ArrowRight
 
-              />
+                  className="
+                    h-5
+                    w-5
+                  "
+
+                />
+
+              )}
 
 
             </button>

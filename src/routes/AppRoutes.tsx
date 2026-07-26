@@ -23,6 +23,7 @@ import AprovacaoCadastros from '../app/pages/AprovacaoCadastros';
 import ProtectedRoute from './ProtectedRoute';
 import CadastroTermos from '../app/pages/CadastroTermos';
 import Documentos from '../app/pages/Documentos';
+import Pagamentos from '../app/pages/Pagamentos';
 
 
 
@@ -189,6 +190,32 @@ export default function AppRoutes() {
         }
 
       />
+
+      <Route
+
+          path="/admin/pagamentos"
+
+          element={
+
+            <ProtectedRoute
+
+              allowedRoles={[
+
+                'COLABORADOR_APROVADOR',
+
+                'COLABORADOR_ADMIN'
+
+               ]}
+
+          >
+
+          <Pagamentos />
+
+        </ProtectedRoute>
+
+      }
+
+    />
 
 
 
