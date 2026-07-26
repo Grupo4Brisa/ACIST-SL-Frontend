@@ -76,9 +76,9 @@ export default function AprovacaoCadastros() {
       alert('Cadastro aprovado com sucesso.');
 
       carregarCadastros();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert('Erro ao aprovar cadastro.');
+      alert(error?.response?.data?.message || 'Erro ao aprovar cadastro.');
     }
   }
 
@@ -97,9 +97,9 @@ export default function AprovacaoCadastros() {
       alert('Cadastro reprovado.');
 
       carregarCadastros();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert('Erro ao reprovar cadastro.');
+      alert(error?.response?.data?.message || 'Erro ao reprovar cadastro.');
     }
   }
 
@@ -108,7 +108,7 @@ export default function AprovacaoCadastros() {
 
     if (
       selectedFilter === 'pendente' &&
-      cadastro.status === 'PENDING_APPROVAL'
+      (cadastro.status === 'PENDING_APPROVAL' || cadastro.status === 'INCOMPLETE')
     )
       return true;
 
@@ -120,7 +120,7 @@ export default function AprovacaoCadastros() {
 
     if (
       selectedFilter === 'reprovado' &&
-      cadastro.status === 'REJECTED'
+      cadastro.status === 'INACTIVE'
     )
       return true;
 
@@ -128,7 +128,7 @@ export default function AprovacaoCadastros() {
   });
 
   const pendentes = cadastros.filter(
-    (c) => c.status === 'PENDING_APPROVAL'
+    (c) => c.status === 'PENDING_APPROVAL' || c.status === 'INCOMPLETE'
   ).length;
 
   const aprovadosCount = cadastros.filter(
@@ -136,14 +136,14 @@ export default function AprovacaoCadastros() {
   ).length;
 
   const reprovadosCount = cadastros.filter(
-    (c) => c.status === 'REJECTED'
+    (c) => c.status === 'INACTIVE'
   ).length;
 
   function getStatusConfig(status: string) {
     switch (status) {
       case 'PENDING_APPROVAL':
         return {
-          label: 'Pendente',
+          label: 'Aguardando Aprovação',
           color: 'text-orange-700',
           bg: 'bg-orange-100',
           icon: Clock,
@@ -157,12 +157,20 @@ export default function AprovacaoCadastros() {
           icon: CheckCircle,
         };
 
-      case 'REJECTED':
+      case 'INACTIVE':
         return {
           label: 'Reprovado',
           color: 'text-red-700',
           bg: 'bg-red-100',
           icon: XCircle,
+        };
+
+      case 'INCOMPLETE':
+        return {
+          label: 'Aguardando Aprovação',
+          color: 'text-orange-700',
+          bg: 'bg-orange-100',
+          icon: Clock,
         };
 
       default:
@@ -306,21 +314,24 @@ export default function AprovacaoCadastros() {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-center gap-3 mb-2 flex-wrap">
                       <h3 className="text-xl font-semibold">
                         {cadastro.companyName}
                       </h3>
 
-                      <div
-                        className={`inline-flex items-center gap-2 px-3 py-1 ${statusConfig.bg} rounded-full`}
-                      >
-                        <StatusIcon
-                          className={`h-4 w-4 ${statusConfig.color}`}
-                        />
+                      {/* BADGE CADASTRO */}
+                      <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold ${
+                        cadastro.status === 'INCOMPLETE'
+                          ? 'bg-yellow-100 text-yellow-700'
+                          : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {cadastro.status === 'INCOMPLETE' ? 'Cadastro Incompleto' : 'Cadastro Completo'}
+                      </div>
 
-                        <span
-                          className={`text-sm font-semibold ${statusConfig.color}`}
-                        >
+                      {/* BADGE APROVAÇÃO */}
+                      <div className={`inline-flex items-center gap-2 px-3 py-1 ${statusConfig.bg} rounded-full`}>
+                        <StatusIcon className={`h-4 w-4 ${statusConfig.color}`} />
+                        <span className={`text-sm font-semibold ${statusConfig.color}`}>
                           {statusConfig.label}
                         </span>
                       </div>
@@ -397,7 +408,7 @@ export default function AprovacaoCadastros() {
                                 <div className="flex gap-3 border-t border-border pt-4">
                   <button
                     onClick={() =>
-                      navigate(`/admin/lead/${cadastro.id}`)
+                      navigate(`/admin/company/${cadastro.id}`)
                     }
                     className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-gray-50 transition-colors"
                   >

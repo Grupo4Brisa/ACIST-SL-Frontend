@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 
 import Footer from '../components/Footer/Footer';
+import ProgressoCadastro from '../components/ProgressoCadastro';
 
 interface Plano {
   nome: string;
@@ -183,7 +184,7 @@ export default function CadastroPlano() {
                 "
               >
 
-                Etapa 5 de 7 - Escolha do Plano
+                Etapa 8 de 9 - Escolha do Plano
 
               </p>
 
@@ -199,6 +200,10 @@ export default function CadastroPlano() {
 
 
       </header>
+
+            <div className="max-w-5xl mx-auto px-6 pt-6 w-full">
+              <ProgressoCadastro etapaAtual={8} />
+            </div>
 
 
 

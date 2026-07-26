@@ -161,7 +161,10 @@ export default function PagamentoPix(){
     porte,
     setPorte
   ] =
-    useState('PEQUENA');
+    useState(() => {
+      const saved = localStorage.getItem('companySize');
+      return saved ? normalizarPorte(saved) : 'MEI';
+    });
 
 
 

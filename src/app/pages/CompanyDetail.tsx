@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router';
+import { useParams, Link, useNavigate } from 'react-router';
+import { useAuth } from '../context/AuthContext';
 import {
   ArrowLeft,
   Building2,
@@ -18,8 +19,52 @@ import {
   AlertCircle
 } from 'lucide-react';
 
-import  api  from '../services/api';
+import api from '../services/api';
 
+const STATUS_CADASTRO: Record<string, { label: string; color: string }> = {
+  INCOMPLETE: { label: 'Cadastro Incompleto', color: 'bg-yellow-100 text-yellow-700' },
+  PENDING_APPROVAL: { label: 'Cadastro Completo', color: 'bg-blue-100 text-blue-700' },
+  ACTIVE: { label: 'Cadastro Completo', color: 'bg-blue-100 text-blue-700' },
+  INACTIVE: { label: 'Cadastro Completo', color: 'bg-blue-100 text-blue-700' },
+};
+
+const STATUS_APROVACAO: Record<string, { label: string; color: string }> = {
+  INCOMPLETE: { label: 'Aguardando Aprovação', color: 'bg-orange-100 text-orange-700' },
+  PENDING_APPROVAL: { label: 'Aguardando Aprovação', color: 'bg-yellow-100 text-yellow-700' },
+  ACTIVE: { label: 'Aprovado', color: 'bg-green-100 text-green-700' },
+  INACTIVE: { label: 'Reprovado', color: 'bg-red-100 text-red-700' },
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  ACTIVE: 'Aprovada',
+  PENDING_APPROVAL: 'Aguardando Aprovação',
+  INCOMPLETE: 'Cadastro Incompleto',
+  INACTIVE: 'Reprovada',
+};
+
+
+const DOCUMENTO_TIPOS: Record<string, string> = {
+  STATUTE: 'Guia FGTS',
+  LOGO: 'Logotipo da Empresa',
+  SOCIAL_CONTRACT: 'Contrato Social / Guia do Empresário',
+  CNPJ: 'Cartão CNPJ',
+  BUSINESS_LICENSE: 'Comprovante de Endereço',
+  STATE_REGISTRATION: 'RG dos Sócios',
+  OTHER: 'Comprovante PIX',
+};
+
+const SOLUCOES_MAP: Record<number, string> = {
+  1: 'Assessoria Jurídica',
+  2: 'Consultoria Empresarial',
+  3: 'Capacitação e Treinamentos',
+  4: 'Networking',
+  5: 'Certificado Digital',
+  6: 'Convênios e Parcerias',
+  7: 'Divulgação de Eventos',
+  8: 'Representação Política',
+  9: 'Serviços Financeiros',
+  10: 'Marketing e Comunicação',
+};
 
 interface Company {
 
@@ -73,11 +118,15 @@ interface Company {
 
 
 
-export default function CompanyDetails(){
+export default function CompanyDetail(){
 
 
   const { id } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const isAprovador = user?.role === 'COLABORADOR_APROVADOR';
 
+  const [aprovacaoErro, setAprovacaoErro] = useState('');
 
   const [company,setCompany] =
     useState<Company | null>(null);
@@ -95,32 +144,33 @@ export default function CompanyDetails(){
       'tarefas'
     >('historico');
 
-
-
   const [novoComentario,setNovoComentario] =
     useState('');
 
+  const [documentos, setDocumentos] =
+    useState<any[]>([]);
 
+  const [contatos, setContatos] = useState<any[]>([]);
+  const [redesSociais, setRedesSociais] = useState<any>(null);
+  const [solucoes, setSolucoes] = useState<any[]>([]);
+  const [tarefas, setTarefas] = useState<any[]>([]);
+  const [novaTarefa, setNovaTarefa] = useState({ title: '', description: '', dueDate: '' });
+  const [criandoTarefa, setCriandoTarefa] = useState(false);
 
   useEffect(()=>{
 
-
     async function loadCompany(){
 
-
       try {
-
 
         const response =
           await api.get(
             `/companies/${id}`
           );
 
-
         setCompany(
           response.data
         );
-
 
       } catch(error){
 
@@ -129,23 +179,67 @@ export default function CompanyDetails(){
           error
         );
 
-
       } finally {
 
         setLoading(false);
 
       }
 
-
     }
 
+    async function loadDocumentos(){
+      try {
+        const response = await api.get(`/documents/company/${id}`);
+        setDocumentos(response.data || []);
+      } catch {
+        // silencioso
+      }
+    }
+
+    async function loadContatos(){
+      try {
+        const response = await api.get(`/company-contacts/company/${id}`);
+        setContatos(response.data || []);
+      } catch {
+        // silencioso
+      }
+    }
+
+    async function loadRedesSociais(){
+      try {
+        const response = await api.get(`/social-networks/company/${id}`);
+        setRedesSociais(response.data || null);
+      } catch {
+        // silencioso
+      }
+    }
+
+    async function loadSolucoes(){
+      try {
+        const response = await api.get(`/company-solutions/company/${id}`);
+        setSolucoes(response.data || []);
+      } catch {
+        // silencioso
+      }
+    }
+
+    async function loadTarefas(){
+      try {
+        const response = await api.get(`/tasks/company/${id}`);
+        setTarefas(response.data || []);
+      } catch {
+        // silencioso
+      }
+    }
 
     if(id){
-
       loadCompany();
-
+      loadDocumentos();
+      loadContatos();
+      loadRedesSociais();
+      loadSolucoes();
+      loadTarefas();
     }
-
 
   },[id]);
 
@@ -317,24 +411,24 @@ export default function CompanyDetails(){
               gap-3
             ">
 
+              <span className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
+                {STATUS_CADASTRO[company.status]?.label || company.status}
+              </span>
 
-              <span className="
-                px-4
-                py-2
-                bg-primary/10
-                text-primary
-                rounded-lg
-              ">
-
-                {company.status}
-
+              <span className={`px-3 py-1.5 rounded-lg text-sm font-medium ${STATUS_APROVACAO[company.status]?.color || 'bg-gray-100 text-gray-700'}`}>
+                {STATUS_APROVACAO[company.status]?.label || company.status}
               </span>
 
 
 
 
-              <Link
-                to={`/cadastro/${company.id}`}
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.removeItem('companyData');
+                  localStorage.setItem('companyId', String(company.id));
+                  navigate(`/cadastro/${company.id}`);
+                }}
                 className="
                   px-4
                   py-2
@@ -347,7 +441,7 @@ export default function CompanyDetails(){
 
                 Editar Cadastro
 
-              </Link>
+              </button>
 
 
             </div>
@@ -634,45 +728,21 @@ export default function CompanyDetails(){
 
                 <span>
 
-                  {company.establishmentType || '-'}
+                  {company.headquartersType || company.establishmentType || '-'}
 
                 </span>
 
 
               </div>
-
-
-
-
-              <div>
-
-                <label className="
-                  text-muted-foreground
-                  text-[0.875rem]
-                  mb-1
-                  block
-                ">
-
-                  Tipo da Sede
-
-                </label>
-
-
-                <span>
-
-                  {company.headquartersType || '-'}
-
-                </span>
-
-
-              </div>
-
-
 
             </div>
 
-
           </div>
+
+
+
+
+
 
 
 
@@ -996,6 +1066,51 @@ export default function CompanyDetails(){
 
 
           </div>
+
+          {/* CONTATOS */}
+          {contatos.length > 0 && (
+            <div className="bg-card rounded-lg border border-border p-6 mt-4">
+              <h3 className="font-semibold mb-4">Contatos</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {contatos.map((c: any) => (
+                  <div key={c.id} className="border border-border rounded-lg p-4">
+                    <p className="font-medium">{c.name}</p>
+                    <p className="text-sm text-muted-foreground">{c.role}</p>
+                    {c.email && <p className="text-sm">{c.email}</p>}
+                    {c.phone && <p className="text-sm">{c.phone}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* REDES SOCIAIS */}
+          {redesSociais && (redesSociais.facebook || redesSociais.instagram || redesSociais.linkedin || redesSociais.other) && (
+            <div className="bg-card rounded-lg border border-border p-6 mt-4">
+              <h3 className="font-semibold mb-4">Redes Sociais</h3>
+              <div className="grid md:grid-cols-2 gap-3 text-sm">
+                {redesSociais.facebook && <p><span className="text-muted-foreground">Facebook: </span>{redesSociais.facebook}</p>}
+                {redesSociais.instagram && <p><span className="text-muted-foreground">Instagram: </span>{redesSociais.instagram}</p>}
+                {redesSociais.linkedin && <p><span className="text-muted-foreground">LinkedIn: </span>{redesSociais.linkedin}</p>}
+                {redesSociais.other && <p><span className="text-muted-foreground">Outros: </span>{redesSociais.other}</p>}
+              </div>
+            </div>
+          )}
+
+          {/* SOLUÇÕES */}
+          {solucoes.length > 0 && (
+            <div className="bg-card rounded-lg border border-border p-6 mt-4">
+              <h3 className="font-semibold mb-4">Soluções de Interesse</h3>
+              <div className="flex flex-wrap gap-2">
+                {solucoes.map((s: any) => (
+                  <span key={s.id} className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">
+                    {SOLUCOES_MAP[s.solutionId] || `Solução ${s.solutionId}`}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
                     {/* ABAS: HISTÓRICO / DOCUMENTOS / TAREFAS */}
 
           <div className="
@@ -1188,81 +1303,36 @@ export default function CompanyDetails(){
 
 
               {activeTab === 'documentos' && (
-
                 <div className="space-y-4">
-
-
-                  <div className="
-                    flex
-                    items-center
-                    justify-between
-                    p-4
-                    border
-                    border-border
-                    rounded-lg
-                  ">
-
-
-                    <div className="
-                      flex
-                      items-center
-                      gap-3
-                    ">
-
-
-                      <FileText
-                        className="
-                          h-6
-                          w-6
-                          text-primary
-                        "
-                      />
-
-
-                      <div>
-
-                        <p>
-
-                          Documentos da empresa
-
-                        </p>
-
-
-                        <span className="
-                          text-sm
-                          text-muted-foreground
-                        ">
-
-                          Integração com módulo de documentos
-
-                        </span>
-
-
-                      </div>
-
-
+                  {documentos.length === 0 ? (
+                    <div className="p-6 text-center text-muted-foreground border border-border rounded-lg">
+                      Nenhum documento enviado.
                     </div>
-
-
-
-
-                    <button
-                      className="
-                        p-2
-                        hover:bg-muted
-                        rounded-lg
-                      "
-                    >
-
-                      <Download
-                        className="h-4 w-4"
-                      />
-
-                    </button>
-
-
-
-                  </div>
+                  ) : (
+                    documentos.map((doc: any) => (
+                      <div key={doc.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <FileText className="h-6 w-6 text-primary" />
+                          <div>
+                            <p className="font-medium">{DOCUMENTO_TIPOS[doc.documentType] || doc.documentType}</p>
+                            <span className="text-sm text-muted-foreground">{doc.fileName}</span>
+                          </div>
+                        </div>
+                        <button
+                          className="p-2 hover:bg-muted rounded-lg"
+                          onClick={() => api.get(`/documents/${doc.id}/download`, { responseType: 'blob' }).then(res => {
+                            const url = window.URL.createObjectURL(new Blob([res.data]));
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = doc.fileName;
+                            a.click();
+                          })}
+                        >
+                          <Download className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))
+                  )}
 
 
 
@@ -1302,47 +1372,97 @@ export default function CompanyDetails(){
 
 
               {activeTab === 'tarefas' && (
+                <div className="space-y-4">
 
-                <div>
+                  {/* LISTA DE TAREFAS */}
+                  {tarefas.length === 0 && !criandoTarefa ? (
+                    <div className="text-muted-foreground text-sm">Nenhuma tarefa cadastrada.</div>
+                  ) : (
+                    tarefas.map((t: any) => (
+                      <div key={t.id} className="flex items-start justify-between p-4 border border-border rounded-lg">
+                        <div>
+                          <p className="font-medium">{t.title}</p>
+                          <p className="text-sm text-muted-foreground mt-1">{t.description}</p>
+                          {t.dueDate && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Prazo: {new Date(t.dueDate).toLocaleDateString('pt-BR')}
+                            </p>
+                          )}
+                        </div>
+                        <span className={`text-xs px-2 py-1 rounded-full ${t.status === 'DONE' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                          {t.status === 'DONE' ? 'Concluída' : 'Pendente'}
+                        </span>
+                      </div>
+                    ))
+                  )}
 
+                  {/* FORMULÁRIO NOVA TAREFA */}
+                  {criandoTarefa && (
+                    <div className="border border-border rounded-lg p-4 space-y-3 bg-muted/30">
+                      <input
+                        type="text"
+                        placeholder="Título da tarefa *"
+                        value={novaTarefa.title}
+                        onChange={e => setNovaTarefa(p => ({ ...p, title: e.target.value }))}
+                        className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                      <textarea
+                        placeholder="Descrição"
+                        value={novaTarefa.description}
+                        onChange={e => setNovaTarefa(p => ({ ...p, description: e.target.value }))}
+                        rows={2}
+                        className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                      />
+                      <input
+                        type="date"
+                        value={novaTarefa.dueDate}
+                        onChange={e => setNovaTarefa(p => ({ ...p, dueDate: e.target.value }))}
+                        className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={async () => {
+                            if (!novaTarefa.title || !novaTarefa.dueDate) return;
+                            try {
+                              await api.post('/tasks', {
+                                companyId: Number(id),
+                                title: novaTarefa.title,
+                                description: novaTarefa.description || '-',
+                                assignedTo: 1,
+                                dueDate: novaTarefa.dueDate,
+                              });
+                              const res = await api.get(`/tasks/company/${id}`);
+                              setTarefas(res.data || []);
+                              setNovaTarefa({ title: '', description: '', dueDate: '' });
+                              setCriandoTarefa(false);
+                            } catch { /* silencioso */ }
+                          }}
+                          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm hover:bg-primary/90"
+                        >
+                          Salvar
+                        </button>
+                        <button
+                          onClick={() => { setCriandoTarefa(false); setNovaTarefa({ title: '', description: '', dueDate: '' }); }}
+                          className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-muted"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
-                  <div className="
-                    text-muted-foreground
-                    text-sm
-                  ">
-
-                    Nenhuma tarefa cadastrada.
-
-                  </div>
-
-
-                  <button
-                    className="
-                      mt-4
-                      w-full
-                      py-3
-                      border-2
-                      border-dashed
-                      border-border
-                      rounded-lg
-                      flex
-                      items-center
-                      justify-center
-                      gap-2
-                    "
-                  >
-
-                    <CheckSquare
-                      className="h-4 w-4"
-                    />
-
-                    Nova tarefa
-
-                  </button>
-
+                  {/* BOTÃO NOVA TAREFA */}
+                  {!criandoTarefa && (
+                    <button
+                      onClick={() => setCriandoTarefa(true)}
+                      className="mt-2 w-full py-3 border-2 border-dashed border-border rounded-lg flex items-center justify-center gap-2 hover:bg-muted transition-colors"
+                    >
+                      <CheckSquare className="h-4 w-4" />
+                      Nova tarefa
+                    </button>
+                  )}
 
                 </div>
-
               )}
 
 
@@ -1424,13 +1544,14 @@ export default function CompanyDetails(){
 
 
 
-              <span className="
-                font-medium
-              ">
-
-                {company.status}
-
-              </span>
+              <div className="flex flex-col gap-1">
+                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
+                  {STATUS_CADASTRO[company.status]?.label || company.status}
+                </span>
+                <span className={`px-3 py-1 rounded-lg text-sm font-medium ${STATUS_APROVACAO[company.status]?.color || 'bg-gray-100 text-gray-700'}`}>
+                  {STATUS_APROVACAO[company.status]?.label || company.status}
+                </span>
+              </div>
 
 
             </div>
@@ -1665,7 +1786,14 @@ export default function CompanyDetails(){
                 <div className="
                   flex
                   gap-3
+                  flex-wrap
                 ">
+
+                  {aprovacaoErro && (
+                    <div className="w-full p-3 mb-2 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                      {aprovacaoErro}
+                    </div>
+                  )}
 
 
                   <button
@@ -1674,6 +1802,12 @@ export default function CompanyDetails(){
                       async()=>{
 
                         try{
+                        if(!isAprovador){
+                          setAprovacaoErro('Apenas usuários com perfil de Aprovador podem aprovar cadastros.');
+                          setTimeout(() => setAprovacaoErro(''), 4000);
+                          return;
+                        }
+
 
                           await api.patch(
                             `/companies/${company.id}/approve`
@@ -1728,6 +1862,12 @@ export default function CompanyDetails(){
 
                     onClick={
                       async()=>{
+
+                        if(!isAprovador){
+                          setAprovacaoErro('Apenas usuários com perfil de Aprovador podem reprovar cadastros.');
+                          setTimeout(() => setAprovacaoErro(''), 4000);
+                          return;
+                        }
 
 
                         try{
@@ -1798,12 +1938,12 @@ export default function CompanyDetails(){
         </div>
 
 
+        </div>
 
       </div>
 
 
 
-    </div>
 
   );
 

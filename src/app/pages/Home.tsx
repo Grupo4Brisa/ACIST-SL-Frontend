@@ -87,7 +87,7 @@ export default function BoasVindasHome() {
     try {
 
 
-      await api.post(
+      const response = await api.post(
 
         '/companies/landing',
 
@@ -127,10 +127,17 @@ export default function BoasVindasHome() {
 
       );
 
+      const company = response.data;
 
+      localStorage.removeItem('companyId');
+      localStorage.removeItem('companyData');
+      localStorage.removeItem('companySize');
 
+      localStorage.setItem('companyId', String(company.id));
+      localStorage.setItem('companySize', formData.companySize);
+      localStorage.setItem('companyData', JSON.stringify({ ...formData, companyId: company.id }));
 
-      navigate('/pagamento-pix');
+      navigate(`/pagamento-pix?porte=${formData.companySize}`);
 
 
 

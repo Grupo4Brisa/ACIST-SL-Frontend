@@ -166,7 +166,9 @@ export default function LandingPage(){
 
     setError('');
 
-
+    localStorage.removeItem('companyId');
+    localStorage.removeItem('companyData');
+    localStorage.removeItem('companySize');
 
     try {
 

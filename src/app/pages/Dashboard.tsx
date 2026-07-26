@@ -87,6 +87,10 @@ interface DashboardResponse {
 
   }[];
 
+  origin?: {
+    origem: string;
+    quantidade: number;
+  }[];
 
 }
 
@@ -164,49 +168,6 @@ const trendData = [
 
 
 
-// Origem dos associados
-// Futuramente backend
-
-
-const origemData = [
-
-  {
-    id: 'website',
-    name: 'Website',
-    value: 45,
-    color: '#5DA5FF',
-  },
-
-
-  {
-    id: 'evento',
-    name: 'Eventos',
-    value: 18,
-    color: '#10b981',
-  },
-
-
-  {
-    id: 'indicacao',
-    name: 'Indicação',
-    value: 15,
-    color: '#f59e0b',
-  },
-
-
-  {
-    id: 'outro',
-    name: 'Outros',
-    value: 10,
-    color: '#6b7280',
-  },
-
-];
-
-
-
-
-
 // =====================================================
 // COMPONENTE
 // =====================================================
@@ -239,23 +200,18 @@ export default function Dashboard() {
 
       try {
 
-
         const response =
           await api.get('/dashboard');
 
-
-
         setDashboard(response.data);
 
-
-
       } catch (error) {
-
 
         console.error(
           'Erro ao carregar dashboard:',
           error,
         );
+        alert('Erro ao carregar dados do dashboard.');
 
 
 
@@ -307,20 +263,15 @@ export default function Dashboard() {
   const totalEmpresas =
     dashboard?.companies?.total ?? 0;
 
-
-
   const empresasAtivas =
     dashboard?.companies?.active ?? 0;
-
-
 
   const empresasPendentes =
     dashboard?.companies?.pendingApproval ?? 0;
 
-
-
   const empresasIncompletas =
     dashboard?.companies?.incomplete ?? 0;
+
 
 
 
@@ -420,9 +371,9 @@ export default function Dashboard() {
 
     {
 
-      name: 'Em Análise',
+      name: 'Aguardando Aprovação',
 
-      value: empresasPendentes,
+      value: empresasPendentes + empresasIncompletas,
 
       icon: Clock,
 
@@ -432,7 +383,7 @@ export default function Dashboard() {
 
 
       onClick: () =>
-        navigate('/admin/funil?status=pending'),
+        navigate('/admin/funil'),
 
     },
 
@@ -758,12 +709,21 @@ export default function Dashboard() {
 
           <div
 
+            onClick={() =>
+              navigate('/admin/eventos')
+            }
+
             className="
               bg-card
               rounded-lg
               border
               border-border
               p-6
+              cursor-pointer
+              hover:border-[#5DA5FF]
+              hover:shadow-lg
+              transition-all
+              group
             "
 
           >
@@ -773,26 +733,49 @@ export default function Dashboard() {
             <div
 
               className="
-                bg-blue-500
-                rounded-lg
-                p-3
-                w-fit
+                flex
+                items-center
+                justify-between
                 mb-4
               "
 
             >
 
-
-              <Target
+              <div
 
                 className="
-                  h-6
-                  w-6
-                  text-white
+                  bg-blue-500
+                  rounded-lg
+                  p-3
+                  w-fit
+                "
+
+              >
+
+
+                <Target
+
+                  className="
+                    h-6
+                    w-6
+                    text-white
+                  "
+
+                />
+
+
+              </div>
+
+              <ArrowRight
+
+                className="
+                  h-5
+                  w-5
+                  text-gray-400
+                  group-hover:text-[#5DA5FF]
                 "
 
               />
-
 
             </div>
 
@@ -845,12 +828,21 @@ export default function Dashboard() {
 
           <div
 
+            onClick={() =>
+              navigate('/admin/documentos-por-empresa')
+            }
+
             className="
               bg-card
               rounded-lg
               border
               border-border
               p-6
+              cursor-pointer
+              hover:border-[#5DA5FF]
+              hover:shadow-lg
+              transition-all
+              group
             "
 
           >
@@ -860,28 +852,51 @@ export default function Dashboard() {
             <div
 
               className="
-                bg-green-500
-                rounded-lg
-                p-3
-                w-fit
+                flex
+                items-center
+                justify-between
                 mb-4
               "
 
             >
 
-
-              <CheckCircle
-
+              <div
 
                 className="
-                  h-6
-                  w-6
-                  text-white
+                  bg-green-500
+                  rounded-lg
+                  p-3
+                  w-fit
                 "
 
+              >
+
+
+                <CheckCircle
+
+
+                  className="
+                    h-6
+                    w-6
+                    text-white
+                  "
+
+
+                />
+
+
+              </div>
+
+              <ArrowRight
+
+                className="
+                  h-5
+                  w-5
+                  text-gray-400
+                  group-hover:text-[#5DA5FF]
+                "
 
               />
-
 
             </div>
 
@@ -1201,7 +1216,7 @@ export default function Dashboard() {
 
                 {
 
-                  status: 'Pendentes',
+                  status: 'Aguardando Aprovação',
 
                   quantidade: empresasPendentes,
 
@@ -1211,7 +1226,7 @@ export default function Dashboard() {
 
                 {
 
-                  status: 'Incompletas',
+                  status: 'Cadastro Incompleto',
 
                   quantidade: empresasIncompletas,
 
@@ -1531,194 +1546,10 @@ export default function Dashboard() {
 
 
 
-        {/* ==========================
-            ORIGEM DOS ASSOCIADOS
-            MOCK TEMPORÁRIO
-        =========================== */}
 
 
 
-
-
-        <div
-
-          className="
-            bg-card
-            rounded-lg
-            border
-            border-border
-            p-6
-          "
-
-        >
-
-
-
-
-
-          <h3 className="mb-6">
-
-            Origem dos Associados
-
-          </h3>
-
-
-
-
-
-
-
-          <ResponsiveContainer
-
-            width="100%"
-
-            height={300}
-
-          >
-
-
-
-
-            <PieChart>
-
-
-
-
-
-              <Pie
-
-
-
-                data={origemData}
-
-
-
-                cx="50%"
-
-
-
-                cy="50%"
-
-
-
-                outerRadius={100}
-
-
-
-                dataKey="value"
-
-
-
-                label={({ name, value }) =>
-
-                  `${name}: ${value}`
-
-                }
-
-
-
-              >
-
-
-
-
-
-                {
-
-                  origemData.map((item) => (
-
-
-
-                    <Cell
-
-
-
-                      key={item.id}
-
-
-
-                      fill={item.color}
-
-
-
-                    />
-
-
-
-                  ))
-
-                }
-
-
-
-
-
-              </Pie>
-
-
-
-
-
-
-
-              <Tooltip />
-
-
-
-
-
-
-            </PieChart>
-
-
-
-
-
-          </ResponsiveContainer>
-
-
-
-
-
-
-
-
-          <p
-
-            className="
-              text-sm
-              text-muted-foreground
-              text-center
-              mt-4
-            "
-
-          >
-
-
-
-            Campo ainda não disponível no backend.
-            Será integrado posteriormente.
-
-
-
-          </p>
-
-
-
-
-
-
-        </div>
-
-
-
-
-
-
-
-
-
-        {/* ==========================
+                {/* ==========================
             EMPRESAS POR PORTE
             BACKEND
         =========================== */}
@@ -1997,8 +1828,7 @@ export default function Dashboard() {
 
 
 
-                    Existem {empresasIncompletas}
-                    empresas aguardando finalização.
+                    Existem {empresasIncompletas} empresas aguardando finalização do cadastro.
 
 
 
@@ -2103,8 +1933,7 @@ export default function Dashboard() {
 
 
 
-                    Existem {empresasPendentes}
-                    empresas pendentes de validação.
+                    Existem {empresasPendentes} empresas aguardando aprovação.
 
 
 
@@ -2210,8 +2039,7 @@ export default function Dashboard() {
 
 
 
-                    Existem {empresasInativas}
-                    empresas marcadas como inativas.
+                    Existem {empresasInativas} empresas marcadas como inativas.
 
 
 

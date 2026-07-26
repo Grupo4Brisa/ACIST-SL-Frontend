@@ -7,6 +7,7 @@ import {
 
 import {
   useNavigate,
+  useParams,
 } from 'react-router-dom';
 
 import {
@@ -17,6 +18,7 @@ import {
 
 import api from '../services/api';
 
+import ProgressoCadastro from '../components/ProgressoCadastro';
 import Header from '../components/Header/Header';
 
 import Footer from '../components/Footer/Footer';
@@ -25,6 +27,8 @@ export default function CadastroDados() {
 
 
   const navigate = useNavigate();
+
+  const { id: idParam } = useParams();
 
 
 
@@ -79,45 +83,78 @@ export default function CadastroDados() {
 
       foundationDate: '',
 
+      origin: '',
+
+      originDetail: '',
+
     });
 
 
 
 
+  function normalizarPorte(porte: string): string {
+    const map: Record<string, string> = {
+      'mei': 'MEI',
+      'microempresa': 'Microempresa',
+      'micro': 'Microempresa',
+      'pequena': 'Pequena',
+      'small': 'Pequena',
+      'media': 'Média',
+      'média': 'Média',
+      'medio': 'Média',
+      'médio': 'Média',
+      'grande': 'Grande',
+      'large': 'Grande',
+    };
+    return map[porte.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')] || porte;
+  }
+
   useEffect(() => {
 
+    const urlId = idParam && idParam !== 'null' ? Number(idParam) : null;
+    const savedId = localStorage.getItem('companyId');
+    const storedId = savedId && savedId !== 'null' ? Number(savedId) : null;
+    const resolvedId = urlId || storedId;
 
-    const savedId =
-      localStorage.getItem(
-        'companyId'
-      );
-
-
-    const savedData =
-      localStorage.getItem(
-        'companyData'
-      );
-
-
-
-    if(savedId){
-
-      setCompanyId(
-        Number(savedId)
-      );
-
+    if(resolvedId){
+      setCompanyId(resolvedId);
+      localStorage.setItem('companyId', String(resolvedId));
     }
 
-
+    const savedData = localStorage.getItem('companyData');
 
     if(savedData){
-
-      setFormData(
-        JSON.parse(savedData)
-      );
-
+      const parsed = JSON.parse(savedData);
+      if(parsed.companySize) parsed.companySize = normalizarPorte(parsed.companySize);
+      setFormData(parsed);
+    } else if(resolvedId) {
+      // busca da API quando não há dados no localStorage (ex: acesso via token)
+      api.get(`/companies/${resolvedId}`).then(res => {
+        const d = res.data;
+        setFormData(prev => ({
+          ...prev,
+          companyName:      d.companyName      || '',
+          corporateName:    d.corporateName    || '',
+          cnpjcpf:          d.cnpjcpf          || '',
+          email:            d.email            || '',
+          phone:            d.phone            || '',
+          companySize:      normalizarPorte(d.companySize      || ''),
+          stateRegistration:d.stateRegistration|| '',
+          address:          d.address          || '',
+          neighborhood:     d.neighborhood     || '',
+          city:             d.city             || '',
+          state:            d.state            || '',
+          zipCode:          d.zipCode          || '',
+          website:          d.website          || '',
+          establishmentType:d.establishmentType|| '',
+          headquartersType: d.headquartersType || '',
+          employeesCount:   d.employeesCount   ? String(d.employeesCount) : '',
+          foundationDate:   d.foundationDate   ? d.foundationDate.split('T')[0] : '',
+          origin:           d.origin            || '',
+          originDetail:     d.originDetail      || '',
+        }));
+      }).catch(() => {});
     }
-
 
   }, []);
 
@@ -132,13 +169,7 @@ export default function CadastroDados() {
   ){
 
 
-    setFormData({
-
-      ...formData,
-
-      [field]: value,
-
-    });
+    setFormData(prev => ({ ...prev, [field]: value }));
 
 
   }
@@ -159,76 +190,46 @@ export default function CadastroDados() {
 
 
 
-      if(
-
-        !formData.companyName ||
-
-        !formData.corporateName ||
-
-        !formData.cnpjcpf ||
-
-        !formData.email ||
-
-        !formData.phone ||
-
-        !formData.companySize ||
-
-        !formData.password
-
-      ){
-
-
-        alert(
-          'Preencha todos os campos obrigatórios.'
-        );
-
-
+      const camposObrigatorios: [string, string][] = [
+        [formData.companyName,    'Razão Social'],
+        [formData.corporateName,  'Nome Fantasia'],
+        [formData.cnpjcpf,        'CNPJ/CPF'],
+        [formData.email,          'Email'],
+        [formData.phone,          'Telefone'],
+        [formData.companySize,    'Porte da Empresa'],
+        [formData.address,        'Endereço'],
+        [formData.neighborhood,   'Bairro'],
+        [formData.city,           'Cidade'],
+        [formData.state,          'Estado'],
+        [formData.zipCode,        'CEP'],
+      ];
+      const campoVazio = camposObrigatorios.find(([val]) => !val);
+      if(campoVazio){
+        alert('Campo obrigatório não preenchido: ' + campoVazio[1]);
         return false;
 
 
       }
 
+      const storedIdCheck = localStorage.getItem('companyId');
+      const isEditing = !!(companyId || (storedIdCheck && storedIdCheck !== 'null'));
 
+      if(!isEditing){
 
+        if(!formData.password){
+          alert('Preencha todos os campos obrigatórios.');
+          return false;
+        }
 
+        if(formData.password.length < 8){
+          alert('A senha deve possuir no mínimo 8 caracteres.');
+          return false;
+        }
 
-
-      if(
-        formData.password.length < 8
-      ){
-
-
-        alert(
-          'A senha deve possuir no mínimo 8 caracteres.'
-        );
-
-
-        return false;
-
-
-      }
-
-
-
-
-
-
-
-      if(
-
-        formData.password !==
-        formData.confirmPassword
-
-      ){
-
-
-        alert(
-          'As senhas não conferem.'
-        );
-
-
-        return false;
-
+        if(formData.password !== formData.confirmPassword){
+          alert('As senhas não conferem.');
+          return false;
+        }
 
       }
 
@@ -272,8 +273,58 @@ export default function CadastroDados() {
           formData.companySize,
 
 
+        stateRegistration:
+          formData.stateRegistration,
+
+
+        address:
+          formData.address,
+
+
+        neighborhood:
+          formData.neighborhood,
+
+
+        city:
+          formData.city,
+
+
+        state:
+          formData.state,
+
+
+        zipCode:
+          formData.zipCode,
+
+
+        website:
+          formData.website,
+
+
+        establishmentType:
+          formData.establishmentType,
+
+
+        headquartersType:
+          formData.headquartersType,
+
+
+        employeesCount:
+          formData.employeesCount
+            ? Number(formData.employeesCount)
+            : undefined,
+
+
+        foundationDate:
+          formData.foundationDate || undefined,
+
+
         origin:
-          'Website',
+          formData.origin || undefined,
+
+
+        originDetail:
+          formData.originDetail || undefined,
 
 
       };
@@ -290,13 +341,18 @@ export default function CadastroDados() {
 
 
 
-      if(companyId){
+      const storedId = localStorage.getItem('companyId');
+      const currentId =
+        companyId ||
+        (storedId && storedId !== 'null' ? Number(storedId) : null);
+
+      if(currentId){
 
 
         response =
           await api.patch(
 
-            `/companies/${companyId}`,
+            `/companies/${currentId}`,
 
             payload
 
@@ -358,9 +414,6 @@ export default function CadastroDados() {
 
 
 
-      alert(
-        'Rascunho salvo com sucesso!'
-      );
 
 
 
@@ -789,160 +842,7 @@ export default function CadastroDados() {
 
 
 
-            {/* =========================
-                INDICADOR DAS ETAPAS
-            ========================== */}
-
-
-
-            <div
-
-              className="
-
-                grid
-
-                grid-cols-4
-
-                md:grid-cols-8
-
-                gap-4
-
-                mb-10
-
-              "
-
-            >
-
-
-
-              {
-
-
-                [
-
-                  'Dados Cadastrais',
-
-                  'Contatos',
-
-                  'Divulgação',
-
-                  'Rede Social',
-
-                  'Soluções',
-
-                  'Valores',
-
-                  'Documentos',
-
-                  'Termo de Adesão'
-
-
-                ]
-
-                .map(
-
-                  (step,index)=>(
-
-
-                    <div
-
-                      key={index}
-
-                      className="
-
-                        text-center
-
-                      "
-
-                    >
-
-
-
-                      <div
-
-                        className={`
-
-                          mx-auto
-
-                          w-10
-
-                          h-10
-
-                          rounded-full
-
-                          flex
-
-                          items-center
-
-                          justify-center
-
-                          font-semibold
-
-
-                          ${
-
-                            index === 0
-
-                            ?
-
-                            'bg-[#0C3A59] text-white'
-
-                            :
-
-                            'bg-gray-200 text-gray-500'
-
-                          }
-
-                        `}
-
-                      >
-
-                        {index + 1}
-
-
-                      </div>
-
-
-
-
-
-                      <span
-
-                        className="
-
-                          block
-
-                          mt-2
-
-                          text-xs
-
-                          text-gray-600
-
-                        "
-
-                      >
-
-                        {step}
-
-
-                      </span>
-
-
-
-                    </div>
-
-
-                  )
-
-
-                )
-
-
-              }
-
-
-
-            </div>
+            <ProgressoCadastro etapaAtual={1} />
 
 
 
@@ -2361,6 +2261,133 @@ export default function CadastroDados() {
 
 
 
+
+
+            {/* =========================
+                1.5 COMO CONHECEU
+            ========================== */}
+
+
+
+            <section
+
+              className="
+
+                space-y-5
+
+                mt-10
+
+              "
+
+            >
+
+
+
+              <h3
+
+                className="
+
+                  font-semibold
+
+                  text-lg
+
+                  text-gray-800
+
+                "
+
+              >
+
+                1.5 Como conheceu a ACIST-SL?
+
+
+              </h3>
+
+
+
+              <div className="grid md:grid-cols-2 gap-3">
+
+                {[
+                  { value: 'Redes Sociais', label: 'Redes Sociais' },
+                  { value: 'Jornal', label: 'Jornal' },
+                  { value: 'Site', label: 'Site' },
+                  { value: 'Indicação de Associado', label: 'Indicação de Associado' },
+                  { value: 'Outro', label: 'Outro' },
+                ].map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50 transition"
+                  >
+                    <input
+                      type="radio"
+                      name="origin"
+                      value={opt.value}
+                      checked={formData.origin === opt.value}
+                      onChange={(e) => {
+                        const needsDetail = e.target.value === 'Indicação de Associado' || e.target.value === 'Outro';
+                        setFormData(prev => ({ ...prev, origin: e.target.value, originDetail: needsDetail ? prev.originDetail : '' }));
+                      }}
+                      className="accent-[#0C3A59] w-4 h-4"
+                    />
+                    <span className="text-sm text-gray-700">{opt.label}</span>
+                  </label>
+                ))}
+
+              </div>
+
+              {formData.origin === 'Indicação de Associado' && (
+
+                <div>
+
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+
+                    Nome do associado indicador *
+
+                  </label>
+
+                  <input
+
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder:text-gray-400 outline-none transition focus:ring-2 focus:ring-[#0C3A59] focus:border-[#0C3A59]"
+
+                    placeholder="Digite o nome do associado"
+
+                    value={formData.originDetail}
+
+                    onChange={(e) => handleChange('originDetail', e.target.value)}
+
+                  />
+
+                </div>
+
+              )}
+
+              {formData.origin === 'Outro' && (
+
+                <div>
+
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+
+                    Descreva como nos conheceu *
+
+                  </label>
+
+                  <input
+
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder:text-gray-400 outline-none transition focus:ring-2 focus:ring-[#0C3A59] focus:border-[#0C3A59]"
+
+                    placeholder="Descreva"
+
+                    value={formData.originDetail}
+
+                    onChange={(e) => handleChange('originDetail', e.target.value)}
+
+                  />
+
+                </div>
+
+              )}
+
+            </section>
+            
 
             {/* =========================
                 BOTÕES

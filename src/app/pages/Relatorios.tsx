@@ -3,7 +3,8 @@ import {
   useState 
 } from 'react';
 
-import { 
+
+import {
   BarChart,
   Bar,
   XAxis,
@@ -13,7 +14,8 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell
+  Cell,
+  Legend
 } from 'recharts';
 
 import { 
@@ -83,8 +85,15 @@ export default function Relatorios(){
   ] =
   useState<Company[]>([]);
 
+  const [solucoesData, setSolucoesData] = useState<{name: string; value: number}[]>([]);
 
-
+  const origemData = companies.reduce<{name: string; value: number}[]>((acc, comp) => {
+    if (!comp.origin) return acc;
+    const found = acc.find(x => x.name === comp.origin);
+    if (found) found.value++;
+    else acc.push({ name: comp.origin, value: 1 });
+    return acc;
+  }, []).sort((a, b) => b.value - a.value);
 
   const [
     loading,
@@ -142,6 +151,26 @@ export default function Relatorios(){
 
     loadCompanies();
 
+    // carrega soluções de interesse
+    api.get('/company-solutions').then(res => {
+      const map: Record<string, number> = {};
+      const NOMES: Record<number, string> = {
+        1: 'Assessoria Jurídica', 2: 'Consultoria Empresarial',
+        3: 'Capacitação', 4: 'Networking', 5: 'Certificado Digital',
+        6: 'Convênios', 7: 'Divulgação', 8: 'Representação',
+        9: 'Serviços Financeiros', 10: 'Marketing',
+      };
+      for (const s of res.data || []) {
+        const nome = NOMES[s.solutionId] || `Solução ${s.solutionId}`;
+        map[nome] = (map[nome] || 0) + 1;
+      }
+      setSolucoesData(
+        Object.entries(map)
+          .map(([name, value]) => ({ name, value }))
+          .sort((a, b) => b.value - a.value)
+      );
+    }).catch(() => {});
+
 
 
   },[]);
@@ -171,7 +200,7 @@ export default function Relatorios(){
   const pendentes =
     companies.filter(
       company =>
-        company.status === 'PENDING_APPROVAL'
+        company.status === 'PENDING_APPROVAL' || company.status === 'INCOMPLETE'
     ).length;
 
 
@@ -222,7 +251,7 @@ export default function Relatorios(){
 
       id:'pending',
 
-      name:'Pendentes',
+      name:'Aguardando Aprovação',
 
       value:pendentes
 
@@ -814,12 +843,11 @@ export default function Relatorios(){
 
           <ResponsiveContainer
             width="100%"
-            height={300}
+            height={380}
           >
 
 
             <PieChart>
-
 
               <Pie
 
@@ -827,23 +855,13 @@ export default function Relatorios(){
 
                 cx="50%"
 
-                cy="50%"
+                cy="45%"
 
                 labelLine={false}
 
-                label={
-                  ({
-                    name,
-                    percent
-                  }) =>
-                  `${name} ${
-                    (
-                      percent * 100
-                    ).toFixed(0)
-                  }%`
-                }
+                label={false}
 
-                outerRadius={100}
+                outerRadius={130}
 
                 dataKey="value"
 
@@ -886,6 +904,8 @@ export default function Relatorios(){
               <Tooltip />
 
 
+              <Tooltip formatter={(value: number, name: string) => [`${value} empresa(s)`, name]} />
+              <Legend verticalAlign="bottom" height={36} />
             </PieChart>
 
 
@@ -1064,6 +1084,28 @@ export default function Relatorios(){
 
       </div>
 
+      {/* SOLUÇÕES DE INTERESSE */}
+      <div className="bg-card rounded-lg border border-border p-6 mt-6">
+        <h2 className="text-lg font-semibold mb-6">Soluções de Interesse</h2>
+        {solucoesData.length === 0 ? (
+          <p className="text-muted-foreground text-sm">Nenhuma solução cadastrada.</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={solucoesData} layout="vertical" margin={{ left: 20, right: 30 }}>
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+              <XAxis type="number" allowDecimals={false} />
+              <YAxis type="category" dataKey="name" width={140} tick={{ fontSize: 12 }} />
+              <Tooltip formatter={(value: number) => [`${value} empresa(s)`, 'Interesse']} />
+              <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                {solucoesData.map((_, index) => (
+                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+
 
 
 
@@ -1076,7 +1118,35 @@ export default function Relatorios(){
 
 
 
-      <div className="
+      
+        {/* Origem dos Associados */}
+        {origemData.length > 0 && (
+          <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-6">Origem dos Associados</h3>
+            <div className="flex flex-col md:flex-row gap-6 items-center">
+              <ResponsiveContainer width="100%" height={280}>
+                <PieChart>
+                  <Pie
+                    data={origemData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    dataKey="value"
+                    label={({ name, value }) => `${name}: ${value}`}
+                  >
+                    {origemData.map((_, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend verticalAlign="bottom" height={36} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+
+        <div className="
         bg-card
         rounded-lg
         border
@@ -1272,6 +1342,18 @@ export default function Relatorios(){
 
 
         </div>
+
+        {/* INSIGHT SOLUÇÕES */}
+        {solucoesData.length > 0 && (
+          <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+            <p className="text-purple-900 font-medium">Soluções de Interesse</p>
+            <p className="text-purple-700 text-[0.875rem] mt-1">
+              A solução mais demandada é <strong>{solucoesData[0]?.name}</strong> com {solucoesData[0]?.value} empresa(s).
+              {solucoesData.length > 1 && ` Em seguida, ${solucoesData[1]?.name} com ${solucoesData[1]?.value} empresa(s).`}
+              {' '}Considere fortalecer os serviços mais procurados pelos associados.
+            </p>
+          </div>
+        )}
 
 
 

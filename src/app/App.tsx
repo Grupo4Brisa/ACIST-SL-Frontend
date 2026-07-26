@@ -49,11 +49,12 @@ import CadastroDados from './pages/CadastroEmpresa';
 
 import CadastroContatos from './pages/CadastroContatos';
 
-import CadastroQualificacao from './pages/CadastroQualificacao';
-
-import CadastroPlano from './pages/CadastroPlano';
-
-import CadastroDocumentos from './pages/Documentos';
+import CadastroDivulgacao from './pages/CadastroDivulgacao';
+import CadastroRedesSociais from './pages/CadastroRedesSociais';
+import CadastroSolucoes from './pages/CadastroSolucoes';
+import CadastroMensalidade from './pages/CadastroMensalidade';
+import CadastroDocumentos from './pages/CadastroDocumentos';
+import CadastroConcluido from './pages/CadastroConcluido';
 
 import CadastroTermos from './pages/CadastroTermos';
 
@@ -75,6 +76,13 @@ import Relatorios from './pages/Relatorios';
 import CompanyDetail from './pages/CompanyDetail';
 
 import AprovacaoCadastros from './pages/AprovacaoCadastros';
+import Cadastros from './pages/Cadastros';
+
+import DocumentosPorEmpresa from './pages/DocumentosPorEmpresa';
+
+import Eventos from './pages/Eventos';
+
+import Colaboradores from './pages/Colaboradores';
 
 
 
@@ -199,6 +207,17 @@ export default function App() {
 
 
 
+          <Route
+
+            path="/cadastro-concluido"
+
+            element={<CadastroConcluido />}
+
+          />
+
+
+
+
           {/* =========================
               LANDING PAGE
               ========================= */}
@@ -240,7 +259,7 @@ export default function App() {
 
           <Route
 
-            path="/cadastro/contatos"
+            path="/cadastro/:id/contatos"
 
             element={<CadastroContatos />}
 
@@ -251,20 +270,9 @@ export default function App() {
 
           <Route
 
-            path="/cadastro/qualificacao"
+            path="/cadastro/:id/divulgacao"
 
-            element={<CadastroQualificacao />}
-
-          />
-
-
-
-
-          <Route
-
-            path="/cadastro/plano"
-
-            element={<CadastroPlano />}
+            element={<CadastroDivulgacao />}
 
           />
 
@@ -273,9 +281,9 @@ export default function App() {
 
           <Route
 
-            path="/cadastro/documentos"
+            path="/cadastro/:id/redes-sociais"
 
-            element={<Documentos />}
+            element={<CadastroRedesSociais />}
 
           />
 
@@ -284,7 +292,40 @@ export default function App() {
 
           <Route
 
-            path="/cadastro/aceite"
+            path="/cadastro/:id/solucoes"
+
+            element={<CadastroSolucoes />}
+
+          />
+
+
+
+
+          <Route
+
+            path="/cadastro/:id/mensalidade"
+
+            element={<CadastroMensalidade />}
+
+          />
+
+
+
+
+          <Route
+
+            path="/cadastro/:id/documentos"
+
+            element={<CadastroDocumentos />}
+
+          />
+
+
+
+
+          <Route
+
+            path="/cadastro/:id/aceite"
 
             element={<CadastroTermos />}
 
@@ -328,6 +369,23 @@ export default function App() {
               element={<Dashboard />}
 
             />
+
+            <Route 
+
+              path="documentos-por-empresa" 
+              
+              element={<DocumentosPorEmpresa />} />
+
+            <Route 
+
+              path="eventos" 
+              
+              element={<Eventos />} />  
+
+              <Route 
+                path="colaboradores" 
+                
+                element={<Colaboradores />} />
 
 
 
@@ -381,6 +439,17 @@ export default function App() {
               path="aprovacoes"
 
               element={<AprovacaoCadastros />}
+
+            />
+
+
+
+
+            <Route
+
+              path="cadastros"
+
+              element={<Cadastros />}
 
             />
 

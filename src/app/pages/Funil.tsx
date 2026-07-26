@@ -35,9 +35,23 @@ const stages = [
 
 const statusLabels: Record<string, string> = {
   ACTIVE: 'Aprovada',
-  PENDING_APPROVAL: 'Em análise',
-  INCOMPLETE: 'Cadastro incompleto',
+  PENDING_APPROVAL: 'Aguardando Aprovação',
+  INCOMPLETE: 'Cadastro Incompleto',
   INACTIVE: 'Reprovada',
+};
+
+const STATUS_CADASTRO: Record<string, { label: string; color: string }> = {
+  INCOMPLETE: { label: 'Cadastro Incompleto', color: 'bg-yellow-100 text-yellow-700' },
+  PENDING_APPROVAL: { label: 'Cadastro Completo', color: 'bg-blue-100 text-blue-700' },
+  ACTIVE: { label: 'Cadastro Completo', color: 'bg-blue-100 text-blue-700' },
+  INACTIVE: { label: 'Cadastro Completo', color: 'bg-blue-100 text-blue-700' },
+};
+
+const STATUS_APROVACAO: Record<string, { label: string; color: string }> = {
+  INCOMPLETE: { label: 'Aguardando Aprovação', color: 'bg-orange-100 text-orange-700' },
+  PENDING_APPROVAL: { label: 'Aguardando Aprovação', color: 'bg-orange-100 text-orange-700' },
+  ACTIVE: { label: 'Aprovado', color: 'bg-green-100 text-green-700' },
+  INACTIVE: { label: 'Reprovado', color: 'bg-red-100 text-red-700' },
 };
 
 export default function Funil() {
@@ -282,38 +296,28 @@ export default function Funil() {
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between pt-3 border-t border-border">
+                  <div className="flex flex-col gap-1 pt-3 border-t border-border">
 
-                    <div className="flex items-center gap-1.5 text-[0.75rem] text-muted-foreground">
-                      <Calendar className="h-3.5 w-3.5" />
-                      <span>
-                        {formatDate(
-                          company.updatedAt ??
-                            company.createdAt,
-                        )}
-                      </span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-[0.75rem] text-muted-foreground">
+                        <Calendar className="h-3.5 w-3.5" />
+                        <span>
+                          {formatDate(
+                            company.updatedAt ??
+                              company.createdAt,
+                          )}
+                        </span>
+                      </div>
                     </div>
 
-                    <span
-                      className={`text-[0.75rem] px-2 py-1 rounded text-white ${
-                        company.status ===
-                        'ACTIVE'
-                          ? 'bg-green-500'
-                          : company.status ===
-                            'PENDING_APPROVAL'
-                          ? 'bg-yellow-500'
-                          : company.status ===
-                            'INACTIVE'
-                          ? 'bg-red-500'
-                          : 'bg-orange-500'
-                      }`}
-                    >
-                      {
-                        statusLabels[
-                          company.status
-                        ]
-                      }
-                    </span>
+                    <div className="flex gap-2 flex-wrap mt-1">
+                      <span className={`text-[0.75rem] px-2 py-1 rounded-full font-medium ${STATUS_CADASTRO[company.status]?.color || 'bg-gray-100 text-gray-600'}`}>
+                        {STATUS_CADASTRO[company.status]?.label || company.status}
+                      </span>
+                      <span className={`text-[0.75rem] px-2 py-1 rounded-full font-medium ${STATUS_APROVACAO[company.status]?.color || 'bg-gray-100 text-gray-600'}`}>
+                        {STATUS_APROVACAO[company.status]?.label || company.status}
+                      </span>
+                    </div>
 
                   </div>
 
