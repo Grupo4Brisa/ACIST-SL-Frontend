@@ -709,12 +709,21 @@ export default function Dashboard() {
 
           <div
 
+            onClick={() =>
+              navigate('/admin/eventos')
+            }
+
             className="
               bg-card
               rounded-lg
               border
               border-border
               p-6
+              cursor-pointer
+              hover:border-[#5DA5FF]
+              hover:shadow-lg
+              transition-all
+              group
             "
 
           >
@@ -724,26 +733,49 @@ export default function Dashboard() {
             <div
 
               className="
-                bg-blue-500
-                rounded-lg
-                p-3
-                w-fit
+                flex
+                items-center
+                justify-between
                 mb-4
               "
 
             >
 
-
-              <Target
+              <div
 
                 className="
-                  h-6
-                  w-6
-                  text-white
+                  bg-blue-500
+                  rounded-lg
+                  p-3
+                  w-fit
+                "
+
+              >
+
+
+                <Target
+
+                  className="
+                    h-6
+                    w-6
+                    text-white
+                  "
+
+                />
+
+
+              </div>
+
+              <ArrowRight
+
+                className="
+                  h-5
+                  w-5
+                  text-gray-400
+                  group-hover:text-[#5DA5FF]
                 "
 
               />
-
 
             </div>
 
@@ -796,12 +828,21 @@ export default function Dashboard() {
 
           <div
 
+            onClick={() =>
+              navigate('/admin/documentos-por-empresa')
+            }
+
             className="
               bg-card
               rounded-lg
               border
               border-border
               p-6
+              cursor-pointer
+              hover:border-[#5DA5FF]
+              hover:shadow-lg
+              transition-all
+              group
             "
 
           >
@@ -811,28 +852,51 @@ export default function Dashboard() {
             <div
 
               className="
-                bg-green-500
-                rounded-lg
-                p-3
-                w-fit
+                flex
+                items-center
+                justify-between
                 mb-4
               "
 
             >
 
-
-              <CheckCircle
-
+              <div
 
                 className="
-                  h-6
-                  w-6
-                  text-white
+                  bg-green-500
+                  rounded-lg
+                  p-3
+                  w-fit
                 "
 
+              >
+
+
+                <CheckCircle
+
+
+                  className="
+                    h-6
+                    w-6
+                    text-white
+                  "
+
+
+                />
+
+
+              </div>
+
+              <ArrowRight
+
+                className="
+                  h-5
+                  w-5
+                  text-gray-400
+                  group-hover:text-[#5DA5FF]
+                "
 
               />
-
 
             </div>
 

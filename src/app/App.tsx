@@ -78,6 +78,12 @@ import CompanyDetail from './pages/CompanyDetail';
 import AprovacaoCadastros from './pages/AprovacaoCadastros';
 import Cadastros from './pages/Cadastros';
 
+import DocumentosPorEmpresa from './pages/DocumentosPorEmpresa';
+
+import Eventos from './pages/Eventos';
+
+import Colaboradores from './pages/Colaboradores';
+
 
 
 
@@ -363,6 +369,23 @@ export default function App() {
               element={<Dashboard />}
 
             />
+
+            <Route 
+
+              path="documentos-por-empresa" 
+              
+              element={<DocumentosPorEmpresa />} />
+
+            <Route 
+
+              path="eventos" 
+              
+              element={<Eventos />} />  
+
+              <Route 
+                path="colaboradores" 
+                
+                element={<Colaboradores />} />
 
 
 

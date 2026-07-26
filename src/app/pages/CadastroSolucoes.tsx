@@ -6,29 +6,29 @@ import Header from '../components/Header/Header';
 import ProgressoCadastro from '../components/ProgressoCadastro';
 import Footer from '../components/Footer/Footer';
 
-const SOLUCOES = [
-  { id: 1,  name: 'Assessoria Jurídica' },
-  { id: 2,  name: 'Consultoria Empresarial' },
-  { id: 3,  name: 'Capacitação e Treinamentos' },
-  { id: 4,  name: 'Networking' },
-  { id: 5,  name: 'Certificado Digital' },
-  { id: 6,  name: 'Convênios e Parcerias' },
-  { id: 7,  name: 'Divulgação de Eventos' },
-  { id: 8,  name: 'Representação Política' },
-  { id: 9,  name: 'Serviços Financeiros' },
-  { id: 10, name: 'Marketing e Comunicação' },
-];
+interface Solucao {
+  id: number;
+  name: string;
+  description?: string;
+}
 
 export default function CadastroSolucoes() {
 
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const [solucoes, setSolucoes] = useState<Solucao[]>([]);
   const [selecionadas, setSelecionadas] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingSolucoes, setLoadingSolucoes] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    api.get('/solutions')
+      .then(res => setSolucoes(res.data || []))
+      .catch(() => setError('Erro ao carregar as soluções disponíveis.'))
+      .finally(() => setLoadingSolucoes(false));
+
     api.get(`/company-solutions/company/${id}`)
       .then(res => {
         if (res.data?.length > 0) {
@@ -109,7 +109,7 @@ export default function CadastroSolucoes() {
               <h2 className="text-2xl font-semibold text-gray-800">Soluções de Interesse</h2>
             </div>
             <p className="text-gray-500 mb-8">
-              Selecione as soluções que mais interessam à sua empresa:
+              Quais dessas soluções deseja agregar em seu negócio?
             </p>
 
             {error && (
@@ -119,31 +119,39 @@ export default function CadastroSolucoes() {
             )}
 
             {/* GRID DE SOLUÇÕES */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {SOLUCOES.map(solucao => {
-                const selecionada = selecionadas.includes(solucao.id);
-                return (
-                  <label
-                    key={solucao.id}
-                    className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                      selecionada
-                        ? 'border-[#0C3A59] bg-[#0C3A59]/5'
-                        : 'border-gray-200 hover:border-gray-300 bg-white'
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selecionada}
-                      onChange={() => toggleSolucao(solucao.id)}
-                      className="w-5 h-5 accent-[#0C3A59] cursor-pointer"
-                    />
-                    <span className={`text-sm font-medium ${selecionada ? 'text-[#0C3A59]' : 'text-gray-700'}`}>
-                      {solucao.name}
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
+            {loadingSolucoes ? (
+              <p className="text-sm text-gray-500">Carregando soluções...</p>
+            ) : solucoes.length === 0 ? (
+              <p className="text-sm text-gray-500">
+                Nenhuma solução disponível no momento.
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {solucoes.map(solucao => {
+                  const selecionada = selecionadas.includes(solucao.id);
+                  return (
+                    <label
+                      key={solucao.id}
+                      className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                        selecionada
+                          ? 'border-[#0C3A59] bg-[#0C3A59]/5'
+                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selecionada}
+                        onChange={() => toggleSolucao(solucao.id)}
+                        className="w-5 h-5 accent-[#0C3A59] cursor-pointer"
+                      />
+                      <span className={`text-sm font-medium ${selecionada ? 'text-[#0C3A59]' : 'text-gray-700'}`}>
+                        {solucao.name}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
 
             {selecionadas.length > 0 && (
               <p className="mt-4 text-sm text-gray-500">

@@ -17,19 +17,52 @@ interface Task {
 interface TaskForm {
   title: string;
   description: string;
-  assignedTo: string;
   dueDate: string;
+}
+
+// =========================
+// USUÁRIO LOGADO (via JWT)
+// O front só guarda o token (localStorage 'token'),
+// então o id do colaborador é extraído do payload
+// do JWT (campo "sub", conforme auth.service.ts).
+// =========================
+
+function getLoggedUserId(): number | null {
+
+  const token = localStorage.getItem('token');
+
+  if (!token) return null;
+
+  try {
+
+    const payloadBase64 = token.split('.')[1];
+
+    const payloadJson = atob(
+      payloadBase64.replace(/-/g, '+').replace(/_/g, '/'),
+    );
+
+    const payload = JSON.parse(payloadJson);
+
+    return payload.sub ?? null;
+
+  } catch {
+
+    return null;
+
+  }
+
 }
 
 export default function Tarefas() {
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [companies, setCompanies] = useState<Record<number, string>>({});
+  const [users, setUsers] = useState<Record<number, string>>({});
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState('');
-  const [form, setForm] = useState<TaskForm>({ title: '', description: '', assignedTo: '', dueDate: '' });
+  const [form, setForm] = useState<TaskForm>({ title: '', description: '', dueDate: '' });
 
   async function loadTasks() {
     try {
@@ -52,6 +85,14 @@ export default function Tarefas() {
         setCompanies(map);
       })
       .catch(() => {});
+    // carrega nomes dos colaboradores para referência
+    api.get('/users')
+      .then(res => {
+        const map: Record<number, string> = {};
+        res.data.forEach((u: any) => { map[u.id] = u.name; });
+        setUsers(map);
+      })
+      .catch(() => {});
   }, []);
 
   function formatDate(date: string) {
@@ -67,15 +108,23 @@ export default function Tarefas() {
   async function handleCreateTask(event: React.FormEvent) {
     event.preventDefault();
     setError('');
+
+    const assignedTo = getLoggedUserId();
+
+    if (!assignedTo) {
+      setError('Não foi possível identificar o usuário logado. Faça login novamente.');
+      return;
+    }
+
     try {
       await api.post('/tasks', {
         title: form.title,
         description: form.description,
-        assignedTo: Number(form.assignedTo),
+        assignedTo,
         dueDate: new Date(form.dueDate).toISOString(),
       });
       setShowModal(false);
-      setForm({ title: '', description: '', assignedTo: '', dueDate: '' });
+      setForm({ title: '', description: '', dueDate: '' });
       loadTasks();
     } catch (error: any) {
       setError(error.response?.data?.message || 'Erro ao criar tarefa');
@@ -180,7 +229,7 @@ export default function Tarefas() {
                   <div className="flex items-center gap-6 mt-4 text-sm text-muted-foreground">
                     <span className="flex items-center gap-2">
                       <User className="h-4 w-4" />
-                      Responsável: {task.assignedTo}
+                      Responsável: {users[task.assignedTo] ?? `ID ${task.assignedTo}`}
                     </span>
                     <span className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
@@ -220,12 +269,6 @@ export default function Tarefas() {
                 <label>Descrição</label>
                 <textarea required value={form.description}
                   onChange={e => setForm({ ...form, description: e.target.value })}
-                  className="w-full border rounded-lg px-3 py-2" />
-              </div>
-              <div>
-                <label>Responsável (ID)</label>
-                <input type="number" required value={form.assignedTo}
-                  onChange={e => setForm({ ...form, assignedTo: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2" />
               </div>
               <div>

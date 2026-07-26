@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FileText, Save, ArrowRight, LogOut, Upload, CheckCircle, X, Plus, Trash2 } from 'lucide-react';
+import { FileText, Save, ArrowRight, LogOut, Upload, CheckCircle, X, Plus, Trash2, Eye, Download } from 'lucide-react';
 import api from '../services/api';
 import Header from '../components/Header/Header';
 import ProgressoCadastro from '../components/ProgressoCadastro';
@@ -63,6 +63,39 @@ export default function CadastroDocumentos() {
     try {
       await api.delete(`/documents/${docId}`);
       setDocsSalvos(prev => prev.filter(d => d.id !== docId));
+    } catch {
+      // silencioso
+    }
+  }
+
+  async function viewSalvo(docId: number) {
+    try {
+      const response = await api.get(`/documents/${docId}/download`, {
+        responseType: 'blob',
+      });
+      const blob = new Blob([response.data], {
+        type: response.headers['content-type'],
+      });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch {
+      // silencioso
+    }
+  }
+
+  async function downloadSalvo(docId: number, fileName: string) {
+    try {
+      const response = await api.get(`/documents/${docId}/download`, {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
     } catch {
       // silencioso
     }
@@ -167,6 +200,8 @@ export default function CadastroDocumentos() {
                     onAdd={(files) => addFiles(doc.key, files)}
                     onRemoveNovo={(i) => removeNovoArquivo(doc.key, i)}
                     onRemoveSalvo={removeSalvo}
+                    onViewSalvo={viewSalvo}
+                    onDownloadSalvo={downloadSalvo}
                   />
                 ))}
               </div>
@@ -182,6 +217,8 @@ export default function CadastroDocumentos() {
                     onAdd={(files) => addFiles(doc.key, files)}
                     onRemoveNovo={(i) => removeNovoArquivo(doc.key, i)}
                     onRemoveSalvo={removeSalvo}
+                    onViewSalvo={viewSalvo}
+                    onDownloadSalvo={downloadSalvo}
                   />
                 ))}
               </div>
@@ -208,13 +245,15 @@ export default function CadastroDocumentos() {
   );
 }
 
-function DocRow({ config, salvos, novos, onAdd, onRemoveNovo, onRemoveSalvo }: {
+function DocRow({ config, salvos, novos, onAdd, onRemoveNovo, onRemoveSalvo, onViewSalvo, onDownloadSalvo }: {
   config: DocConfig;
   salvos: DocSalvo[];
   novos: File[];
   onAdd: (files: FileList | null) => void;
   onRemoveNovo: (index: number) => void;
   onRemoveSalvo: (id: number) => void;
+  onViewSalvo: (id: number) => void;
+  onDownloadSalvo: (id: number, fileName: string) => void;
 }) {
   const temArquivo = salvos.length > 0 || novos.length > 0;
 
@@ -237,14 +276,27 @@ function DocRow({ config, salvos, novos, onAdd, onRemoveNovo, onRemoveSalvo }: {
         <div className="space-y-2 mb-3">
           {salvos.map(doc => (
             <div key={doc.id} className="flex items-center justify-between px-3 py-2 rounded-lg border border-green-200 bg-green-50 text-sm text-green-700">
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
+              <div className="flex items-center gap-2 min-w-0">
+                <FileText className="h-4 w-4 shrink-0" />
                 <span className="truncate max-w-[260px]">{doc.fileName}</span>
               </div>
-              <button type="button" onClick={() => onRemoveSalvo(doc.id)}
-                className="ml-2 text-green-400 hover:text-red-500 transition-colors">
-                <Trash2 className="h-4 w-4" />
-              </button>
+              <div className="flex items-center gap-1 shrink-0">
+                <button type="button" onClick={() => onViewSalvo(doc.id)}
+                  title="Visualizar"
+                  className="p-1.5 rounded-md text-green-500 hover:bg-green-100 hover:text-green-700 transition-colors">
+                  <Eye className="h-4 w-4" />
+                </button>
+                <button type="button" onClick={() => onDownloadSalvo(doc.id, doc.fileName)}
+                  title="Baixar"
+                  className="p-1.5 rounded-md text-green-500 hover:bg-green-100 hover:text-green-700 transition-colors">
+                  <Download className="h-4 w-4" />
+                </button>
+                <button type="button" onClick={() => onRemoveSalvo(doc.id)}
+                  title="Remover"
+                  className="p-1.5 rounded-md text-green-400 hover:bg-red-50 hover:text-red-500 transition-colors">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
