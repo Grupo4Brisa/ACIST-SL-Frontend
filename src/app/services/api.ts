@@ -39,7 +39,7 @@ api.interceptors.request.use(
         }
       } catch {}
 
-      const isInWizard = window.location.pathname.startsWith('/cadastro');
+      const isInWizard = window.location.pathname.startsWith('/cadastro') && !window.location.search.includes('admin=true');
 
       if (!isInWizard || !isCollaboratorToken) {
         config.headers =
