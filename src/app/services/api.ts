@@ -29,18 +29,7 @@ api.interceptors.request.use(
 
     if (token) {
 
-      // Não enviar token de colaborador nas rotas públicas do wizard
-      const isWizardRoute = config.url && (
-        config.url.includes('/companies/landing') ||
-        config.url.includes('/company-contacts') ||
-        config.url.includes('/company-disclosures') ||
-        config.url.includes('/social-networks') ||
-        config.url.includes('/company-solutions') ||
-        config.url.includes('/documents') ||
-        config.url.includes('/terms-acceptance')
-      );
-
-      // Só envia token se não for rota do wizard OU se o usuário for do tipo COMPANY
+      // Não enviar token de colaborador nas rotas do wizard (/cadastro/*)
       let isCollaboratorToken = false;
       try {
         const user = localStorage.getItem('user');
@@ -50,7 +39,9 @@ api.interceptors.request.use(
         }
       } catch {}
 
-      if (!isWizardRoute || !isCollaboratorToken) {
+      const isInWizard = window.location.pathname.startsWith('/cadastro');
+
+      if (!isInWizard || !isCollaboratorToken) {
         config.headers =
           config.headers || {};
 
