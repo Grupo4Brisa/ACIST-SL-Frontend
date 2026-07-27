@@ -444,7 +444,8 @@ export default function CompanyDetail(){
                 onClick={() => {
                   localStorage.removeItem('companyData');
                   localStorage.setItem('companyId', String(company.id));
-                  navigate(`/cadastro/${company.id}?admin=true`);
+                  localStorage.setItem('adminEdit', '1');
+                  navigate(`/cadastro/${company.id}`);
                 }}
                 className="
                   px-4

@@ -39,7 +39,8 @@ api.interceptors.request.use(
         }
       } catch {}
 
-      const isInWizard = window.location.pathname.startsWith('/cadastro') && !window.location.search.includes('admin=true');
+      const isAdminEdit = localStorage.getItem('adminEdit') === '1';
+      const isInWizard = window.location.pathname.startsWith('/cadastro') && !isAdminEdit;
 
       if (!isInWizard || !isCollaboratorToken) {
         config.headers =

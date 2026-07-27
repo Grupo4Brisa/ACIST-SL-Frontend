@@ -28,6 +28,7 @@ export default function CadastroTermos() {
         accepted: true,
         termVersion: 'v1.0',
       });
+      localStorage.removeItem('adminEdit');
       navigate('/cadastro-concluido');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erro ao finalizar cadastro.');
