@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, X, Megaphone, Eye, EyeOff, Send } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Megaphone, Eye, EyeOff } from 'lucide-react';
 import api from '../services/api';
 
 interface Announcement {
@@ -28,8 +28,6 @@ export default function Comunicados() {
   const [form, setForm]         = useState<AnnouncementForm>(EMPTY_FORM);
   const [saving, setSaving]     = useState(false);
   const [error, setError]       = useState('');
-  const [sending, setSending]   = useState<number | null>(null);
-  const [sendResult, setSendResult] = useState<{sent:number;errors:number} | null>(null);
 
   async function load() {
     try {
@@ -55,18 +53,6 @@ export default function Comunicados() {
     setShowModal(true);
   }
 
-  async function handleSendEmail(id: number) {
-    setSending(id);
-    setSendResult(null);
-    try {
-      const res = await api.post(`/announcements/${id}/send-email`);
-      setSendResult(res.data);
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Erro ao enviar emails.');
-    } finally {
-      setSending(null);
-    }
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -171,12 +157,6 @@ export default function Comunicados() {
                     className="p-2 rounded-lg hover:bg-muted"
                     title={a.active ? 'Desativar' : 'Ativar'}>
                     {a.active ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-green-600" />}
-                  </button>
-                  <button onClick={() => handleSendEmail(a.id)}
-                    disabled={sending === a.id}
-                    className="p-2 rounded-lg hover:bg-blue-100"
-                    title="Enviar por email para todos os associados">
-                    <Send className={`h-4 w-4 ${sending === a.id ? 'text-gray-300' : 'text-blue-500'}`} />
                   </button>
                   <button onClick={() => openEdit(a)}
                     className="p-2 rounded-lg hover:bg-muted"
