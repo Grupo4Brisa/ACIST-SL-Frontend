@@ -1,4 +1,6 @@
+import { useEffect, useState as useStateHook } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 import { CheckCircle, Clock, AlertCircle, Calendar, Bell, User, Mail, Building2, LogOut, Edit, CreditCard, ArrowRight, Users, Search, Phone, MapPin, Filter } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useState } from 'react';
@@ -85,20 +87,16 @@ export default function AreaAssociado() {
     }
   ];
 
-  const avisos = [
-    {
-      id: 1,
-      title: 'Nova parceria com instituição financeira',
-      conteudo: 'Associados têm condições especiais de crédito. Consulte a secretaria.',
-      data: '2026-04-10'
-    },
-    {
-      id: 2,
-      title: 'Mensalidade de Maio',
-      conteudo: 'Boleto disponível para download na área de documentos.',
-      data: '2026-04-08'
-    }
-  ];
+  const [comunicados, setComunicados] = useStateHook<{id:number;title:string;content:string;createdAt:string}[]>([]);
+
+  useEffect(() => {
+    api.get('/announcements')
+      .then(res => {
+        const ativos = (Array.isArray(res.data) ? res.data : []).filter((a: any) => a.active);
+        setComunicados(ativos);
+      })
+      .catch(() => {});
+  }, []);
 
   const getStatusConfig = (status: string) => {
     switch (status) {
