@@ -16,12 +16,17 @@ import {
   EyeOff,
 } from 'lucide-react';
 
-import Logo from '../components/Logo';
+
 import WhatsAppButton from '../components/WhatsAppButton';
+import Header from '../components/Header/Header';
 
 import api from '../services/api';
 
 import Footer from '../components/Footer/Footer';
+
+import { features } from '../../config/features';
+
+<Header />
 
 export default function BoasVindasHome() {
 
@@ -277,84 +282,7 @@ export default function BoasVindasHome() {
     <div className="min-h-screen bg-gradient-to-br from-[#0C3A59] to-[#226897]">
 
 
-
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-
-
-        <div className="max-w-7xl mx-auto px-6 py-4">
-
-
-          <div className="flex items-center justify-between">
-
-
-
-            <Logo
-
-              size="md"
-
-              theme="light"
-
-            />
-
-
-
-
-
-            <div className="flex gap-3">
-
-
-
-              <button
-
-                onClick={() =>
-                  navigate('/login')
-                }
-
-
-                className="px-6 py-2.5 bg-[#5DA5FF] text-white hover:bg-[#226897] rounded-lg transition-colors"
-
-              >
-
-                Área do Colaborador
-
-              </button>
-
-
-
-
-
-              <button
-
-                onClick={() =>
-                  navigate('/login-associado')
-                }
-
-
-                className="px-6 py-2.5 bg-[#5DA5FF] text-white hover:bg-[#226897] rounded-lg transition-colors"
-
-              >
-
-                Área do Associado
-
-              </button>
-
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-        </div>
-
-
-      </nav>
-
-
-
+      <Header />
 
 
       <div className="max-w-7xl mx-auto px-6 py-16">
@@ -775,133 +703,137 @@ export default function BoasVindasHome() {
 
 
 
-              {/* SENHA ADICIONADA PARA O BACKEND */}
+              {/* SENHA - exibida apenas quando a feature flag está ativa */}
 
 
 
-              <div>
+              {features.homePassword && (
 
+                <div>
 
-                <label className="block mb-2 text-[0.875rem]">
 
+                  <label className="block mb-2 text-[0.875rem]">
 
-                  <Eye className="inline h-4 w-4 mr-1.5" />
 
+                    <Eye className="inline h-4 w-4 mr-1.5" />
 
-                  Criar senha
 
+                    Criar senha
 
-                </label>
 
+                  </label>
 
 
 
 
-                <div className="relative">
 
+                  <div className="relative">
 
-                  <input
 
+                    <input
 
-                    type={
 
-                      showPassword
+                      type={
 
-                        ? 'text'
+                        showPassword
 
-                        : 'password'
+                          ? 'text'
 
-                    }
+                          : 'password'
 
+                      }
 
 
-                    required
 
+                      required
 
-                    minLength={6}
 
+                      minLength={6}
 
 
-                    placeholder="Digite sua senha"
 
+                      placeholder="Digite sua senha"
 
 
-                    className="w-full px-4 py-3.5 pr-12 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
 
+                      className="w-full px-4 py-3.5 pr-12 border border-border rounded-lg bg-input-background focus:outline-none focus:ring-2 focus:ring-[#5DA5FF] transition-all"
 
 
-                    value={formData.password}
 
+                      value={formData.password}
 
 
-                    onChange={e =>
 
-                      setFormData({
+                      onChange={e =>
 
-                        ...formData,
+                        setFormData({
 
-                        password: e.target.value
+                          ...formData,
 
-                      })
+                          password: e.target.value
 
-                    }
+                        })
 
+                      }
 
 
-                    disabled={isSubmitting}
 
+                      disabled={isSubmitting}
 
-                  />
 
+                    />
 
 
 
 
-                  <button
 
+                    <button
 
-                    type="button"
 
+                      type="button"
 
-                    onClick={() =>
 
-                      setShowPassword(!showPassword)
+                      onClick={() =>
 
-                    }
+                        setShowPassword(!showPassword)
 
+                      }
 
 
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
 
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
 
-                  >
 
+                    >
 
 
-                    {
 
-                      showPassword
+                      {
 
-                        ?
+                        showPassword
 
-                        <EyeOff className="h-5 w-5" />
+                          ?
 
-                        :
+                          <EyeOff className="h-5 w-5" />
 
-                        <Eye className="h-5 w-5" />
+                          :
 
+                          <Eye className="h-5 w-5" />
 
-                    }
 
+                      }
 
 
-                  </button>
+
+                    </button>
+
+
+                  </div>
 
 
                 </div>
 
-
-              </div>
+              )}
                             <div>
 
 

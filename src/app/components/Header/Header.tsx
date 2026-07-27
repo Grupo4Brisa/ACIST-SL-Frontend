@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../Logo";
+import { features } from "../../../config/features";
+
 
 interface HeaderProps {
   showHomeButton?: boolean;
@@ -78,13 +80,13 @@ export default function Header({
               </button>
             )}
 
-            {showAssociateArea && (
+            {showAssociateArea && features.associateArea && (
               <button
                 onClick={() => navigate("/login-associado")}
                 className="
                   px-6
                   py-2.5
-                  bg-[#0C3A59]
+                  bg-[#5DA5FF]
                   text-white
                   rounded-lg
                   hover:bg-[#226897]
