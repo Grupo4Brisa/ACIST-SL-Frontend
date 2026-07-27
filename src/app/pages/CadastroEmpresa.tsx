@@ -21,6 +21,8 @@ import Header from '../components/Header/Header';
 
 import Footer from '../components/Footer/Footer';
 
+import { features } from '../../config/features';
+
 export default function CadastroDados() {
 
 
@@ -98,13 +100,11 @@ export default function CadastroDados() {
       'pequena': 'Pequena',
       'small': 'Pequena',
       'media': 'Média',
-      'média': 'Média',
       'medio': 'Média',
-      'médio': 'Média',
       'grande': 'Grande',
       'large': 'Grande',
     };
-    return map[porte.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')] || porte;
+    return map[porte.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')] || porte;
   }
 
   useEffect(() => {
@@ -212,6 +212,10 @@ export default function CadastroDados() {
 
   function validarSenhaNovoCadastro(): string | null {
 
+    if(!features.cadastroEmpresaPassword){
+      return null;
+    }
+
     const storedIdCheck = localStorage.getItem('companyId');
     const isEditing = !!(companyId || (storedIdCheck && storedIdCheck !== 'null'));
 
@@ -290,7 +294,9 @@ export default function CadastroDados() {
 
 
         password:
-          formData.password,
+          features.cadastroEmpresaPassword
+            ? formData.password
+            : undefined,
 
 
         phone:
@@ -1745,123 +1751,127 @@ export default function CadastroDados() {
 
 
 
-              <div
+              {features.cadastroEmpresaPassword && (
 
-                className="
+                <div
 
-                  grid
+                  className="
 
-                  md:grid-cols-2
+                    grid
 
-                  gap-5
+                    md:grid-cols-2
 
-                "
+                    gap-5
 
-              >
+                  "
 
-
-
-
-                <div>
-
-
-                  <label
-
-                    className={labelStyle}
-
-                  >
-
-                    Senha de acesso *
-
-                  </label>
+                >
 
 
 
 
-                  <input
+                  <div>
 
-                    className={inputStyle}
 
-                    type="password"
+                    <label
 
-                    placeholder="Mínimo 8 caracteres"
+                      className={labelStyle}
 
-                    value={
-                      formData.password
-                    }
+                    >
 
-                    onChange={(e)=>
+                      Senha de acesso *
 
-                      handleChange(
+                    </label>
 
-                        'password',
 
-                        e.target.value
 
-                      )
 
-                    }
+                    <input
 
-                  />
+                      className={inputStyle}
+
+                      type="password"
+
+                      placeholder="Mínimo 8 caracteres"
+
+                      value={
+                        formData.password
+                      }
+
+                      onChange={(e)=>
+
+                        handleChange(
+
+                          'password',
+
+                          e.target.value
+
+                        )
+
+                      }
+
+                    />
+
+
+                  </div>
+
+
+
+
+
+
+
+                  <div>
+
+
+                    <label
+
+                      className={labelStyle}
+
+                    >
+
+                      Confirmar senha *
+
+                    </label>
+
+
+
+
+                    <input
+
+                      className={inputStyle}
+
+                      type="password"
+
+                      placeholder="Digite novamente"
+
+                      value={
+                        formData.confirmPassword
+                      }
+
+                      onChange={(e)=>
+
+                        handleChange(
+
+                          'confirmPassword',
+
+                          e.target.value
+
+                        )
+
+                      }
+
+                    />
+
+
+                  </div>
+
+
 
 
                 </div>
 
-
-
-
-
-
-
-                <div>
-
-
-                  <label
-
-                    className={labelStyle}
-
-                  >
-
-                    Confirmar senha *
-
-                  </label>
-
-
-
-
-                  <input
-
-                    className={inputStyle}
-
-                    type="password"
-
-                    placeholder="Digite novamente"
-
-                    value={
-                      formData.confirmPassword
-                    }
-
-                    onChange={(e)=>
-
-                      handleChange(
-
-                        'confirmPassword',
-
-                        e.target.value
-
-                      )
-
-                    }
-
-                  />
-
-
-                </div>
-
-
-
-
-              </div>
+              )}
 
 
 
