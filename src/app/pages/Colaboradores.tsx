@@ -41,7 +41,13 @@ const ROLE_LABELS: Record<string, string> = {
   COLABORADOR_APROVADOR: 'Aprovador',
 };
 
+import { useAuth } from '../context/AuthContext';
+
 export default function Colaboradores() {
+
+  const { user } = useAuth();
+  const isAprovador = user?.role === 'COLABORADOR_APROVADOR';
+  const isAdmin = user?.role === 'COLABORADOR_ADMIN';
 
   const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
   const [loading, setLoading] = useState(true);
@@ -233,6 +239,7 @@ export default function Colaboradores() {
 
         </div>
 
+        {(isAprovador || isAdmin) && (
         <button
           onClick={openCreateModal}
           className="
@@ -249,6 +256,7 @@ export default function Colaboradores() {
           <Plus className="h-4 w-4" />
           Novo Colaborador
         </button>
+        )}
 
       </div>
 
@@ -404,6 +412,8 @@ export default function Colaboradores() {
 
               <div className="flex items-center gap-2">
 
+                {isAprovador && (
+                  <>
                 <button
                   onClick={() => openEditModal(colaborador)}
                   className="p-2 rounded-lg hover:bg-muted"
@@ -419,6 +429,8 @@ export default function Colaboradores() {
                 >
                   <Trash2 className="h-5 w-5" />
                 </button>
+                  </>
+                )}
 
               </div>
 
@@ -516,8 +528,8 @@ export default function Colaboradores() {
                   onChange={e => setForm({ ...form, role: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2"
                 >
-                  <option value="COLABORADOR_APROVADOR">Aprovador</option>
                   <option value="COLABORADOR_ADMIN">Administrador</option>
+                  {isAprovador && <option value="COLABORADOR_APROVADOR">Aprovador</option>}
                 </select>
               </div>
 

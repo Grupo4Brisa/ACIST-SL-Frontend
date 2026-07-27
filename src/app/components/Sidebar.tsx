@@ -7,18 +7,24 @@ import {
   CheckSquare,
   BarChart3,
   ClipboardCheck,
-  LogOut
+  LogOut,
+  Calendar,
+  DollarSign,
+  UserCog,
 } from 'lucide-react';
 import Logo from './Logo';
 import { useAuth } from '../context/AuthContext';
 
 const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Funil', href: '/admin/funil', icon: Layers },
-  { name: 'Cadastros', href: '/admin/cadastros', icon: Users },
-  { name: 'Tarefas', href: '/admin/tarefas', icon: CheckSquare },
-  { name: 'Aprovações', href: '/admin/aprovacoes', icon: ClipboardCheck },
-  { name: 'Relatórios', href: '/admin/relatorios', icon: BarChart3 }
+  { name: 'Dashboard',      href: '/admin',                icon: LayoutDashboard },
+  { name: 'Funil',          href: '/admin/funil',          icon: Layers },
+  { name: 'Cadastros',      href: '/admin/cadastros',      icon: Users },
+  { name: 'Aprovações',     href: '/admin/aprovacoes',     icon: ClipboardCheck },
+  { name: 'Tarefas',        href: '/admin/tarefas',        icon: CheckSquare },
+  { name: 'Eventos',        href: '/admin/eventos',        icon: Calendar },
+  { name: 'Pagamentos',     href: '/admin/pagamentos',     icon: DollarSign },
+  { name: 'Colaboradores',  href: '/admin/colaboradores',  icon: UserCog },
+  { name: 'Relatórios',     href: '/admin/relatorios',     icon: BarChart3 },
 ];
 
 export default function Sidebar() {

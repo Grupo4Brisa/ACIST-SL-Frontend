@@ -28,6 +28,15 @@ const STATUS_CADASTRO: Record<string, { label: string; color: string }> = {
   INACTIVE: { label: 'Cadastro Completo', color: 'bg-blue-100 text-blue-700' },
 };
 
+function getLoggedUserInfo() {
+  const token = localStorage.getItem('token');
+  if (!token) return { id: '', role: '' };
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    return { id: String(payload.sub ?? ''), role: payload.role ?? '' };
+  } catch { return { id: '', role: '' }; }
+}
+
 const STATUS_APROVACAO: Record<string, { label: string; color: string }> = {
   INCOMPLETE: { label: 'Aguardando Aprovação', color: 'bg-orange-100 text-orange-700' },
   PENDING_APPROVAL: { label: 'Aguardando Aprovação', color: 'bg-yellow-100 text-yellow-700' },
@@ -122,7 +131,7 @@ export default function CompanyDetail(){
 
 
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const isAprovador = user?.role === 'COLABORADOR_APROVADOR';
 
@@ -154,8 +163,9 @@ export default function CompanyDetail(){
   const [redesSociais, setRedesSociais] = useState<any>(null);
   const [solucoes, setSolucoes] = useState<any[]>([]);
   const [tarefas, setTarefas] = useState<any[]>([]);
-  const [novaTarefa, setNovaTarefa] = useState({ title: '', description: '', dueDate: '' });
+  const [novaTarefa, setNovaTarefa] = useState({ title: '', description: '', dueDate: '', assignedRole: '', assignedId: '' });
   const [criandoTarefa, setCriandoTarefa] = useState(false);
+  const [colabs, setColabs] = useState<{id:number;name:string;role:string}[]>([]);
 
   useEffect(()=>{
 
@@ -227,6 +237,7 @@ export default function CompanyDetail(){
       try {
         const response = await api.get(`/tasks/company/${id}`);
         setTarefas(response.data || []);
+        api.get('/users').then(r => setColabs(Array.isArray(r.data) ? r.data : [])).catch(()=>{});
       } catch {
         // silencioso
       }
@@ -1419,21 +1430,51 @@ export default function CompanyDetail(){
                         onChange={e => setNovaTarefa(p => ({ ...p, dueDate: e.target.value }))}
                         className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       />
+                      <select
+                        value={novaTarefa.assignedRole}
+                        onChange={e => setNovaTarefa(p => ({ ...p, assignedRole: e.target.value, assignedId: '' }))}
+                        className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <option value="">Qualquer perfil (opcional)</option>
+                        <option value="COLABORADOR_ADMIN">Administrador</option>
+                        <option value="COLABORADOR_APROVADOR">Aprovador</option>
+                      </select>
+                      <select
+                        value={novaTarefa.assignedId}
+                        onChange={e => setNovaTarefa(p => ({ ...p, assignedId: e.target.value }))}
+                        className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <option value="">Colaborador específico (opcional)</option>
+                        {(novaTarefa.assignedRole ? colabs.filter(u => u.role === novaTarefa.assignedRole) : colabs).map(u => (
+                          <option key={u.id} value={String(u.id)}>
+                            {u.name} ({u.role === 'COLABORADOR_ADMIN' ? 'Admin' : 'Aprovador'})
+                          </option>
+                        ))}
+                      </select>
                       <div className="flex gap-2">
                         <button
                           onClick={async () => {
                             if (!novaTarefa.title || !novaTarefa.dueDate) return;
                             try {
+                              let assignedTo = novaTarefa.assignedId ? Number(novaTarefa.assignedId) : null;
+                              if (!assignedTo && novaTarefa.assignedRole) {
+                                const group = colabs.filter(u => u.role === novaTarefa.assignedRole);
+                                if (group.length > 0) assignedTo = group[Math.floor(Math.random() * group.length)].id;
+                              }
+                              if (!assignedTo) {
+                                const info = getLoggedUserInfo();
+                                assignedTo = info.id ? Number(info.id) : 1;
+                              }
                               await api.post('/tasks', {
                                 companyId: Number(id),
                                 title: novaTarefa.title,
                                 description: novaTarefa.description || '-',
-                                assignedTo: 1,
+                                assignedTo,
                                 dueDate: novaTarefa.dueDate,
                               });
                               const res = await api.get(`/tasks/company/${id}`);
                               setTarefas(res.data || []);
-                              setNovaTarefa({ title: '', description: '', dueDate: '' });
+                              setNovaTarefa({ title: '', description: '', dueDate: '', assignedRole: '', assignedId: '' });
                               setCriandoTarefa(false);
                             } catch { /* silencioso */ }
                           }}
@@ -1442,7 +1483,7 @@ export default function CompanyDetail(){
                           Salvar
                         </button>
                         <button
-                          onClick={() => { setCriandoTarefa(false); setNovaTarefa({ title: '', description: '', dueDate: '' }); }}
+                          onClick={() => { setCriandoTarefa(false); setNovaTarefa({ title: '', description: '', dueDate: '', assignedRole: '', assignedId: '' }); }}
                           className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-muted"
                         >
                           Cancelar
@@ -1454,7 +1495,7 @@ export default function CompanyDetail(){
                   {/* BOTÃO NOVA TAREFA */}
                   {!criandoTarefa && (
                     <button
-                      onClick={() => setCriandoTarefa(true)}
+                      onClick={() => { const info = getLoggedUserInfo(); setNovaTarefa(p => ({ ...p, assignedRole: info.role, assignedId: info.id })); setCriandoTarefa(true); }}
                       className="mt-2 w-full py-3 border-2 border-dashed border-border rounded-lg flex items-center justify-center gap-2 hover:bg-muted transition-colors"
                     >
                       <CheckSquare className="h-4 w-4" />
