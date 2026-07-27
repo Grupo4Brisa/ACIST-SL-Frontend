@@ -51,10 +51,6 @@ export default function CadastroDados() {
 
       email: '',
 
-      password: '',
-
-      confirmPassword: '',
-
       phone: '',
 
       companySize: '',
@@ -205,35 +201,6 @@ export default function CadastroDados() {
 
 
 
-  // =========================
-  // Validação de senha
-  // só se aplica quando ainda não existe cadastro (empresa nova)
-  // =========================
-
-  function validarSenhaNovoCadastro(): string | null {
-
-    const storedIdCheck = localStorage.getItem('companyId');
-    const isEditing = !!(companyId || (storedIdCheck && storedIdCheck !== 'null'));
-
-    if(isEditing){
-      return null;
-    }
-
-    if(!formData.password){
-      return 'Preencha a senha para criar seu acesso.';
-    }
-
-    if(formData.password.length < 8){
-      return 'A senha deve possuir no mínimo 8 caracteres.';
-    }
-
-    if(formData.password !== formData.confirmPassword){
-      return 'As senhas não conferem.';
-    }
-
-    return null;
-
-  }
 
 
 
@@ -250,16 +217,6 @@ export default function CadastroDados() {
 
 
 
-      // "Salvar Rascunho" não exige todos os campos obrigatórios —
-      // salva o progresso parcial. Só validamos a senha quando é
-      // um cadastro novo, pois o backend precisa dela para criar a conta.
-
-      const erroSenha = validarSenhaNovoCadastro();
-
-      if(erroSenha){
-        alert(erroSenha);
-        return false;
-      }
 
 
 
@@ -287,10 +244,6 @@ export default function CadastroDados() {
 
         email:
           formData.email,
-
-
-        password:
-          formData.password,
 
 
         phone:
@@ -1762,101 +1715,7 @@ export default function CadastroDados() {
 
 
 
-                <div>
 
-
-                  <label
-
-                    className={labelStyle}
-
-                  >
-
-                    Senha de acesso *
-
-                  </label>
-
-
-
-
-                  <input
-
-                    className={inputStyle}
-
-                    type="password"
-
-                    placeholder="Mínimo 8 caracteres"
-
-                    value={
-                      formData.password
-                    }
-
-                    onChange={(e)=>
-
-                      handleChange(
-
-                        'password',
-
-                        e.target.value
-
-                      )
-
-                    }
-
-                  />
-
-
-                </div>
-
-
-
-
-
-
-
-                <div>
-
-
-                  <label
-
-                    className={labelStyle}
-
-                  >
-
-                    Confirmar senha *
-
-                  </label>
-
-
-
-
-                  <input
-
-                    className={inputStyle}
-
-                    type="password"
-
-                    placeholder="Digite novamente"
-
-                    value={
-                      formData.confirmPassword
-                    }
-
-                    onChange={(e)=>
-
-                      handleChange(
-
-                        'confirmPassword',
-
-                        e.target.value
-
-                      )
-
-                    }
-
-                  />
-
-
-                </div>
 
 
 
