@@ -32,7 +32,6 @@ api.interceptors.request.use(
       // Não enviar token de colaborador nas rotas públicas do wizard
       const isWizardRoute = config.url && (
         config.url.includes('/companies/landing') ||
-        (config.url.match(/\/companies\/\d+$/) && config.method === 'patch') ||
         config.url.includes('/company-contacts') ||
         config.url.includes('/company-disclosures') ||
         config.url.includes('/social-networks') ||
