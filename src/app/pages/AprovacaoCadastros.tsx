@@ -195,6 +195,7 @@ export default function AprovacaoCadastros() {
   }
 
   return (
+    <>
     <div className="p-8">
       <div className="mb-8">
         <h1>Aprovação de Cadastros</h1>
@@ -494,5 +495,6 @@ export default function AprovacaoCadastros() {
           </div>
         </div>
       )}
+    </>
   );
 }
