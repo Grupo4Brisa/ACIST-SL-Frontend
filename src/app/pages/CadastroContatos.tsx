@@ -82,6 +82,14 @@ export default function CadastroContatos() {
 
     // busca contatos existentes e deleta antes de recriar
     const existing = await api.get(`/company-contacts/company/${id}`);
+    const existingNames = (existing.data || []).map((c: any) => c.name.trim()).sort().join(',');
+    const newNames = validContacts.map(c => c.name.trim()).sort().join(',');
+    const contatosAlteraram = existingNames !== newNames ||
+      (existing.data || []).some((e: any, i: number) => {
+        const n = validContacts[i];
+        return n && (e.email !== n.email || e.phone !== n.phone || e.role !== n.role);
+      });
+
     for (const c of existing.data || []) {
       await api.delete(`/company-contacts/${c.id}`).catch(() => {});
     }
@@ -93,6 +101,7 @@ export default function CadastroContatos() {
         role: c.role,
         email: c.email,
         phone: c.phone,
+        changed: contatosAlteraram,
       }))
     );
 
