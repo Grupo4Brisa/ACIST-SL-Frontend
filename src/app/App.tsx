@@ -86,6 +86,7 @@ import Eventos from './pages/Eventos';
 import Colaboradores from './pages/Colaboradores';
 
 import Pagamentos from './pages/Pagamentos';
+import Comunicados from './pages/Comunicados';
 
 
 
@@ -422,6 +423,16 @@ export default function App() {
               path="pagamentos"
 
               element={<Pagamentos />}
+
+          />
+
+
+
+          <Route
+
+            path="comunicados"
+
+            element={<Comunicados />}
 
             />
 
