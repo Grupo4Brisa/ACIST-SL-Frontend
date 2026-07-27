@@ -120,7 +120,28 @@ export default function CadastroDados() {
     if(savedData){
       const parsed = JSON.parse(savedData);
       if(parsed.companySize) parsed.companySize = normalizarPorte(parsed.companySize);
-      setFormData(parsed);
+      setFormData(prev => ({
+        ...prev,
+        companyName:       parsed.companyName       || prev.companyName,
+        corporateName:     parsed.corporateName     || prev.corporateName,
+        cnpjcpf:           parsed.cnpjcpf           || prev.cnpjcpf,
+        email:             parsed.email             || prev.email,
+        phone:             parsed.phone             || prev.phone,
+        companySize:       parsed.companySize       || prev.companySize,
+        stateRegistration: parsed.stateRegistration || prev.stateRegistration,
+        address:           parsed.address           || prev.address,
+        neighborhood:      parsed.neighborhood      || prev.neighborhood,
+        city:              parsed.city              || prev.city,
+        state:             parsed.state             || prev.state,
+        zipCode:           parsed.zipCode           || prev.zipCode,
+        website:           parsed.website           || prev.website,
+        establishmentType: parsed.establishmentType || prev.establishmentType,
+        headquartersType:  parsed.headquartersType  || prev.headquartersType,
+        employeesCount:    parsed.employeesCount    || prev.employeesCount,
+        foundationDate:    parsed.foundationDate    || prev.foundationDate,
+        origin:            parsed.origin            || prev.origin,
+        originDetail:      parsed.originDetail      || prev.originDetail,
+      }));
     } else if(resolvedId) {
       // busca da API quando não há dados no localStorage (ex: acesso via token)
       api.get(`/companies/${resolvedId}`).then(res => {
@@ -385,9 +406,27 @@ export default function CadastroDados() {
 
         'companyData',
 
-        JSON.stringify(
-          formData
-        )
+        JSON.stringify({
+          companyName:       formData.companyName,
+          corporateName:     formData.corporateName,
+          cnpjcpf:           formData.cnpjcpf,
+          email:             formData.email,
+          phone:             formData.phone,
+          companySize:       formData.companySize,
+          stateRegistration: formData.stateRegistration,
+          address:           formData.address,
+          neighborhood:      formData.neighborhood,
+          city:              formData.city,
+          state:             formData.state,
+          zipCode:           formData.zipCode,
+          website:           formData.website,
+          establishmentType: formData.establishmentType,
+          headquartersType:  formData.headquartersType,
+          employeesCount:    formData.employeesCount,
+          foundationDate:    formData.foundationDate,
+          origin:            formData.origin,
+          originDetail:      formData.originDetail,
+        })
 
       );
 

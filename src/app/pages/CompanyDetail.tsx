@@ -156,6 +156,7 @@ export default function CompanyDetail(){
   const [novoComentario,setNovoComentario] =
     useState('');
   const [historico, setHistorico] = useState<any[]>([]);
+  const [historicoExpanded, setHistoricoExpanded] = useState<number | null>(null);
 
   const [documentos, setDocumentos] =
     useState<any[]>([]);
@@ -1255,14 +1256,38 @@ export default function CompanyDetail(){
                               <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}>
                                 {cfg.label}
                               </span>
-                              <span className="text-xs text-muted-foreground">
-                                {new Intl.DateTimeFormat('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }).format(new Date(h.createdAt))}
-                              </span>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-muted-foreground">
+                                  {new Intl.DateTimeFormat('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }).format(new Date(h.createdAt))}
+                                </span>
+                                {h.observation && (
+                                  <button
+                                    onClick={() => setHistoricoExpanded(historicoExpanded === h.id ? null : h.id)}
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    title="Ver detalhes"
+                                  >
+                                    🔍
+                                  </button>
+                                )}
+                              </div>
                             </div>
                             <p className="text-sm text-foreground mt-1">
-                              {h.userName !== 'Sistema' ? <span className="font-medium">{h.userName}</span> : <span className="text-muted-foreground">Sistema</span>}
+                              {h.userId ? (
+                                <span className="font-medium">{h.userName} <span className="text-xs text-muted-foreground font-normal">(ID: {h.userId})</span></span>
+                              ) : (
+                                <span className="text-muted-foreground">Sistema</span>
+                              )}
                             </p>
-                            {h.observation && <p className="text-xs text-muted-foreground mt-1">{h.observation}</p>}
+                            {historicoExpanded === h.id && h.observation && (
+                              <div className="mt-2 p-2 bg-muted/50 rounded text-xs text-foreground space-y-1">
+                                {h.observation.includes(' | ') || h.observation.includes('→')
+                                  ? h.observation.split(' | ').map((diff: string, i: number) => (
+                                      <p key={i} className="border-b border-border/50 pb-1 last:border-0 last:pb-0">{diff}</p>
+                                    ))
+                                  : <p>{h.observation}</p>
+                                }
+                              </div>
+                            )}
                           </div>
                         </div>
                       );
