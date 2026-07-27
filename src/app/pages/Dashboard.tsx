@@ -93,6 +93,12 @@ interface DashboardResponse {
     quantidade: number;
   }[];
 
+  avgTimes?: {
+    landingToFinalized: string;
+    finalizedToDecided: string;
+    landingToDecided: string;
+  };
+
 }
 
 
@@ -1948,6 +1954,46 @@ export default function Dashboard() {
 
 
       </div>
+
+      {/* ==========================
+          TEMPOS MÉDIOS
+      =========================== */}
+
+      <div className="
+        bg-card
+        rounded-lg
+        border
+        border-border
+        p-6
+        mb-8
+      ">
+
+        <h2 className="text-lg font-semibold mb-6">Tempos Médios do Funil</h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+          <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-100">
+            <p className="text-xs text-blue-600 font-medium uppercase tracking-wide mb-2">Landing → Conclusão das 8 etapas</p>
+            <p className="text-3xl font-bold text-blue-700">{dashboard?.avgTimes?.landingToFinalized ?? '-'}</p>
+            <p className="text-xs text-muted-foreground mt-1">Tempo médio para concluir o cadastro</p>
+          </div>
+
+          <div className="text-center p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+            <p className="text-xs text-yellow-600 font-medium uppercase tracking-wide mb-2">Conclusão → Aprovação/Reprovação</p>
+            <p className="text-3xl font-bold text-yellow-700">{dashboard?.avgTimes?.finalizedToDecided ?? '-'}</p>
+            <p className="text-xs text-muted-foreground mt-1">Tempo médio para decisão após conclusão</p>
+          </div>
+
+          <div className="text-center p-4 bg-green-50 rounded-xl border border-green-100">
+            <p className="text-xs text-green-600 font-medium uppercase tracking-wide mb-2">Landing → Aprovação/Reprovação</p>
+            <p className="text-3xl font-bold text-green-700">{dashboard?.avgTimes?.landingToDecided ?? '-'}</p>
+            <p className="text-xs text-muted-foreground mt-1">Tempo médio total do processo</p>
+          </div>
+
+        </div>
+
+      </div>
+
             {/* ==========================
           GARGALOS IDENTIFICADOS
           BACKEND
