@@ -77,7 +77,7 @@ export default function CadastroContatos() {
     const validContacts = contacts.filter(c => c.name.trim());
     if (validContacts.length === 0) {
       setError('Preencha ao menos o nome de um contato para salvar.');
-      return;
+      return false;
     }
 
     // busca contatos existentes e deleta antes de recriar
@@ -97,6 +97,7 @@ export default function CadastroContatos() {
     );
 
     alert('Rascunho salvo com sucesso!');
+    return true;
   } catch (err: any) {
     setError(err.response?.data?.message || 'Erro ao salvar contatos');
     alert('Erro ao salvar rascunho.');

@@ -39,6 +39,7 @@ export default function CadastroDivulgacao() {
   } catch (err: any) {
     setError(err.response?.data?.message || 'Erro ao salvar.');
     alert('Erro ao salvar rascunho.');
+    return false;
   } finally {
     setLoading(false);
   }

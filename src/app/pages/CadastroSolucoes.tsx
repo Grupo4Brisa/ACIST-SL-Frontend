@@ -49,7 +49,7 @@ export default function CadastroSolucoes() {
   async function saveDraft(): Promise<boolean> {
   if (selecionadas.length === 0) {
     setError('Selecione ao menos uma solução para salvar.');
-    return;
+    return false;
   }
   try {
     setLoading(true);
@@ -62,6 +62,7 @@ export default function CadastroSolucoes() {
   } catch (err: any) {
     setError(err.response?.data?.message || 'Erro ao salvar soluções.');
     alert('Erro ao salvar rascunho.');
+    return false;
   } finally {
     setLoading(false);
   }

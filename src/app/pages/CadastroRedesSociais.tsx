@@ -82,6 +82,7 @@ export default function CadastroRedesSociais() {
   } catch (err: any) {
     setError(err.response?.data?.message || 'Erro ao salvar redes sociais.');
     alert('Erro ao salvar rascunho.');
+    return false;
   } finally {
     setLoading(false);
   }
