@@ -92,43 +92,50 @@ export default function BoasVindasHome() {
     try {
 
 
+      const payload: Record<string, any> = {
+
+        cnpjcpf:
+          formData.cnpjcpf,
+
+
+        companyName:
+          formData.companyName,
+
+
+        corporateName:
+          formData.corporateName,
+
+
+        email:
+          formData.email,
+
+
+        companySize:
+          formData.companySize,
+
+
+        phone:
+          formData.phone,
+
+      };
+
+
+      // Só envia senha quando a feature está ativa —
+      // evita mandar string vazia e quebrar a validação
+      // @MinLength(8) do backend quando o campo nem
+      // aparece na tela.
+      if (features.homePassword) {
+
+        payload.password = formData.password;
+
+      }
+
+
       const response = await api.post(
 
         '/companies/landing',
 
-        {
-
-
-          cnpjcpf:
-            formData.cnpjcpf,
-
-
-          companyName:
-            formData.companyName,
-
-
-          corporateName:
-            formData.corporateName,
-
-
-          email:
-            formData.email,
-
-
-          password:
-            formData.password,
-
-
-          companySize:
-            formData.companySize,
-
-
-          phone:
-            formData.phone,
-
-
-        }
-
+        payload,
 
       );
 
