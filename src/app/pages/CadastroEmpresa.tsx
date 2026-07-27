@@ -116,8 +116,9 @@ export default function CadastroDados() {
     }
 
     // Se não veio do admin (sem companyId no storage = novo cadastro),
-    // limpa o token do colaborador para não contaminar o histórico
+    // limpa o token do colaborador e o flag adminEdit para não contaminar o histórico
     if (!resolvedId) {
+      localStorage.removeItem('adminEdit');
       const token = localStorage.getItem('token');
       const user = localStorage.getItem('user');
       if (token && user) {
