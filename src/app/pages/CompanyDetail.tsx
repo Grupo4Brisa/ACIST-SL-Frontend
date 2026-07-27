@@ -316,6 +316,7 @@ export default function CompanyDetail(){
 
   return (
 
+    <>
     <div className="h-full bg-background">
 
 
@@ -1993,8 +1994,7 @@ export default function CompanyDetail(){
         </div>
       )}
 
-
-
+    </>
 
   );
 
