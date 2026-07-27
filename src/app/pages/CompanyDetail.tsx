@@ -155,6 +155,7 @@ export default function CompanyDetail(){
 
   const [novoComentario,setNovoComentario] =
     useState('');
+  const [historico, setHistorico] = useState<any[]>([]);
 
   const [documentos, setDocumentos] =
     useState<any[]>([]);
@@ -238,6 +239,7 @@ export default function CompanyDetail(){
         const response = await api.get(`/tasks/company/${id}`);
         setTarefas(response.data || []);
         api.get('/users').then(r => setColabs(Array.isArray(r.data) ? r.data : [])).catch(()=>{});
+        api.get(`/approvals/company/${id}`).then(r => setHistorico(Array.isArray(r.data) ? r.data : [])).catch(()=>{});
       } catch {
         // silencioso
       }
@@ -1231,80 +1233,42 @@ export default function CompanyDetail(){
 
 
               {activeTab === 'historico' && (
-
-                <div>
-
-
-                  <h4 className="mb-4">
-
-                    Adicionar comentário
-
-                  </h4>
-
-
-                  <div className="
-                    flex
-                    gap-3
-                    mb-6
-                  ">
-
-
-                    <input
-                      type="text"
-                      placeholder="Digite uma observação..."
-                      value={novoComentario}
-                      onChange={
-                        e =>
-                        setNovoComentario(
-                          e.target.value
-                        )
-                      }
-                      className="
-                        flex-1
-                        px-4
-                        py-2
-                        border
-                        border-border
-                        rounded-lg
-                        bg-input-background
-                      "
-                    />
-
-
-
-                    <button
-                      className="
-                        px-4
-                        py-2
-                        bg-primary
-                        text-primary-foreground
-                        rounded-lg
-                      "
-                    >
-
-                      <MessageSquare
-                        className="h-4 w-4"
-                      />
-
-                    </button>
-
-
-                  </div>
-
-
-
-                  <div className="
-                    text-muted-foreground
-                    text-sm
-                  ">
-
-                    Nenhum histórico disponível.
-
-                  </div>
-
-
+                <div className="space-y-4">
+                  {historico.length === 0 ? (
+                    <p className="text-muted-foreground text-sm">Nenhum histórico disponível.</p>
+                  ) : (
+                    historico.map((h: any) => {
+                      const actionMap: Record<string, {label:string;color:string;icon:string}> = {
+                        CREATED:   { label: 'Cadastro iniciado',   color: 'bg-blue-100 text-blue-700',    icon: '📋' },
+                        COMPLETED: { label: 'Cadastro completado', color: 'bg-yellow-100 text-yellow-700', icon: '✏️' },
+                        APPROVED:  { label: 'Cadastro aprovado',   color: 'bg-green-100 text-green-700',  icon: '✅' },
+                        REJECTED:  { label: 'Cadastro reprovado',  color: 'bg-red-100 text-red-700',      icon: '❌' },
+                      };
+                      const cfg = actionMap[h.action] ?? { label: h.action, color: 'bg-gray-100 text-gray-700', icon: '•' };
+                      return (
+                        <div key={h.id} className="flex gap-4 items-start">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-base">
+                            {cfg.icon}
+                          </div>
+                          <div className="flex-1 border border-border rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}>
+                                {cfg.label}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {new Intl.DateTimeFormat('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }).format(new Date(h.createdAt))}
+                              </span>
+                            </div>
+                            <p className="text-sm text-foreground mt-1">
+                              {h.userName !== 'Sistema' ? <span className="font-medium">{h.userName}</span> : <span className="text-muted-foreground">Sistema</span>}
+                            </p>
+                            {h.observation && <p className="text-xs text-muted-foreground mt-1">{h.observation}</p>}
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
-
               )}
 
 

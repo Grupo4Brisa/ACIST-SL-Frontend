@@ -227,7 +227,7 @@ export default function CadastroDocumentos() {
             </div>
 
             <div className="flex justify-between mt-10 pt-8 border-t">
-              <button type="button" onClick={() => navigate(`/cadastro/${id}/mensalidade`)}
+              <button type="button" onClick={async () => { await saveDraft(); navigate(`/cadastro/${id}/mensalidade`); }}
                 className="px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100">
                 Voltar
               </button>
