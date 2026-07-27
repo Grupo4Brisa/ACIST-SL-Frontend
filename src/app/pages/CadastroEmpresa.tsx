@@ -115,6 +115,23 @@ export default function CadastroDados() {
       localStorage.setItem('companyId', String(resolvedId));
     }
 
+    // Se não veio do admin (sem companyId no storage = novo cadastro),
+    // limpa o token do colaborador para não contaminar o histórico
+    if (!resolvedId) {
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+      if (token && user) {
+        try {
+          const u = JSON.parse(user);
+          if (u.role) {
+            // É um token de colaborador — remove para o wizard rodar como Sistema
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
+        } catch {}
+      }
+    }
+
     const savedData = localStorage.getItem('companyData');
 
     if(savedData){
