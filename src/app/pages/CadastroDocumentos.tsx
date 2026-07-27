@@ -112,29 +112,31 @@ export default function CadastroDocumentos() {
   }
 
   async function saveDraft() {
-    try {
-      setLoading(true);
-      setError('');
-      for (const [key, files] of Object.entries(novosArquivos)) {
-        for (const file of files) {
-          const formData = new FormData();
-          formData.append('file', file);
-          formData.append('documentType', key);
-          formData.append('companyId', String(id));
-          await api.post('/documents', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          });
-        }
+  try {
+    setLoading(true);
+    setError('');
+    for (const [key, files] of Object.entries(novosArquivos)) {
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('documentType', key);
+        formData.append('companyId', String(id));
+        await api.post('/documents', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
       }
-      const res = await api.get(`/documents/company/${id}`);
-      setDocsSalvos(res.data || []);
-      setNovosArquivos({});
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao salvar documentos.');
-    } finally {
-      setLoading(false);
     }
+    const res = await api.get(`/documents/company/${id}`);
+    setDocsSalvos(res.data || []);
+    setNovosArquivos({});
+    alert('Rascunho salvo com sucesso!');
+  } catch (err: any) {
+    setError(err.response?.data?.message || 'Erro ao salvar documentos.');
+    alert('Erro ao salvar rascunho.');
+  } finally {
+    setLoading(false);
   }
+}
 
   async function handleNext() {
     if (!validateObrigatorios()) {

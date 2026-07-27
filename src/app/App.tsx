@@ -57,6 +57,7 @@ import CadastroDocumentos from './pages/CadastroDocumentos';
 import CadastroConcluido from './pages/CadastroConcluido';
 
 import CadastroTermos from './pages/CadastroTermos';
+import ValidarTokenCadastro from './pages/ValidarTokenCadastro';
 
 
 
@@ -205,6 +206,11 @@ export default function App() {
             element={<BoasVindas />}
 
           />
+
+          <Route 
+            path="/cadastro/complete/:token" 
+            
+            element={<ValidarTokenCadastro />} />
 
 
 

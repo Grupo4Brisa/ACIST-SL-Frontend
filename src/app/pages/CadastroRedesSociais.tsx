@@ -59,29 +59,32 @@ export default function CadastroRedesSociais() {
   }
 
   async function saveDraft() {
+  try {
+    setLoading(true);
+    setError('');
+    const payload = {
+      companyId: Number(id),
+      facebook: facebook || undefined,
+      instagram: instagram || undefined,
+      linkedin: linkedin || undefined,
+      other: outras.filter(r => r.nome && r.url).map(r => `${r.nome}: ${r.url}`).join(', ') || undefined,
+    };
     try {
-      setLoading(true);
-      setError('');
-      const payload = {
-        companyId: Number(id),
-        facebook: facebook || undefined,
-        instagram: instagram || undefined,
-        linkedin: linkedin || undefined,
-        other: outras.filter(r => r.nome && r.url).map(r => `${r.nome}: ${r.url}`).join(', ') || undefined,
-      };
-      try {
-        await api.post(`/social-networks`, payload);
-      } catch (e: any) {
-        if (e.response?.status === 409) {
-          await api.patch(`/social-networks/${id}`, payload);
-        } else throw e;
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao salvar redes sociais.');
-    } finally {
-      setLoading(false);
+      await api.post(`/social-networks`, payload);
+    } catch (e: any) {
+      if (e.response?.status === 409) {
+        const { companyId, ...updatePayload } = payload;
+        await api.patch(`/social-networks/${id}`, updatePayload);
+      } else throw e;
     }
+    alert('Rascunho salvo com sucesso!');
+  } catch (err: any) {
+    setError(err.response?.data?.message || 'Erro ao salvar redes sociais.');
+    alert('Erro ao salvar rascunho.');
+  } finally {
+    setLoading(false);
   }
+}
 
   async function handleNext() {
     await saveDraft();

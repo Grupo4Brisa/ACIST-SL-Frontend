@@ -26,16 +26,18 @@ export default function CadastroDivulgacao() {
   }, [id]);
 
   async function saveDraft() {
-    try {
-      setLoading(true);
-      setError('');
-      await api.patch(`/companies/${id}`, { eventPresentation: texto });
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao salvar.');
-    } finally {
-      setLoading(false);
-    }
+  try {
+    setLoading(true);
+    setError('');
+    await api.patch(`/companies/${id}`, { eventPresentation: texto });
+    alert('Rascunho salvo com sucesso!');
+  } catch (err: any) {
+    setError(err.response?.data?.message || 'Erro ao salvar.');
+    alert('Erro ao salvar rascunho.');
+  } finally {
+    setLoading(false);
   }
+}
 
   async function handleNext() {
     await saveDraft();

@@ -70,33 +70,40 @@ export default function CadastroContatos() {
   }
 
   async function saveDraft() {
-    try {
-      setLoading(true);
-      setError('');
-      const validContacts = contacts.filter(c => c.name.trim());
-      if (validContacts.length === 0) return;
+  try {
+    setLoading(true);
+    setError('');
 
-      // busca contatos existentes e deleta antes de recriar
-      const existing = await api.get(`/company-contacts/company/${id}`);
-      for (const c of existing.data || []) {
-        await api.delete(`/company-contacts/${c.id}`).catch(() => {});
-      }
-
-      await api.post(`/company-contacts/bulk`,
-        validContacts.map(c => ({
-          companyId: Number(id),
-          name: c.name,
-          role: c.role,
-          email: c.email,
-          phone: c.phone,
-        }))
-      );
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao salvar contatos');
-    } finally {
-      setLoading(false);
+    const validContacts = contacts.filter(c => c.name.trim());
+    if (validContacts.length === 0) {
+      setError('Preencha ao menos o nome de um contato para salvar.');
+      return;
     }
+
+    // busca contatos existentes e deleta antes de recriar
+    const existing = await api.get(`/company-contacts/company/${id}`);
+    for (const c of existing.data || []) {
+      await api.delete(`/company-contacts/${c.id}`).catch(() => {});
+    }
+
+    await api.post(`/company-contacts/bulk`,
+      validContacts.map(c => ({
+        companyId: Number(id),
+        name: c.name,
+        role: c.role,
+        email: c.email,
+        phone: c.phone,
+      }))
+    );
+
+    alert('Rascunho salvo com sucesso!');
+  } catch (err: any) {
+    setError(err.response?.data?.message || 'Erro ao salvar contatos');
+    alert('Erro ao salvar rascunho.');
+  } finally {
+    setLoading(false);
   }
+}
 
   async function handleNext() {
     await saveDraft();

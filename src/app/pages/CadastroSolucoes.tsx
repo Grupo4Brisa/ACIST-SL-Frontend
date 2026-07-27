@@ -47,19 +47,24 @@ export default function CadastroSolucoes() {
   }
 
   async function saveDraft() {
-    if (selecionadas.length === 0) return;
-    try {
-      setLoading(true);
-      setError('');
-      await api.post(`/company-solutions/company/${id}`, {
-        solutionIds: selecionadas
-      });
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao salvar soluções.');
-    } finally {
-      setLoading(false);
-    }
+  if (selecionadas.length === 0) {
+    setError('Selecione ao menos uma solução para salvar.');
+    return;
   }
+  try {
+    setLoading(true);
+    setError('');
+    await api.post(`/company-solutions/company/${id}`, {
+      solutionIds: selecionadas
+    });
+    alert('Rascunho salvo com sucesso!');
+  } catch (err: any) {
+    setError(err.response?.data?.message || 'Erro ao salvar soluções.');
+    alert('Erro ao salvar rascunho.');
+  } finally {
+    setLoading(false);
+  }
+}
 
   async function handleNext() {
     await saveDraft();
