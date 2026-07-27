@@ -1247,6 +1247,7 @@ export default function CompanyDetail(){
                       };
                       const cfg = actionMap[h.action] ?? { label: h.action, color: 'bg-gray-100 text-gray-700', icon: '•' };
                       const hasDiff = h.observation && h.observation.includes('→');
+                      const hasDetail = h.observation && !h.observation.includes('→');
                       const diffs = hasDiff
                         ? h.observation.replace(/^.*?editou: /, '').split(' | ')
                         : [];
@@ -1269,11 +1270,11 @@ export default function CompanyDetail(){
                               <span className="text-xs text-muted-foreground">
                                 {new Intl.DateTimeFormat('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(h.createdAt))}
                               </span>
-                              {hasDiff && (
+                              {(hasDiff || hasDetail) && (
                                 <button
                                   onClick={() => setHistoricoExpanded(historicoExpanded === h.id ? null : h.id)}
                                   className="text-muted-foreground hover:text-foreground transition-colors"
-                                  title="Ver o que foi alterado"
+                                  title="Ver detalhes"
                                 >🔍</button>
                               )}
                             </div>
@@ -1297,6 +1298,11 @@ export default function CompanyDetail(){
                                   </div>
                                 );
                               })}
+                            </div>
+                          )}
+                          {historicoExpanded === h.id && hasDetail && (
+                            <div className="mt-2 border-t border-border pt-2">
+                              <p className="text-xs text-foreground">{h.observation}</p>
                             </div>
                           )}
                         </div>
