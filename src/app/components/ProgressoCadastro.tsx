@@ -21,6 +21,8 @@ export default function ProgressoCadastro({ etapaAtual }: Props) {
   const { id } = useParams();
 
   function irParaEtapa(index: number) {
+    // Só permite navegar para etapas já concluídas (anteriores à atual)
+    if (index + 1 >= etapaAtual) return;
     const rota = ETAPAS[index].rota;
     const base = `/cadastro/${id}`;
     navigate(rota ? `${base}/${rota}` : base);
@@ -36,13 +38,13 @@ export default function ProgressoCadastro({ etapaAtual }: Props) {
         return (
           <div
             key={index}
-            className="text-center cursor-pointer group"
+            className={`text-center ${concluida ? 'cursor-pointer group' : 'cursor-default'}`}
             onClick={() => irParaEtapa(index)}
-            title={`Ir para ${etapa.label}`}
+            title={concluida ? `Voltar para ${etapa.label}` : etapa.label}
           >
             <div className={`
               mx-auto w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all
-              group-hover:opacity-80 group-hover:scale-110
+              ${concluida ? 'group-hover:opacity-80 group-hover:scale-110' : ''}
               ${atual    ? 'bg-[#0C3A59] text-white' :
                 concluida? 'bg-green-500 text-white' :
                            'bg-gray-200 text-gray-500'}
