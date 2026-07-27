@@ -136,6 +136,8 @@ export default function CompanyDetail(){
   const isAprovador = user?.role === 'COLABORADOR_APROVADOR';
 
   const [aprovacaoErro, setAprovacaoErro] = useState('');
+  const [showReprovarModal, setShowReprovarModal] = useState(false);
+  const [motivoReprovar, setMotivoReprovar] = useState('');
 
   const [company,setCompany] =
     useState<Company | null>(null);
@@ -1916,42 +1918,11 @@ export default function CompanyDetail(){
                           return;
                         }
 
-
-                        try{
-
-
-                          await api.patch(
-                            `/companies/${company.id}/reject`
-                          );
-
-
-
-                          setCompany({
-
-                            ...company,
-
-                            status:
-                              'INACTIVE'
-
-                          });
-
-
-
-                        }catch(error){
-
-
-                          console.error(
-                            'Erro ao rejeitar:',
-                            error
-                          );
-
-
-                        }
-
+                        setMotivoReprovar('');
+                        setShowReprovarModal(true);
 
                       }
                     }
-
 
                     className="
                       flex-1
@@ -1988,6 +1959,39 @@ export default function CompanyDetail(){
         </div>
 
       </div>
+
+      {/* MODAL REPROVAÇÃO */}
+      {showReprovarModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-800 mb-1">Reprovar Cadastro</h3>
+            <p className="text-sm text-gray-500 mb-4">{company?.companyName}</p>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Motivo da reprovação *</label>
+            <textarea
+              value={motivoReprovar}
+              onChange={e => setMotivoReprovar(e.target.value)}
+              placeholder="Descreva o motivo da reprovação..."
+              rows={4}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 resize-none mb-4"
+            />
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setShowReprovarModal(false)} className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Cancelar</button>
+              <button
+                disabled={!motivoReprovar.trim()}
+                onClick={async () => {
+                  try {
+                    await api.patch(`/companies/${company.id}/reject`, { reason: motivoReprovar });
+                    setCompany({ ...company, status: 'INACTIVE' });
+                    setShowReprovarModal(false);
+                    setMotivoReprovar('');
+                  } catch (e) { console.error('Erro ao rejeitar:', e); }
+                }}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 disabled:opacity-50"
+              >Confirmar Reprovação</button>
+            </div>
+          </div>
+        </div>
+      )}
 
 
 
