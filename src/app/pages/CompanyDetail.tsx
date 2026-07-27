@@ -1234,61 +1234,71 @@ export default function CompanyDetail(){
 
 
               {activeTab === 'historico' && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {historico.length === 0 ? (
                     <p className="text-muted-foreground text-sm">Nenhum histórico disponível.</p>
                   ) : (
                     historico.map((h: any) => {
                       const actionMap: Record<string, {label:string;color:string;icon:string}> = {
-                        CREATED:   { label: 'Cadastro iniciado',   color: 'bg-blue-100 text-blue-700',    icon: '📋' },
-                        COMPLETED: { label: 'Cadastro completado', color: 'bg-yellow-100 text-yellow-700', icon: '✏️' },
-                        APPROVED:  { label: 'Cadastro aprovado',   color: 'bg-green-100 text-green-700',  icon: '✅' },
-                        REJECTED:  { label: 'Cadastro reprovado',  color: 'bg-red-100 text-red-700',      icon: '❌' },
+                        CREATED:   { label: 'Cadastro iniciado', color: 'bg-blue-100 text-blue-700',    icon: '📋' },
+                        COMPLETED: { label: 'Editado',           color: 'bg-yellow-100 text-yellow-700', icon: '✏️' },
+                        APPROVED:  { label: 'Aprovado',          color: 'bg-green-100 text-green-700',  icon: '✅' },
+                        REJECTED:  { label: 'Reprovado',         color: 'bg-red-100 text-red-700',      icon: '❌' },
                       };
                       const cfg = actionMap[h.action] ?? { label: h.action, color: 'bg-gray-100 text-gray-700', icon: '•' };
+                      const hasDiff = h.observation && h.observation.includes('→');
+                      const diffs = hasDiff
+                        ? h.observation.replace(/^.*?editou: /, '').split(' | ')
+                        : [];
                       return (
-                        <div key={h.id} className="flex gap-4 items-start">
-                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-base">
-                            {cfg.icon}
-                          </div>
-                          <div className="flex-1 border border-border rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-1">
+                        <div key={h.id} className="border border-border rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-base">{cfg.icon}</span>
                               <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}>
                                 {cfg.label}
                               </span>
-                              <div className="flex items-center gap-2">
+                              {h.userId && (
                                 <span className="text-xs text-muted-foreground">
-                                  {new Intl.DateTimeFormat('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }).format(new Date(h.createdAt))}
+                                  por <span className="font-medium text-foreground">{h.userName}</span>
+                                  <span className="ml-1">(ID: {h.userId})</span>
                                 </span>
-                                {h.observation && (
-                                  <button
-                                    onClick={() => setHistoricoExpanded(historicoExpanded === h.id ? null : h.id)}
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    title="Ver detalhes"
-                                  >
-                                    🔍
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                            <p className="text-sm text-foreground mt-1">
-                              {h.userId ? (
-                                <span className="font-medium">{h.userName} <span className="text-xs text-muted-foreground font-normal">(ID: {h.userId})</span></span>
-                              ) : (
-                                <span className="text-muted-foreground">Sistema</span>
                               )}
-                            </p>
-                            {historicoExpanded === h.id && h.observation && (
-                              <div className="mt-2 p-2 bg-muted/50 rounded text-xs text-foreground space-y-1">
-                                {h.observation.includes(' | ') || h.observation.includes('→')
-                                  ? h.observation.split(' | ').map((diff: string, i: number) => (
-                                      <p key={i} className="border-b border-border/50 pb-1 last:border-0 last:pb-0">{diff}</p>
-                                    ))
-                                  : <p>{h.observation}</p>
-                                }
-                              </div>
-                            )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground">
+                                {new Intl.DateTimeFormat('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(h.createdAt))}
+                              </span>
+                              {hasDiff && (
+                                <button
+                                  onClick={() => setHistoricoExpanded(historicoExpanded === h.id ? null : h.id)}
+                                  className="text-muted-foreground hover:text-foreground transition-colors"
+                                  title="Ver o que foi alterado"
+                                >🔍</button>
+                              )}
+                            </div>
                           </div>
+                          {historicoExpanded === h.id && hasDiff && (
+                            <div className="mt-2 border-t border-border pt-2 space-y-1">
+                              {diffs.map((diff: string, i: number) => {
+                                const arrowIdx = diff.indexOf('→');
+                                const colonIdx = diff.indexOf(':');
+                                const fieldName = colonIdx > -1 ? diff.slice(0, colonIdx).trim() : diff;
+                                const before = colonIdx > -1 && arrowIdx > -1 ? diff.slice(colonIdx + 1, arrowIdx).trim().replace(/^"|"$/g, '') : '';
+                                const after = arrowIdx > -1 ? diff.slice(arrowIdx + 1).trim().replace(/^"|"$/g, '') : '';
+                                return (
+                                  <div key={i} className="text-xs grid grid-cols-[140px_1fr] gap-2 items-start">
+                                    <span className="font-medium text-foreground">{fieldName}:</span>
+                                    <span>
+                                      <span className="text-red-500 line-through mr-1">{before || '-'}</span>
+                                      <span className="text-muted-foreground mx-1">→</span>
+                                      <span className="text-green-600 font-medium">{after || '-'}</span>
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
                       );
                     })
