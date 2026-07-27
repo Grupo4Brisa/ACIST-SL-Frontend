@@ -46,7 +46,7 @@ export default function CadastroSolucoes() {
     );
   }
 
-  async function saveDraft() {
+  async function saveDraft(): Promise<boolean> {
   if (selecionadas.length === 0) {
     setError('Selecione ao menos uma solução para salvar.');
     return;
@@ -58,6 +58,7 @@ export default function CadastroSolucoes() {
       solutionIds: selecionadas
     });
     alert('Rascunho salvo com sucesso!');
+  return true;
   } catch (err: any) {
     setError(err.response?.data?.message || 'Erro ao salvar soluções.');
     alert('Erro ao salvar rascunho.');
@@ -67,7 +68,8 @@ export default function CadastroSolucoes() {
 }
 
   async function handleNext() {
-    await saveDraft();
+    const ok = await saveDraft();
+    if (!ok) return;
     navigate(`/cadastro/${id}/mensalidade`);
   }
 

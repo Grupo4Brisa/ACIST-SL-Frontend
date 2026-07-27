@@ -69,7 +69,7 @@ export default function CadastroContatos() {
     setContacts(contacts.filter((_, i) => i !== index));
   }
 
-  async function saveDraft() {
+  async function saveDraft(): Promise<boolean> {
   try {
     setLoading(true);
     setError('');
@@ -100,13 +100,15 @@ export default function CadastroContatos() {
   } catch (err: any) {
     setError(err.response?.data?.message || 'Erro ao salvar contatos');
     alert('Erro ao salvar rascunho.');
+    return false;
   } finally {
     setLoading(false);
   }
 }
 
   async function handleNext() {
-    await saveDraft();
+    const ok = await saveDraft();
+    if (!ok) return;
     navigate(`/cadastro/${id}/divulgacao`);
   }
 

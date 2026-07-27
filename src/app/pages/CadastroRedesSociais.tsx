@@ -58,7 +58,7 @@ export default function CadastroRedesSociais() {
     setOutras(updated);
   }
 
-  async function saveDraft() {
+  async function saveDraft(): Promise<boolean> {
   try {
     setLoading(true);
     setError('');
@@ -78,6 +78,7 @@ export default function CadastroRedesSociais() {
       } else throw e;
     }
     alert('Rascunho salvo com sucesso!');
+    return true;
   } catch (err: any) {
     setError(err.response?.data?.message || 'Erro ao salvar redes sociais.');
     alert('Erro ao salvar rascunho.');
