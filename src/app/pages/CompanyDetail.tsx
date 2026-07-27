@@ -1240,10 +1240,11 @@ export default function CompanyDetail(){
                   ) : (
                     historico.map((h: any) => {
                       const actionMap: Record<string, {label:string;color:string;icon:string}> = {
-                        CREATED:   { label: 'Cadastro iniciado', color: 'bg-blue-100 text-blue-700',    icon: '📋' },
-                        COMPLETED: { label: 'Editado',           color: 'bg-yellow-100 text-yellow-700', icon: '✏️' },
-                        APPROVED:  { label: 'Aprovado',          color: 'bg-green-100 text-green-700',  icon: '✅' },
-                        REJECTED:  { label: 'Reprovado',         color: 'bg-red-100 text-red-700',      icon: '❌' },
+                        CREATED:   { label: 'Cadastro iniciado na landing', color: 'bg-blue-100 text-blue-700',    icon: '📋' },
+                        COMPLETED: { label: 'Campo editado',                  color: 'bg-yellow-100 text-yellow-700', icon: '✏️' },
+                        FINALIZED: { label: 'Cadastro concluído (8 etapas)', color: 'bg-purple-100 text-purple-700', icon: '🎯' },
+                        APPROVED:  { label: 'Aprovado',                       color: 'bg-green-100 text-green-700',  icon: '✅' },
+                        REJECTED:  { label: 'Reprovado',                      color: 'bg-red-100 text-red-700',      icon: '❌' },
                       };
                       const cfg = actionMap[h.action] ?? { label: h.action, color: 'bg-gray-100 text-gray-700', icon: '•' };
                       const hasDiff = h.observation && h.observation.includes('→');
