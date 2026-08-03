@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { XCircle, Loader2 } from 'lucide-react';
 import api from '../services/api';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
@@ -15,7 +15,7 @@ export default function CompletarCadastro() {
 
   useEffect(() => {
 
-    async function validarToken() {
+    async function carregarDados() {
 
       if (!token) {
         setStatus('erro');
@@ -25,20 +25,49 @@ export default function CompletarCadastro() {
 
       try {
 
-        const response = await api.get(`/login-tokens/validate/${token}`);
+        // Busca os dados da empresa diretamente pelo token —
+        // essa rota é pública mas só retorna dados se o token
+        // for válido, não usado e não expirado.
+        const response = await api.get(`/companies/complete/${token}`);
 
-        const { companyId } = response.data;
+        const company = response.data;
 
         // Marca o token como utilizado — o link é de uso único.
-        // Feito depois da validação, já com o companyId em mãos,
-        // então mesmo que essa chamada falhe silenciosamente o
-        // fluxo do usuário não é bloqueado.
+        // Feito depois de já termos os dados em mãos, então
+        // mesmo que essa chamada falhe silenciosamente o fluxo
+        // do usuário não é bloqueado.
         api.post(`/login-tokens/consume/${token}`).catch(() => {});
 
-        localStorage.removeItem('companyData');
-        localStorage.setItem('companyId', String(companyId));
+        localStorage.setItem('companyId', String(company.id));
 
-        navigate(`/cadastro/${companyId}`, { replace: true });
+        localStorage.setItem(
+          'companyData',
+          JSON.stringify({
+            companyName: company.companyName || '',
+            corporateName: company.corporateName || '',
+            cnpjcpf: company.cnpjcpf || '',
+            email: company.email || '',
+            phone: company.phone || '',
+            companySize: company.companySize || '',
+            stateRegistration: company.stateRegistration || '',
+            address: company.address || '',
+            neighborhood: company.neighborhood || '',
+            city: company.city || '',
+            state: company.state || '',
+            zipCode: company.zipCode || '',
+            website: company.website || '',
+            establishmentType: company.establishmentType || '',
+            headquartersType: company.headquartersType || '',
+            employeesCount: company.employeesCount ? String(company.employeesCount) : '',
+            foundationDate: company.foundationDate ? String(company.foundationDate).split('T')[0] : '',
+            origin: company.origin || '',
+            originDetail: company.originDetail || '',
+            password: '',
+            confirmPassword: '',
+          }),
+        );
+
+        navigate(`/cadastro/${company.id}`, { replace: true });
 
       } catch (err: any) {
 
@@ -53,7 +82,7 @@ export default function CompletarCadastro() {
 
     }
 
-    validarToken();
+    carregarDados();
 
   }, [token, navigate]);
 
@@ -71,7 +100,7 @@ export default function CompletarCadastro() {
                 <Loader2 className="h-8 w-8 text-[#0C3A59] animate-spin" />
               </div>
               <h1 className="text-xl font-bold text-gray-800 mb-2">
-                Validando seu link...
+                Carregando seus dados...
               </h1>
               <p className="text-gray-500 text-sm">
                 Aguarde um instante, você será redirecionado automaticamente.
