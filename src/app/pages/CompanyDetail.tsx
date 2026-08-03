@@ -164,6 +164,7 @@ export default function CompanyDetail() {
   const [contatos, setContatos] = useState<any[]>([]);
   const [redesSociais, setRedesSociais] = useState<any>(null);
   const [solucoes, setSolucoes] = useState<any[]>([]);
+  const [solucoesMap, setSolucoesMap] = useState<Record<number, string>>({});
   const [tarefas, setTarefas] = useState<any[]>([]);
   const [novaTarefa, setNovaTarefa] = useState({
     title: "",
@@ -254,8 +255,14 @@ export default function CompanyDetail() {
 
     async function loadSolucoes() {
       try {
-        const response = await api.get(`/company-solutions/company/${id}`);
-        setSolucoes(response.data || []);
+        const [companySols, allSols] = await Promise.all([
+          api.get(`/company-solutions/company/${id}`),
+          api.get(`/solutions`),
+        ]);
+        setSolucoes(companySols.data || []);
+        const map: Record<number, string> = {};
+        for (const s of allSols.data || []) map[s.id] = s.name;
+        setSolucoesMap(map);
       } catch {
         // silencioso
       }
@@ -863,7 +870,7 @@ export default function CompanyDetail() {
                     key={s.id}
                     className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full"
                   >
-                    {SOLUCOES_MAP[s.solutionId] || `Solução ${s.solutionId}`}
+                    {solucoesMap[s.solutionId] || `Solução ${s.solutionId}`}
                   </span>
                 ))}
               </div>
