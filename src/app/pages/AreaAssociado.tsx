@@ -1,126 +1,44 @@
-<<<<<<< HEAD
-import { useNavigate } from "react-router-dom";
-import {
-  CheckCircle,
-  Clock,
-  AlertCircle,
-  Calendar,
-  Bell,
-  User,
-  Mail,
-  Building2,
-  LogOut,
-  Edit,
-  CreditCard,
-  ArrowRight,
-  Users,
-  Search,
-  Phone,
-  MapPin,
-  Filter,
-} from "lucide-react";
-import Logo from "../components/Logo";
-import { useState } from "react";
-=======
 import { useEffect, useState as useStateHook } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { CheckCircle, Clock, AlertCircle, Calendar, Bell, User, Mail, Building2, LogOut, Edit, CreditCard, ArrowRight, Users, Search, Phone, MapPin, Filter } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useState } from 'react';
->>>>>>> origin/integracao
 import Header from "../components/Header/Header";
-import Footer from "../components/Footer/Footer";
+import Footer from '../components/Footer/Footer';
 
 export default function AreaAssociado() {
   const navigate = useNavigate();
-  const [buscaTermo, setBuscaTermo] = useState("");
-  const [ramoFiltro, setRamoFiltro] = useState("Todos");
+  const [buscaTermo, setBuscaTermo] = useState('');
+  const [ramoFiltro, setRamoFiltro] = useState('Todos');
   const [paginaAtual, setPaginaAtual] = useState(1);
   const itensPorPagina = 5;
 
   const handleLogout = () => {
-    navigate("/");
+    navigate('/');
   };
 
   // Mock data - Lista de associados
   const associadosLista = [
-    {
-      id: 1,
-      name: "Tech Solutions Ltda",
-      ramo: "Tecnologia",
-      phone: "(51) 3456-7890",
-      city: "São Leopoldo",
-    },
-    {
-      id: 2,
-      name: "Construção Forte",
-      ramo: "Indústria",
-      phone: "(51) 3456-7891",
-      city: "São Leopoldo",
-    },
-    {
-      id: 3,
-      name: "Sabor da Terra",
-      ramo: "Alimentação",
-      phone: "(51) 3456-7892",
-      city: "São Leopoldo",
-    },
-    {
-      id: 4,
-      name: "Moda & Estilo",
-      ramo: "Loja",
-      phone: "(51) 3456-7893",
-      city: "Novo Hamburgo",
-    },
-    {
-      id: 5,
-      name: "Clínica Saúde Total",
-      ramo: "Saúde",
-      phone: "(51) 3456-7894",
-      city: "São Leopoldo",
-    },
-    {
-      id: 6,
-      name: "DigitalMark Agência",
-      ramo: "Serviços",
-      phone: "(51) 3456-7895",
-      city: "São Leopoldo",
-    },
-    {
-      id: 7,
-      name: "AutoTech Oficina",
-      ramo: "Serviços",
-      phone: "(51) 3456-7896",
-      city: "Portão",
-    },
-    {
-      id: 8,
-      name: "Indústria MecaPro",
-      ramo: "Indústria",
-      phone: "(51) 3456-7897",
-      city: "São Leopoldo",
-    },
+    { id: 1, name: 'Tech Solutions Ltda', ramo: 'Tecnologia', phone: '(51) 3456-7890', city: 'São Leopoldo' },
+    { id: 2, name: 'Construção Forte', ramo: 'Indústria', phone: '(51) 3456-7891', city: 'São Leopoldo' },
+    { id: 3, name: 'Sabor da Terra', ramo: 'Alimentação', phone: '(51) 3456-7892', city: 'São Leopoldo' },
+    { id: 4, name: 'Moda & Estilo', ramo: 'Loja', phone: '(51) 3456-7893', city: 'Novo Hamburgo' },
+    { id: 5, name: 'Clínica Saúde Total', ramo: 'Saúde', phone: '(51) 3456-7894', city: 'São Leopoldo' },
+    { id: 6, name: 'DigitalMark Agência', ramo: 'Serviços', phone: '(51) 3456-7895', city: 'São Leopoldo' },
+    { id: 7, name: 'AutoTech Oficina', ramo: 'Serviços', phone: '(51) 3456-7896', city: 'Portão' },
+    { id: 8, name: 'Indústria MecaPro', ramo: 'Indústria', phone: '(51) 3456-7897', city: 'São Leopoldo' }
   ];
 
-  const ramos = [
-    "Todos",
-    "Tecnologia",
-    "Loja",
-    "Indústria",
-    "Alimentação",
-    "Serviços",
-    "Saúde",
-  ];
+  const ramos = ['Todos', 'Tecnologia', 'Loja', 'Indústria', 'Alimentação', 'Serviços', 'Saúde'];
 
   // Filtrar associados
-  const associadosFiltrados = associadosLista.filter((assoc) => {
-    const matchBusca =
-      buscaTermo === "" ||
+  const associadosFiltrados = associadosLista.filter(assoc => {
+    const matchBusca = buscaTermo === '' ||
       assoc.name.toLowerCase().includes(buscaTermo.toLowerCase()) ||
       assoc.ramo.toLowerCase().includes(buscaTermo.toLowerCase());
 
-    const matchRamo = ramoFiltro === "Todos" || assoc.ramo === ramoFiltro;
+    const matchRamo = ramoFiltro === 'Todos' || assoc.ramo === ramoFiltro;
 
     return matchBusca && matchRamo;
   });
@@ -129,10 +47,7 @@ export default function AreaAssociado() {
   const totalPaginas = Math.ceil(associadosFiltrados.length / itensPorPagina);
   const indiceInicio = (paginaAtual - 1) * itensPorPagina;
   const indiceFim = indiceInicio + itensPorPagina;
-  const associadosPaginados = associadosFiltrados.slice(
-    indiceInicio,
-    indiceFim,
-  );
+  const associadosPaginados = associadosFiltrados.slice(indiceInicio, indiceFim);
 
   // Reset página ao filtrar
   const handleBusca = (termo: string) => {
@@ -146,49 +61,32 @@ export default function AreaAssociado() {
   };
 
   const associado = {
-    name: "Tech Solutions Ltda",
-    email: "phone@techsolutions.com.br",
-    status: "aprovado", // 'em_analise' | 'aprovado' | 'pendente_documentos'
+    name: 'Tech Solutions Ltda',
+    email: 'phone@techsolutions.com.br',
+    status: 'aprovado' // 'em_analise' | 'aprovado' | 'pendente_documentos'
   };
 
   const eventos = [
     {
       id: 1,
-      name: "Café de Negócios - Networking",
-      data: "2026-04-25",
-      local: "Sede ACIST",
+      name: 'Café de Negócios - Networking',
+      data: '2026-04-25',
+      local: 'Sede ACIST'
     },
     {
       id: 2,
-      name: "Workshop: Marketing Digital para Empresas",
-      data: "2026-05-02",
-      local: "Auditório ACIST",
+      name: 'Workshop: Marketing Digital para Empresas',
+      data: '2026-05-02',
+      local: 'Auditório ACIST'
     },
     {
       id: 3,
-      name: "Assembleia Geral de Associados",
-      data: "2026-05-15",
-      local: "Sede ACIST",
-    },
+      name: 'Assembleia Geral de Associados',
+      data: '2026-05-15',
+      local: 'Sede ACIST'
+    }
   ];
 
-<<<<<<< HEAD
-  const avisos = [
-    {
-      id: 1,
-      title: "Nova parceria com instituição financeira",
-      conteudo:
-        "Associados têm condições especiais de crédito. Consulte a secretaria.",
-      data: "2026-04-10",
-    },
-    {
-      id: 2,
-      title: "Mensalidade de Maio",
-      conteudo: "Boleto disponível para download na área de documentos.",
-      data: "2026-04-08",
-    },
-  ];
-=======
   const [comunicados, setComunicados] = useStateHook<{id:number;title:string;content:string;createdAt:string}[]>([]);
 
   useEffect(() => {
@@ -199,41 +97,40 @@ export default function AreaAssociado() {
       })
       .catch(() => {});
   }, []);
->>>>>>> origin/integracao
 
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case "aprovado":
+      case 'aprovado':
         return {
-          label: "Aprovado",
-          color: "text-green-700",
-          bg: "bg-green-100",
+          label: 'Aprovado',
+          color: 'text-green-700',
+          bg: 'bg-green-100',
           icon: CheckCircle,
-          progress: 100,
+          progress: 100
         };
-      case "em_analise":
+      case 'em_analise':
         return {
-          label: "Em Análise",
-          color: "text-blue-700",
-          bg: "bg-blue-100",
+          label: 'Em Análise',
+          color: 'text-blue-700',
+          bg: 'bg-blue-100',
           icon: Clock,
-          progress: 50,
+          progress: 50
         };
-      case "pendente_documentos":
+      case 'pendente_documentos':
         return {
-          label: "Pendente de Documentos",
-          color: "text-orange-700",
-          bg: "bg-orange-100",
+          label: 'Pendente de Documentos',
+          color: 'text-orange-700',
+          bg: 'bg-orange-100',
           icon: AlertCircle,
-          progress: 30,
+          progress: 30
         };
       default:
         return {
-          label: "Desconhecido",
-          color: "text-gray-700",
-          bg: "bg-gray-100",
+          label: 'Desconhecido',
+          color: 'text-gray-700',
+          bg: 'bg-gray-100',
           icon: Clock,
-          progress: 0,
+          progress: 0
         };
     }
   };
@@ -271,16 +168,12 @@ export default function AreaAssociado() {
                 <StatusIcon className={`h-6 w-6 ${statusConfig.color}`} />
               </div>
               <div>
-                <h2 className="text-[#0C3A59] text-xl font-semibold">
-                  Status do Cadastro
-                </h2>
+                <h2 className="text-[#0C3A59] text-xl font-semibold">Status do Cadastro</h2>
                 <p className="text-gray-600 text-sm">Acompanhe sua situação</p>
               </div>
             </div>
 
-            <div
-              className={`inline-flex items-center gap-2 px-4 py-2 ${statusConfig.bg} rounded-lg mb-4`}
-            >
+            <div className={`inline-flex items-center gap-2 px-4 py-2 ${statusConfig.bg} rounded-lg mb-4`}>
               <StatusIcon className={`h-5 w-5 ${statusConfig.color}`} />
               <span className={`font-semibold ${statusConfig.color}`}>
                 {statusConfig.label}
@@ -301,22 +194,19 @@ export default function AreaAssociado() {
               </div>
             </div>
 
-            {associado.status === "aprovado" && (
+            {associado.status === 'aprovado' && (
               <p className="text-sm text-gray-600 mt-4">
-                ✓ Seu cadastro foi aprovado! Você já pode usufruir de todos os
-                benefícios de ser associado.
+                ✓ Seu cadastro foi aprovado! Você já pode usufruir de todos os benefícios de ser associado.
               </p>
             )}
-            {associado.status === "em_analise" && (
+            {associado.status === 'em_analise' && (
               <p className="text-sm text-gray-600 mt-4">
-                Seu cadastro está em análise pela nossa equipe. Em breve você
-                receberá um retorno.
+                Seu cadastro está em análise pela nossa equipe. Em breve você receberá um retorno.
               </p>
             )}
-            {associado.status === "pendente_documentos" && (
+            {associado.status === 'pendente_documentos' && (
               <p className="text-sm text-gray-600 mt-4">
-                ⚠️ Alguns documentos ainda precisam ser enviados. Entre em phone
-                conosco.
+                ⚠️ Alguns documentos ainda precisam ser enviados. Entre em phone conosco.
               </p>
             )}
           </div>
@@ -329,12 +219,8 @@ export default function AreaAssociado() {
                   <User className="h-6 w-6 text-blue-700" />
                 </div>
                 <div>
-                  <h2 className="text-[#0C3A59] text-xl font-semibold">
-                    Meus Dados
-                  </h2>
-                  <p className="text-gray-600 text-sm">
-                    Informações cadastrais
-                  </p>
+                  <h2 className="text-[#0C3A59] text-xl font-semibold">Meus Dados</h2>
+                  <p className="text-gray-600 text-sm">Informações cadastrais</p>
                 </div>
               </div>
               <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
@@ -361,7 +247,7 @@ export default function AreaAssociado() {
             </div>
 
             <button
-              onClick={() => navigate("/cadastro/edit")}
+              onClick={() => navigate('/cadastro/edit')}
               className="w-full mt-6 px-4 py-2.5 border border-[#5DA5FF] text-[#5DA5FF] rounded-lg hover:bg-blue-50 transition-colors"
             >
               Editar Dados
@@ -375,9 +261,7 @@ export default function AreaAssociado() {
                 <CreditCard className="h-6 w-6 text-green-700" />
               </div>
               <div>
-                <h2 className="text-[#0C3A59] text-xl font-semibold">
-                  Mensalidades
-                </h2>
+                <h2 className="text-[#0C3A59] text-xl font-semibold">Mensalidades</h2>
                 <p className="text-gray-600 text-sm">Situação financeira</p>
               </div>
             </div>
@@ -388,9 +272,7 @@ export default function AreaAssociado() {
                   <span className="text-sm text-gray-600">Situação</span>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-semibold text-green-700">
-                      Em Dia
-                    </span>
+                    <span className="text-sm font-semibold text-green-700">Em Dia</span>
                   </div>
                 </div>
                 <p className="text-sm text-gray-700">
@@ -411,7 +293,7 @@ export default function AreaAssociado() {
             </div>
 
             <button
-              onClick={() => navigate("/mensalidades")}
+              onClick={() => navigate('/mensalidades')}
               className="w-full mt-6 px-4 py-2.5 bg-[#5DA5FF] text-white rounded-lg hover:bg-[#226897] transition-colors"
             >
               Ver Mensalidades
@@ -427,12 +309,8 @@ export default function AreaAssociado() {
                 <Users className="h-6 w-6 text-[#5DA5FF]" />
               </div>
               <div>
-                <h2 className="text-[#0C3A59] text-xl font-semibold">
-                  Rede de Associados
-                </h2>
-                <p className="text-gray-600 text-sm">
-                  Conecte-se com empresários da região
-                </p>
+                <h2 className="text-[#0C3A59] text-xl font-semibold">Rede de Associados</h2>
+                <p className="text-gray-600 text-sm">Conecte-se com empresários da região</p>
               </div>
             </div>
 
@@ -474,9 +352,7 @@ export default function AreaAssociado() {
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-[#0C3A59] mb-2">
-                          {assoc.name}
-                        </h3>
+                        <h3 className="font-semibold text-[#0C3A59] mb-2">{assoc.name}</h3>
                         <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-600">
                           <span className="flex items-center gap-1">
                             <Building2 className="h-4 w-4 text-gray-400" />
@@ -499,9 +375,7 @@ export default function AreaAssociado() {
                 <div className="text-center py-8">
                   <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
                   <p className="text-gray-500">Nenhum associado encontrado</p>
-                  <p className="text-sm text-gray-400 mt-1">
-                    Tente ajustar sua busca ou filtro
-                  </p>
+                  <p className="text-sm text-gray-400 mt-1">Tente ajustar sua busca ou filtro</p>
                 </div>
               )}
             </div>
@@ -511,9 +385,7 @@ export default function AreaAssociado() {
               <div className="border-t border-gray-200 pt-4">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-500">
-                    Mostrando {indiceInicio + 1}-
-                    {Math.min(indiceFim, associadosFiltrados.length)} de{" "}
-                    {associadosFiltrados.length}
+                    Mostrando {indiceInicio + 1}-{Math.min(indiceFim, associadosFiltrados.length)} de {associadosFiltrados.length}
                   </p>
 
                   {totalPaginas > 1 && (
@@ -532,8 +404,8 @@ export default function AreaAssociado() {
                             onClick={() => setPaginaAtual(index + 1)}
                             className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
                               paginaAtual === index + 1
-                                ? "bg-[#5DA5FF] text-white"
-                                : "border border-gray-300 hover:bg-gray-50"
+                                ? 'bg-[#5DA5FF] text-white'
+                                : 'border border-gray-300 hover:bg-gray-50'
                             }`}
                           >
                             {index + 1}
@@ -564,17 +436,13 @@ export default function AreaAssociado() {
                 <Calendar className="h-6 w-6 text-purple-700" />
               </div>
               <div>
-                <h2 className="text-[#0C3A59] text-xl font-semibold">
-                  Próximos Eventos
-                </h2>
-                <p className="text-gray-600 text-sm">
-                  Não perca as oportunidades
-                </p>
+                <h2 className="text-[#0C3A59] text-xl font-semibold">Próximos Eventos</h2>
+                <p className="text-gray-600 text-sm">Não perca as oportunidades</p>
               </div>
             </div>
 
             <div className="space-y-4">
-              {eventos.map((evento) => (
+              {eventos.map(evento => (
                 <div
                   key={evento.id}
                   onClick={() => navigate(`/evento/${evento.id}`)}
@@ -588,7 +456,7 @@ export default function AreaAssociado() {
                       <div className="flex items-center gap-4 text-sm text-gray-600">
                         <span className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
-                          {new Date(evento.data).toLocaleDateString("pt-BR")}
+                          {new Date(evento.data).toLocaleDateString('pt-BR')}
                         </span>
                         <span>📍 {evento.local}</span>
                       </div>
@@ -600,7 +468,7 @@ export default function AreaAssociado() {
             </div>
 
             <button
-              onClick={() => navigate("/eventos")}
+              onClick={() => navigate('/eventos')}
               className="w-full mt-4 px-4 py-2.5 border border-[#5DA5FF] text-[#5DA5FF] rounded-lg hover:bg-blue-50 transition-colors"
             >
               Ver Todos os Eventos
@@ -614,25 +482,21 @@ export default function AreaAssociado() {
                 <Bell className="h-6 w-6 text-yellow-700" />
               </div>
               <div>
-                <h2 className="text-[#0C3A59] text-xl font-semibold">
-                  Avisos Importantes
-                </h2>
+                <h2 className="text-[#0C3A59] text-xl font-semibold">Avisos Importantes</h2>
                 <p className="text-gray-600 text-sm">Fique por dentro</p>
               </div>
             </div>
 
             <div className="space-y-4">
-              {avisos.map((aviso) => (
+              {avisos.map(aviso => (
                 <div
                   key={aviso.id}
                   className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-semibold text-gray-900">
-                      {aviso.title}
-                    </h3>
+                    <h3 className="font-semibold text-gray-900">{aviso.title}</h3>
                     <span className="text-xs text-gray-500">
-                      {new Date(aviso.data).toLocaleDateString("pt-BR")}
+                      {new Date(aviso.data).toLocaleDateString('pt-BR')}
                     </span>
                   </div>
                   <p className="text-sm text-gray-700">{aviso.conteudo}</p>
@@ -644,8 +508,9 @@ export default function AreaAssociado() {
       </div>
 
       {/* Footer */}
+      
+        <Footer />
 
-      <Footer />
     </div>
   );
 }
