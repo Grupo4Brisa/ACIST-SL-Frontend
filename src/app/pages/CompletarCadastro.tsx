@@ -31,14 +31,8 @@ export default function CompletarCadastro() {
         const response = await api.get(`/companies/complete/${token}`);
 
         const company = response.data;
-
-        // Marca o token como utilizado — o link é de uso único.
-        // Feito depois de já termos os dados em mãos, então
-        // mesmo que essa chamada falhe silenciosamente o fluxo
-        // do usuário não é bloqueado.
-        api.post(`/login-tokens/consume/${token}`).catch(() => {});
-
         localStorage.setItem('companyId', String(company.id));
+        localStorage.setItem('registrationToken', token);
 
         localStorage.setItem(
           'companyData',

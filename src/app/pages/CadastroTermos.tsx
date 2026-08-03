@@ -29,6 +29,14 @@ export default function CadastroTermos() {
         accepted: true,
         termVersion: "v1.0",
       });
+      // Finaliza o cadastro e consome o token no backend
+      const registrationToken = localStorage.getItem("registrationToken");
+      if (registrationToken) {
+        await api.patch(`/companies/complete/${registrationToken}`, {});
+        localStorage.removeItem("registrationToken");
+      }
+      localStorage.removeItem("companyId");
+      localStorage.removeItem("companyData");
       navigate("/cadastro-concluido");
     } catch (err: any) {
       setError(err.response?.data?.message || "Erro ao finalizar cadastro.");

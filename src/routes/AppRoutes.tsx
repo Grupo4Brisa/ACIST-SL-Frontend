@@ -23,6 +23,12 @@ import AprovacaoCadastros from '../app/pages/AprovacaoCadastros';
 import ProtectedRoute from './ProtectedRoute';
 import CadastroTermos from '../app/pages/CadastroTermos';
 import Documentos from '../app/pages/Documentos';
+import CadastroDivulgacao from '../app/pages/CadastroDivulgacao';
+import CadastroRedesSociais from '../app/pages/CadastroRedesSociais';
+import CadastroSolucoes from '../app/pages/CadastroSolucoes';
+import CadastroMensalidade from '../app/pages/CadastroMensalidade';
+import CompletarCadastro from '../app/pages/CompletarCadastro';
+import CadastroConcluido from '../app/pages/CadastroConcluido';
 import Pagamentos from '../app/pages/Pagamentos';
 
 
@@ -107,6 +113,21 @@ export default function AppRoutes() {
         element={<CadastroTermos />}
 
       />
+
+      {/* =====================
+          CADASTRO COM ID (fluxo pós-email)
+      ====================== */}
+
+      <Route path="/cadastro/complete/:token" element={<CompletarCadastro />} />
+      <Route path="/cadastro-concluido" element={<CadastroConcluido />} />
+      <Route path="/cadastro/:id" element={<CadastroEmpresa />} />
+      <Route path="/cadastro/:id/contatos" element={<CadastroContatos />} />
+      <Route path="/cadastro/:id/divulgacao" element={<CadastroDivulgacao />} />
+      <Route path="/cadastro/:id/redes-sociais" element={<CadastroRedesSociais />} />
+      <Route path="/cadastro/:id/solucoes" element={<CadastroSolucoes />} />
+      <Route path="/cadastro/:id/mensalidade" element={<CadastroMensalidade />} />
+      <Route path="/cadastro/:id/documentos" element={<CadastroDocumentos />} />
+      <Route path="/cadastro/:id/aceite" element={<CadastroTermos />} />
 
 
 
