@@ -29,14 +29,26 @@ api.interceptors.request.use(
 
     if (token) {
 
+      // Não enviar token de colaborador nas rotas do wizard (/cadastro/*)
+      let isCollaboratorToken = false;
+      try {
+        const user = localStorage.getItem('user');
+        if (user) {
+          const u = JSON.parse(user);
+          isCollaboratorToken = !!u.role;
+        }
+      } catch {}
 
-      config.headers =
-        config.headers || {};
+      const isAdminEdit = localStorage.getItem('adminEdit') === '1';
+      const isInWizard = window.location.pathname.startsWith('/cadastro') && !isAdminEdit;
 
+      if (!isInWizard || !isCollaboratorToken) {
+        config.headers =
+          config.headers || {};
 
-
-      config.headers.Authorization =
-        `Bearer ${token}`;
+        config.headers.Authorization =
+          `Bearer ${token}`;
+      }
 
 
     }

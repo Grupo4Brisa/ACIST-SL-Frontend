@@ -290,12 +290,35 @@ export default function CadastroDocumentos() {
               ))}
             </div>
 
+<<<<<<< HEAD
             <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 mt-10 pt-8 border-t">
               <button
                 type="button"
                 onClick={() => navigate(`/cadastro/${id}/mensalidade`)}
                 className="px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
               >
+=======
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Documentos Opcionais</h3>
+              <div className="space-y-4">
+                {opcionais.map(doc => (
+                  <DocRow key={doc.key} config={doc}
+                    salvos={docsSalvos.filter(s => s.documentType === doc.key)}
+                    novos={novosArquivos[doc.key] || []}
+                    onAdd={(files) => addFiles(doc.key, files)}
+                    onRemoveNovo={(i) => removeNovoArquivo(doc.key, i)}
+                    onRemoveSalvo={removeSalvo}
+                    onViewSalvo={viewSalvo}
+                    onDownloadSalvo={downloadSalvo}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-between mt-10 pt-8 border-t">
+              <button type="button" onClick={async () => { await saveDraft(); navigate(`/cadastro/${id}/mensalidade`); }}
+                className="px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100">
+>>>>>>> origin/integracao
                 Voltar
               </button>
               <button

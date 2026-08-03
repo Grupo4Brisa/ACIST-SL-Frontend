@@ -22,9 +22,89 @@ import BoasVindas from "./pages/BoasVindas";
 import ErrorPage from "./pages/ErrorPage";
 import CompletarCadastro from "./pages/CompletarCadastro";
 
+<<<<<<< HEAD
 // =========================
 // CADASTRO
 // =========================
+=======
+import DraggableQuickNav from './components/DraggableQuickNav';
+
+import Layout from './components/Layout';
+
+
+
+// Páginas públicas
+
+import Home from './pages/Home';
+
+import Login from './pages/Login';
+
+import LoginAssociado from './pages/LoginAssociado';
+
+import AreaAssociado from './pages/AreaAssociado';
+
+import EventosLista from './pages/EventosLista';
+
+import EventoDetalhe from './pages/EventoDetalhe';
+
+import Mensalidades from './pages/Mensalidades';
+
+import PagamentoPix from './pages/PagamentoPix';
+
+import BoasVindas from './pages/BoasVindas';
+
+import ErrorPage from './pages/ErrorPage';
+
+import LandingPage from './pages/LandingPage';
+
+
+
+
+// Cadastro etapas
+
+import CadastroDados from './pages/CadastroEmpresa';
+
+import CadastroContatos from './pages/CadastroContatos';
+
+import CadastroDivulgacao from './pages/CadastroDivulgacao';
+import CadastroRedesSociais from './pages/CadastroRedesSociais';
+import CadastroSolucoes from './pages/CadastroSolucoes';
+import CadastroMensalidade from './pages/CadastroMensalidade';
+import CadastroDocumentos from './pages/CadastroDocumentos';
+import CadastroConcluido from './pages/CadastroConcluido';
+
+import CadastroTermos from './pages/CadastroTermos';
+import ValidarTokenCadastro from './pages/ValidarTokenCadastro';
+
+
+
+
+// Área administrativa
+
+import Dashboard from './pages/Dashboard';
+
+import Funil from './pages/Funil';
+
+import Documentos from './pages/Documentos';
+
+import Tarefas from './pages/Tarefas';
+
+import Relatorios from './pages/Relatorios';
+
+import CompanyDetail from './pages/CompanyDetail';
+
+import AprovacaoCadastros from './pages/AprovacaoCadastros';
+import Cadastros from './pages/Cadastros';
+
+import DocumentosPorEmpresa from './pages/DocumentosPorEmpresa';
+
+import Eventos from './pages/Eventos';
+
+import Colaboradores from './pages/Colaboradores';
+
+import Pagamentos from './pages/Pagamentos';
+import Comunicados from './pages/Comunicados';
+>>>>>>> origin/integracao
 
 import CadastroDados from "./pages/CadastroEmpresa";
 import CadastroContatos from "./pages/CadastroContatos";
@@ -168,7 +248,103 @@ export default function App() {
 
             <Route path="aprovacoes" element={<AprovacaoCadastros />} />
 
+<<<<<<< HEAD
             <Route path="cadastros" element={<Cadastros />} />
+=======
+            <Route
+
+              path="funil"
+
+              element={<Funil />}
+
+            />
+
+
+
+
+            <Route
+
+              path="documentos"
+
+              element={<Documentos />}
+
+            />
+
+            <Route
+
+              path="pagamentos"
+
+              element={<Pagamentos />}
+
+          />
+
+
+
+          <Route
+
+            path="comunicados"
+
+            element={<Comunicados />}
+
+            />
+
+
+
+
+            <Route
+
+              path="tarefas"
+
+              element={<Tarefas />}
+
+            />
+
+
+
+
+            <Route
+
+              path="relatorios"
+
+              element={<Relatorios />}
+
+            />
+
+
+
+
+            <Route
+
+              path="aprovacoes"
+
+              element={<AprovacaoCadastros />}
+
+            />
+
+
+
+
+            <Route
+
+              path="cadastros"
+
+              element={<Cadastros />}
+
+            />
+
+
+
+
+            <Route
+
+              path="company/:id"
+
+              element={<CompanyDetail />}
+
+            />
+
+
+>>>>>>> origin/integracao
 
             <Route path="company/:id" element={<CompanyDetail />} />
           </Route>

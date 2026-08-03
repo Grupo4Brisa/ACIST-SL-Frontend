@@ -41,6 +41,7 @@ export default function CadastroDados() {
     }, 4000);
   }
 
+<<<<<<< HEAD
   function dismissToast() {
     if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
     setToastVisible(false);
@@ -52,6 +53,162 @@ export default function CadastroDados() {
     return () => {
       if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
     };
+=======
+  const [companyId, setCompanyId] =
+    useState<number | null>(null);
+
+
+
+  const [formData, setFormData] =
+    useState({
+
+      companyName: '',
+
+      corporateName: '',
+
+      cnpjcpf: '',
+
+      email: '',
+
+      phone: '',
+
+      companySize: '',
+
+      stateRegistration: '',
+
+      address: '',
+
+      neighborhood: '',
+
+      city: '',
+
+      state: '',
+
+      zipCode: '',
+
+      website: '',
+
+      establishmentType: '',
+
+      headquartersType: '',
+
+      employeesCount: '',
+
+      foundationDate: '',
+
+      origin: '',
+
+      originDetail: '',
+
+    });
+
+
+
+
+  function normalizarPorte(porte: string): string {
+    const map: Record<string, string> = {
+      'mei': 'MEI',
+      'microempresa': 'Microempresa',
+      'micro': 'Microempresa',
+      'pequena': 'Pequena',
+      'small': 'Pequena',
+      'media': 'Média',
+      'média': 'Média',
+      'medio': 'Média',
+      'médio': 'Média',
+      'grande': 'Grande',
+      'large': 'Grande',
+    };
+    return map[porte.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')] || porte;
+  }
+
+  useEffect(() => {
+
+    const urlId = idParam && idParam !== 'null' ? Number(idParam) : null;
+    const savedId = localStorage.getItem('companyId');
+    const storedId = savedId && savedId !== 'null' ? Number(savedId) : null;
+    const resolvedId = urlId || storedId;
+
+    if(resolvedId){
+      setCompanyId(resolvedId);
+      localStorage.setItem('companyId', String(resolvedId));
+    }
+
+    // Se não veio do admin (sem companyId no storage = novo cadastro),
+    // limpa o token do colaborador e o flag adminEdit para não contaminar o histórico
+    if (!resolvedId) {
+      localStorage.removeItem('adminEdit');
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+      if (token && user) {
+        try {
+          const u = JSON.parse(user);
+          if (u.role) {
+            // É um token de colaborador — remove para o wizard rodar como Sistema
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
+        } catch {}
+      }
+    }
+
+    const savedData = localStorage.getItem('companyData');
+
+    if(savedData){
+      const parsed = JSON.parse(savedData);
+      if(parsed.companySize) parsed.companySize = normalizarPorte(parsed.companySize);
+      setFormData(prev => ({
+        ...prev,
+        companyName:       parsed.companyName       || prev.companyName,
+        corporateName:     parsed.corporateName     || prev.corporateName,
+        cnpjcpf:           parsed.cnpjcpf           || prev.cnpjcpf,
+        email:             parsed.email             || prev.email,
+        phone:             parsed.phone             || prev.phone,
+        companySize:       parsed.companySize       || prev.companySize,
+        stateRegistration: parsed.stateRegistration || prev.stateRegistration,
+        address:           parsed.address           || prev.address,
+        neighborhood:      parsed.neighborhood      || prev.neighborhood,
+        city:              parsed.city              || prev.city,
+        state:             parsed.state             || prev.state,
+        zipCode:           parsed.zipCode           || prev.zipCode,
+        website:           parsed.website           || prev.website,
+        establishmentType: parsed.establishmentType || prev.establishmentType,
+        headquartersType:  parsed.headquartersType  || prev.headquartersType,
+        employeesCount:    parsed.employeesCount    || prev.employeesCount,
+        foundationDate:    parsed.foundationDate    || prev.foundationDate,
+        origin:            parsed.origin            || prev.origin,
+        originDetail:      parsed.originDetail      || prev.originDetail,
+      }));
+    } else if(resolvedId) {
+      // busca da API quando não há dados no localStorage (ex: acesso via token)
+      api.get(`/companies/${resolvedId}`).then(res => {
+        const d = res.data;
+        setFormData(prev => ({
+          ...prev,
+          companyName:      d.companyName      || '',
+          corporateName:    d.corporateName    || '',
+          cnpjcpf:          d.cnpjcpf          || '',
+          email:            d.email            || '',
+          phone:            d.phone            || '',
+          companySize:      normalizarPorte(d.companySize      || ''),
+          stateRegistration:d.stateRegistration|| '',
+          address:          d.address          || '',
+          neighborhood:     d.neighborhood     || '',
+          city:             d.city             || '',
+          state:            d.state            || '',
+          zipCode:          d.zipCode          || '',
+          website:          d.website          || '',
+          establishmentType:d.establishmentType|| '',
+          headquartersType: d.headquartersType || '',
+          employeesCount:   d.employeesCount   ? String(d.employeesCount) : '',
+          foundationDate:   d.foundationDate   ? d.foundationDate.split('T')[0] : '',
+          origin:           d.origin            || '',
+          originDetail:     d.originDetail      || '',
+        }));
+      }).catch(() => {});
+    }
+
+>>>>>>> origin/integracao
   }, []);
 
   const [formData, setFormData] = useState({
@@ -182,6 +339,7 @@ export default function CadastroDados() {
     return campoVazio ? campoVazio[1] : null;
   }
 
+<<<<<<< HEAD
   // =========================
   // Validação de senha
   // só se aplica quando ainda não existe cadastro (empresa nova)
@@ -216,11 +374,17 @@ export default function CadastroDados() {
 
     return null;
   }
+=======
+
+
+
+>>>>>>> origin/integracao
 
   async function saveDraft() {
     try {
       setLoading(true);
 
+<<<<<<< HEAD
       // "Salvar Rascunho" não exige todos os campos obrigatórios —
       // salva o progresso parcial. Só validamos a senha quando é
       // um cadastro novo, pois o backend precisa dela para criar a conta.
@@ -231,8 +395,13 @@ export default function CadastroDados() {
         showToast(erroSenha, "error");
         return false;
       }
+=======
+
+
+>>>>>>> origin/integracao
 
       const payload = {
+<<<<<<< HEAD
         companyName: formData.companyName,
         corporateName: formData.corporateName,
         cnpjcpf: formData.cnpjcpf.replace(/\D/g, ""),
@@ -257,6 +426,91 @@ export default function CadastroDados() {
         foundationDate: formData.foundationDate || undefined,
         origin: formData.origin || undefined,
         originDetail: formData.originDetail || undefined,
+=======
+
+
+        companyName:
+          formData.companyName,
+
+
+        corporateName:
+          formData.corporateName,
+
+
+        cnpjcpf:
+          formData.cnpjcpf.replace(
+            /\D/g,
+            ''
+          ),
+
+
+        email:
+          formData.email,
+
+
+        phone:
+          formData.phone,
+
+
+        companySize:
+          formData.companySize,
+
+
+        stateRegistration:
+          formData.stateRegistration,
+
+
+        address:
+          formData.address,
+
+
+        neighborhood:
+          formData.neighborhood,
+
+
+        city:
+          formData.city,
+
+
+        state:
+          formData.state,
+
+
+        zipCode:
+          formData.zipCode,
+
+
+        website:
+          formData.website,
+
+
+        establishmentType:
+          formData.establishmentType,
+
+
+        headquartersType:
+          formData.headquartersType,
+
+
+        employeesCount:
+          formData.employeesCount
+            ? Number(formData.employeesCount)
+            : undefined,
+
+
+        foundationDate:
+          formData.foundationDate || undefined,
+
+
+        origin:
+          formData.origin || undefined,
+
+
+        originDetail:
+          formData.originDetail || undefined,
+
+
+>>>>>>> origin/integracao
       };
 
       let response;
@@ -276,7 +530,83 @@ export default function CadastroDados() {
         setCompanyId(response.data.id);
       }
 
+<<<<<<< HEAD
       localStorage.setItem("companyData", JSON.stringify(formData));
+=======
+      else {
+
+
+        response =
+          await api.post(
+
+            '/companies/landing',
+
+            payload
+
+          );
+
+
+
+        localStorage.setItem(
+
+          'companyId',
+
+          String(
+            response.data.id
+          )
+
+        );
+
+
+
+        setCompanyId(
+          response.data.id
+        );
+
+
+      }
+
+
+
+
+
+
+
+      localStorage.setItem(
+
+        'companyData',
+
+        JSON.stringify({
+          companyName:       formData.companyName,
+          corporateName:     formData.corporateName,
+          cnpjcpf:           formData.cnpjcpf,
+          email:             formData.email,
+          phone:             formData.phone,
+          companySize:       formData.companySize,
+          stateRegistration: formData.stateRegistration,
+          address:           formData.address,
+          neighborhood:      formData.neighborhood,
+          city:              formData.city,
+          state:             formData.state,
+          zipCode:           formData.zipCode,
+          website:           formData.website,
+          establishmentType: formData.establishmentType,
+          headquartersType:  formData.headquartersType,
+          employeesCount:    formData.employeesCount,
+          foundationDate:    formData.foundationDate,
+          origin:            formData.origin,
+          originDetail:      formData.originDetail,
+        })
+
+      );
+
+
+
+
+      alert('Rascunho salvo com sucesso!');
+
+
+>>>>>>> origin/integracao
 
       showToast("Rascunho salvo com sucesso!", "success");
 
@@ -755,6 +1085,7 @@ export default function CadastroDados() {
                   <div>
                     <label className={labelStyle}>Confirmar senha *</label>
 
+<<<<<<< HEAD
                     <input
                       className={inputStyle}
                       type="password"
@@ -767,6 +1098,42 @@ export default function CadastroDados() {
                   </div>
                 </div>
               )}
+=======
+
+
+
+
+              <div
+
+                className="
+
+                  grid
+
+                  md:grid-cols-2
+
+                  gap-5
+
+                "
+
+              >
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+>>>>>>> origin/integracao
 
               <div>
                 <label className={labelStyle}>Site</label>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 import {
   CheckCircle,
@@ -20,6 +21,14 @@ import {
 } from "lucide-react";
 import Logo from "../components/Logo";
 import { useState } from "react";
+=======
+import { useEffect, useState as useStateHook } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
+import { CheckCircle, Clock, AlertCircle, Calendar, Bell, User, Mail, Building2, LogOut, Edit, CreditCard, ArrowRight, Users, Search, Phone, MapPin, Filter } from 'lucide-react';
+import Logo from '../components/Logo';
+import { useState } from 'react';
+>>>>>>> origin/integracao
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 
@@ -163,6 +172,7 @@ export default function AreaAssociado() {
     },
   ];
 
+<<<<<<< HEAD
   const avisos = [
     {
       id: 1,
@@ -178,6 +188,18 @@ export default function AreaAssociado() {
       data: "2026-04-08",
     },
   ];
+=======
+  const [comunicados, setComunicados] = useStateHook<{id:number;title:string;content:string;createdAt:string}[]>([]);
+
+  useEffect(() => {
+    api.get('/announcements')
+      .then(res => {
+        const ativos = (Array.isArray(res.data) ? res.data : []).filter((a: any) => a.active);
+        setComunicados(ativos);
+      })
+      .catch(() => {});
+  }, []);
+>>>>>>> origin/integracao
 
   const getStatusConfig = (status: string) => {
     switch (status) {

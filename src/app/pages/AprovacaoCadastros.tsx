@@ -39,6 +39,8 @@ export default function AprovacaoCadastros() {
 
   const [cadastros, setCadastros] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
+  const [modalReprovar, setModalReprovar] = useState<{id: number; nome: string} | null>(null);
+  const [motivoReprovar, setMotivoReprovar] = useState('');
 
   const podeAprovar =
     user?.role === "COLABORADOR_ADMIN" ||
@@ -80,18 +82,34 @@ export default function AprovacaoCadastros() {
     }
   }
 
+<<<<<<< HEAD
   async function handleReprovar(id: number) {
     const motivo = prompt("Informe o motivo da reprovação:");
 
     if (!motivo) return;
+=======
+  function handleReprovar(id: number) {
+    const empresa = cadastros.find(c => c.id === id);
+    setMotivoReprovar('');
+    setModalReprovar({ id, nome: empresa?.companyName || '' });
+  }
+>>>>>>> origin/integracao
 
+  async function confirmarReprovar() {
+    if (!motivoReprovar.trim()) return;
+    if (!modalReprovar) return;
     try {
-      await api.patch(`/companies/${id}/reject`, {
-        reason: motivo,
+      await api.patch(`/companies/${modalReprovar.id}/reject`, {
+        reason: motivoReprovar,
       });
+<<<<<<< HEAD
 
       alert("Cadastro reprovado.");
 
+=======
+      setModalReprovar(null);
+      setMotivoReprovar('');
+>>>>>>> origin/integracao
       carregarCadastros();
     } catch (error: any) {
       console.error(error);
@@ -181,7 +199,12 @@ export default function AprovacaoCadastros() {
   }
 
   return (
+<<<<<<< HEAD
     <div className="p-4 sm:p-8">
+=======
+    <>
+    <div className="p-8">
+>>>>>>> origin/integracao
       <div className="mb-8">
         <h1>Aprovação de Cadastros</h1>
 
@@ -424,5 +447,41 @@ export default function AprovacaoCadastros() {
         )}
       </div>
     </div>
+
+      {/* MODAL REPROVAÇÃO */}
+      {modalReprovar && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-800 mb-1">Reprovar Cadastro</h3>
+            <p className="text-sm text-gray-500 mb-4">{modalReprovar.nome}</p>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Motivo da reprovação *
+            </label>
+            <textarea
+              value={motivoReprovar}
+              onChange={e => setMotivoReprovar(e.target.value)}
+              placeholder="Descreva o motivo da reprovação..."
+              rows={4}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 resize-none mb-4"
+            />
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setModalReprovar(null)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmarReprovar}
+                disabled={!motivoReprovar.trim()}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 disabled:opacity-50"
+              >
+                Confirmar Reprovação
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -67,6 +67,7 @@ export default function CadastroDivulgacao() {
       .catch(() => {});
   }, [id]);
 
+<<<<<<< HEAD
   async function saveDraft() {
     try {
       setLoading(true);
@@ -79,10 +80,30 @@ export default function CadastroDivulgacao() {
     } finally {
       setLoading(false);
     }
+=======
+  async function saveDraft(): Promise<boolean> {
+    if (!texto.trim()) {
+      alert('Preencha o texto de divulgação.');
+      return false;
+    }
+    try {
+    setLoading(true);
+    setError('');
+    await api.patch(`/companies/${id}`, { eventPresentation: texto });
+    alert('Rascunho salvo com sucesso!');
+    return true;
+  } catch (err: any) {
+    setError(err.response?.data?.message || 'Erro ao salvar.');
+    alert('Erro ao salvar rascunho.');
+    return false;
+  } finally {
+    setLoading(false);
+>>>>>>> origin/integracao
   }
 
   async function handleNext() {
-    await saveDraft();
+    const ok = await saveDraft();
+    if (!ok) return;
     navigate(`/cadastro/${id}/redes-sociais`);
   }
 

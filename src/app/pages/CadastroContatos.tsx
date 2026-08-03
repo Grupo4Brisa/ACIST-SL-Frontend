@@ -118,6 +118,7 @@ export default function CadastroContatos() {
     setContacts(contacts.filter((_, i) => i !== index));
   }
 
+<<<<<<< HEAD
   async function saveDraft() {
     try {
       setLoading(true);
@@ -153,10 +154,57 @@ export default function CadastroContatos() {
     } finally {
       setLoading(false);
     }
+=======
+  async function saveDraft(): Promise<boolean> {
+  try {
+    setLoading(true);
+    setError('');
+
+    const validContacts = contacts.filter(c => c.name.trim());
+    if (validContacts.length === 0) {
+      setError('Preencha ao menos o nome de um contato para salvar.');
+      return false;
+    }
+
+    // busca contatos existentes e deleta antes de recriar
+    const existing = await api.get(`/company-contacts/company/${id}`);
+    const existingNames = (existing.data || []).map((c: any) => c.name.trim()).sort().join(',');
+    const newNames = validContacts.map(c => c.name.trim()).sort().join(',');
+    const contatosAlteraram = existingNames !== newNames ||
+      (existing.data || []).some((e: any, i: number) => {
+        const n = validContacts[i];
+        return n && (e.email !== n.email || e.phone !== n.phone || e.role !== n.role);
+      });
+
+    for (const c of existing.data || []) {
+      await api.delete(`/company-contacts/${c.id}`).catch(() => {});
+    }
+
+    await api.post(`/company-contacts/bulk`,
+      validContacts.map(c => ({
+        companyId: Number(id),
+        name: c.name,
+        role: c.role,
+        email: c.email,
+        phone: c.phone,
+        changed: contatosAlteraram,
+      }))
+    );
+
+    alert('Rascunho salvo com sucesso!');
+    return true;
+  } catch (err: any) {
+    setError(err.response?.data?.message || 'Erro ao salvar contatos');
+    alert('Erro ao salvar rascunho.');
+    return false;
+  } finally {
+    setLoading(false);
+>>>>>>> origin/integracao
   }
 
   async function handleNext() {
-    await saveDraft();
+    const ok = await saveDraft();
+    if (!ok) return;
     navigate(`/cadastro/${id}/divulgacao`);
   }
 

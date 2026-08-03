@@ -11,7 +11,11 @@ import {
   Calendar,
   DollarSign,
   UserCog,
+<<<<<<< HEAD
   X,
+=======
+  Megaphone,
+>>>>>>> origin/integracao
 } from 'lucide-react';
 import Logo from './Logo';
 import { useAuth } from '../context/AuthContext';
@@ -25,6 +29,7 @@ const navigation = [
   { name: 'Eventos',        href: '/admin/eventos',        icon: Calendar },
   { name: 'Pagamentos',     href: '/admin/pagamentos',     icon: DollarSign },
   { name: 'Colaboradores',  href: '/admin/colaboradores',  icon: UserCog },
+  { name: 'Comunicados',    href: '/admin/comunicados',    icon: Megaphone },
   { name: 'Relatórios',     href: '/admin/relatorios',     icon: BarChart3 },
 ];
 
