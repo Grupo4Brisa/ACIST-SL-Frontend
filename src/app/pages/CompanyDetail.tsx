@@ -16,7 +16,10 @@ import {
   Download,
   CheckCircle,
   XCircle,
-  AlertCircle
+  AlertCircle,
+  Link2,
+  Copy,
+  Check,
 } from 'lucide-react';
 
 import api from '../services/api';
@@ -171,6 +174,38 @@ export default function CompanyDetail(){
   const [novaTarefa, setNovaTarefa] = useState({ title: '', description: '', dueDate: '', assignedRole: '', assignedId: '' });
   const [criandoTarefa, setCriandoTarefa] = useState(false);
   const [colabs, setColabs] = useState<{id:number;name:string;role:string}[]>([]);
+
+  // =========================
+  // LINK DE CADASTRO
+  // =========================
+  const [linkCadastro, setLinkCadastro] = useState('');
+  const [gerandoLink, setGerandoLink] = useState(false);
+  const [linkErro, setLinkErro] = useState('');
+  const [linkCopiado, setLinkCopiado] = useState(false);
+
+  async function gerarLinkCadastro() {
+    try {
+      setGerandoLink(true);
+      setLinkErro('');
+      const response = await api.patch(`/companies/${id}/resend-registration-link`);
+      setLinkCadastro(response.data.url);
+      setLinkCopiado(false);
+    } catch (error: any) {
+      setLinkErro(error.response?.data?.message || 'Erro ao gerar o link.');
+    } finally {
+      setGerandoLink(false);
+    }
+  }
+
+  async function copiarLinkCadastro() {
+    try {
+      await navigator.clipboard.writeText(linkCadastro);
+      setLinkCopiado(true);
+      setTimeout(() => setLinkCopiado(false), 2000);
+    } catch {
+      // silencioso
+    }
+  }
 
   useEffect(()=>{
 
@@ -1623,6 +1658,57 @@ export default function CompanyDetail(){
 
 
 
+
+          {/* LINK DE CADASTRO */}
+          <div className="bg-card rounded-lg border border-border p-4 sm:p-6">
+            <h3 className="mb-2 flex items-center gap-2">
+              <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
+              Link de Cadastro
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Gere um link para o associado continuar o cadastro. Válido por 7 dias.
+            </p>
+            {linkErro && (
+              <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {linkErro}
+              </div>
+            )}
+            {linkCadastro ? (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 p-3 border border-border rounded-lg bg-muted/30 min-w-0">
+                  <span className="flex-1 text-sm break-all">{linkCadastro}</span>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <button
+                    onClick={copiarLinkCadastro}
+                    className="flex-1 px-4 py-2 rounded-lg border border-border flex items-center justify-center gap-2 text-sm hover:bg-muted"
+                  >
+                    {linkCopiado ? (
+                      <><Check className="h-4 w-4 text-green-600" />Copiado!</>
+                    ) : (
+                      <><Copy className="h-4 w-4" />Copiar link</>
+                    )}
+                  </button>
+                  <button
+                    onClick={gerarLinkCadastro}
+                    disabled={gerandoLink}
+                    className="flex-1 px-4 py-2 rounded-lg border border-border text-sm hover:bg-muted disabled:opacity-50"
+                  >
+                    {gerandoLink ? 'Gerando...' : 'Gerar novo link'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={gerarLinkCadastro}
+                disabled={gerandoLink}
+                className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                <Link2 className="h-4 w-4" />
+                {gerandoLink ? 'Gerando...' : 'Gerar Link'}
+              </button>
+            )}
+          </div>
 
           {/* DATAS */}
 
