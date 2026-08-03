@@ -1,191 +1,79 @@
-import {
-  useState,
-  useEffect,
-} from 'react';
+import { useState, useEffect } from "react";
 
-import {
-  useNavigate,
-  useSearchParams,
-} from 'react-router';
+import { useNavigate, useSearchParams } from "react-router";
 
-import {
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  CheckCircle,
-} from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
 
-import Logo from '../components/Logo';
+import Logo from "../components/Logo";
 
-import api from '../services/api';
+import api from "../services/api";
 
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
-
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
 
 export default function LoginAssociado() {
-
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
 
+  const cadastroSucesso = searchParams.get("cadastro") === "sucesso";
 
-  const cadastroSucesso =
-    searchParams.get('cadastro') === 'sucesso';
-
-
-
-  const [showPassword, setShowPassword] =
-    useState(false);
-
-
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
+    email: "",
 
-    email: '',
-
-    password: '',
-
+    password: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
 
+  const [error, setError] = useState("");
 
-  const [isLoading, setIsLoading] =
-    useState(false);
-
-
-
-  const [error, setError] =
-    useState('');
-
-
-
-  const [showSuccessMessage, setShowSuccessMessage] =
-    useState(false);
-
-
-
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   useEffect(() => {
-
-
     if (cadastroSucesso) {
-
-
       setShowSuccessMessage(true);
 
+      const timer = setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 10000);
 
-
-      const timer =
-        setTimeout(() => {
-
-          setShowSuccessMessage(false);
-
-        }, 10000);
-
-
-
-      return () =>
-        clearTimeout(timer);
-
+      return () => clearTimeout(timer);
     }
-
-
   }, [cadastroSucesso]);
 
-
-
-
-
-  async function handleSubmit(
-    e: React.FormEvent,
-  ) {
-
-
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-
-    setError('');
+    setError("");
 
     setIsLoading(true);
 
-
-
     try {
+      const response = await api.post("/auth/company-login", {
+        email: formData.email,
 
+        password: formData.password,
+      });
 
-      const response =
-        await api.post(
-          '/auth/company-login',
-          {
-            email:
-              formData.email,
+      const { access_token, company } = response.data;
 
-            password:
-              formData.password,
-          },
-        );
+      localStorage.setItem("token", access_token);
 
+      localStorage.setItem("company", JSON.stringify(company));
 
-
-      const {
-        access_token,
-        company,
-      } = response.data;
-
-
-
-      localStorage.setItem(
-        'token',
-        access_token,
-      );
-
-
-
-      localStorage.setItem(
-        'company',
-        JSON.stringify(company),
-      );
-
-
-
-      navigate('/area-associado');
-
-
-
+      navigate("/area-associado");
     } catch (err: any) {
+      console.error("Erro login associado:", err);
 
-
-      console.error(
-        'Erro login associado:',
-        err,
-      );
-
-
-
-      setError(
-
-        err.response?.data?.message
-          ??
-        'Email ou senha inválidos.'
-
-      );
-
-
-
+      setError(err.response?.data?.message ?? "Email ou senha inválidos.");
     } finally {
-
-
       setIsLoading(false);
-
-
     }
-
-
   }
-    return (
-
+  return (
     <div
       className="
         min-h-screen
@@ -196,8 +84,6 @@ export default function LoginAssociado() {
         flex-col
       "
     >
-
-
       {/* Header */}
 
       <Header
@@ -205,9 +91,6 @@ export default function LoginAssociado() {
         showEmployeeArea={false}
         showAssociateArea={false}
       />
-
-
-
 
       <div
         className="
@@ -218,8 +101,6 @@ export default function LoginAssociado() {
           p-6
         "
       >
-
-
         <div
           className="
             w-full
@@ -233,8 +114,6 @@ export default function LoginAssociado() {
             overflow-hidden
           "
         >
-
-
           {/* Imagem */}
 
           <div
@@ -244,15 +123,11 @@ export default function LoginAssociado() {
               relative
             "
           >
-
             <img
-
               src="
               https://images.unsplash.com/photo-1642522029686-5485ea7e6042?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080
               "
-
               alt="Profissional trabalhando"
-
               className="
                 absolute
                 inset-0
@@ -260,14 +135,8 @@ export default function LoginAssociado() {
                 h-full
                 object-cover
               "
-
             />
-
           </div>
-
-
-
-
 
           {/* Formulário */}
 
@@ -277,15 +146,12 @@ export default function LoginAssociado() {
               md:p-12
             "
           >
-
-
             <div
               className="
                 text-center
                 mb-6
               "
             >
-
               <p
                 className="
                   text-[#0C3A59]
@@ -294,41 +160,23 @@ export default function LoginAssociado() {
                   mb-2
                 "
               >
-
                 Área do Associado
-
               </p>
 
-
-              <h2 className="mb-2">
-
-                Acesse sua conta
-
-              </h2>
-
+              <h2 className="mb-2">Acesse sua conta</h2>
 
               <p
                 className="
                   text-muted-foreground
                 "
               >
-
                 Acompanhe seu cadastro e informações
-
               </p>
-
-
             </div>
 
-
-
-
-
-            {
-              showSuccessMessage && (
-
-                <div
-                  className="
+            {showSuccessMessage && (
+              <div
+                className="
                     mb-6
                     p-4
                     bg-green-50
@@ -339,59 +187,39 @@ export default function LoginAssociado() {
                     items-start
                     gap-3
                   "
-                >
-
-                  <CheckCircle
-                    className="
+              >
+                <CheckCircle
+                  className="
                       h-5
                       w-5
                       text-green-600
                       flex-shrink-0
                       mt-0.5
                     "
-                  />
+                />
 
-
-                  <div>
-
-                    <p
-                      className="
+                <div>
+                  <p
+                    className="
                         text-green-800
                         font-semibold
                         mb-1
                       "
-                    >
+                  >
+                    Cadastro realizado com sucesso!
+                  </p>
 
-                      Cadastro realizado com sucesso!
-
-                    </p>
-
-
-                    <p
-                      className="
+                  <p
+                    className="
                         text-green-700
                         text-sm
                       "
-                    >
-
-                      Utilize o email e senha cadastrados
-                      para acessar sua área.
-
-                    </p>
-
-
-                  </div>
-
-
+                  >
+                    Utilize o email e senha cadastrados para acessar sua área.
+                  </p>
                 </div>
-
-              )
-            }
-
-
-
-
-
+              </div>
+            )}
 
             <form
               onSubmit={handleSubmit}
@@ -399,21 +227,15 @@ export default function LoginAssociado() {
                 space-y-6
               "
             >
-
-
-
               {/* EMAIL */}
 
               <div>
-
-
                 <label
                   className="
                     block
                     mb-2
                   "
                 >
-
                   <Mail
                     className="
                       inline
@@ -422,23 +244,15 @@ export default function LoginAssociado() {
                       mr-2
                     "
                   />
-
                   Email
-
                 </label>
 
-
-
                 <input
-
                   type="email"
-
                   required
-
                   placeholder="
                     seu.email@empresa.com.br
                   "
-
                   className="
                     w-full
                     px-4
@@ -452,52 +266,27 @@ export default function LoginAssociado() {
                     focus:ring-primary
                     transition-all
                   "
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
 
-
-                  value={
-                    formData.email
+                      email: e.target.value,
+                    })
                   }
-
-
-                  onChange={
-                    (e) =>
-                      setFormData({
-
-                        ...formData,
-
-                        email:
-                          e.target.value,
-
-                      })
-                  }
-
-
-                  disabled={
-                    isLoading
-                  }
-
-
+                  disabled={isLoading}
                 />
-
-
               </div>
-
-
-
-
 
               {/* SENHA */}
 
               <div>
-
-
                 <label
                   className="
                     block
                     mb-2
                   "
                 >
-
                   <Lock
                     className="
                       inline
@@ -506,38 +295,18 @@ export default function LoginAssociado() {
                       mr-2
                     "
                   />
-
                   Senha
-
                 </label>
-
-
-
-
 
                 <div
                   className="
                     relative
                   "
                 >
-
                   <input
-
-
-                    type={
-                      showPassword
-                        ? 'text'
-                        : 'password'
-                    }
-
-
+                    type={showPassword ? "text" : "password"}
                     required
-
-
                     placeholder="••••••••"
-
-
-
                     className="
                       w-full
                       px-4
@@ -552,49 +321,20 @@ export default function LoginAssociado() {
                       focus:ring-primary
                       transition-all
                     "
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
 
-
-
-                    value={
-                      formData.password
+                        password: e.target.value,
+                      })
                     }
-
-
-
-                    onChange={
-                      (e) =>
-                        setFormData({
-
-                          ...formData,
-
-                          password:
-                            e.target.value,
-
-                        })
-                    }
-
-
-
-                    disabled={
-                      isLoading
-                    }
-
-
+                    disabled={isLoading}
                   />
 
-
-
                   <button
-
                     type="button"
-
-                    onClick={() =>
-                      setShowPassword(
-                        !showPassword,
-                      )
-                    }
-
-
+                    onClick={() => setShowPassword(!showPassword)}
                     className="
                       absolute
                       right-3
@@ -603,48 +343,29 @@ export default function LoginAssociado() {
                       text-muted-foreground
                       hover:text-foreground
                     "
-
                   >
-
-
-                    {
-                      showPassword
-                        ?
+                    {showPassword ? (
                       <EyeOff
                         className="
                           h-5
                           w-5
                         "
                       />
-
-                        :
-
+                    ) : (
                       <Eye
                         className="
                           h-5
                           w-5
                         "
                       />
-                    }
-
-
+                    )}
                   </button>
-
-
                 </div>
-
-
               </div>
 
-
-
-
-
-              {
-                error && (
-
-                  <div
-                    className="
+              {error && (
+                <div
+                  className="
                       p-3
                       bg-red-50
                       border
@@ -653,28 +374,14 @@ export default function LoginAssociado() {
                       text-red-700
                       text-[0.875rem]
                     "
-                  >
-
-                    {error}
-
-                  </div>
-
-                )
-              }
-
-
-
-
+                >
+                  {error}
+                </div>
+              )}
 
               <button
-
                 type="submit"
-
-                disabled={
-                  isLoading
-                }
-
-
+                disabled={isLoading}
                 className="
                   w-full
                   bg-[#5DA5FF]
@@ -690,14 +397,9 @@ export default function LoginAssociado() {
                   justify-center
                   gap-2
                 "
-
               >
-
-                {
-                  isLoading
-                    ?
+                {isLoading ? (
                   <>
-
                     <div
                       className="
                         w-5
@@ -709,29 +411,19 @@ export default function LoginAssociado() {
                         animate-spin
                       "
                     />
-
                     Entrando...
-
                   </>
-
-                  :
-
-                  'Entrar'
-
-                }
-
-
+                ) : (
+                  "Entrar"
+                )}
               </button>
-
-
             </form>
-                        <div
+            <div
               className="
                 mt-6
                 text-center
               "
             >
-
               <a
                 href="#"
                 className="
@@ -740,34 +432,16 @@ export default function LoginAssociado() {
                   hover:underline
                 "
               >
-
                 Esqueci minha senha
-
               </a>
-
-
             </div>
-
-
           </div>
-
-
         </div>
-
-
       </div>
-
-
-
-
 
       {/* Footer */}
 
-        <Footer />
-
-
+      <Footer />
     </div>
-
   );
-
 }

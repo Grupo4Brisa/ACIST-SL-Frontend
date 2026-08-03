@@ -1,91 +1,98 @@
-import { useNavigate } from 'react-router';
-import { ArrowLeft, Download, CheckCircle, Clock, AlertCircle, CreditCard } from 'lucide-react';
-import Logo from '../components/Logo';
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
+import { useNavigate } from "react-router";
+import {
+  ArrowLeft,
+  Download,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  CreditCard,
+} from "lucide-react";
+import Logo from "../components/Logo";
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
 
 export default function Mensalidades() {
   const navigate = useNavigate();
 
   const mensalidades = [
     {
-      mes: 'Abril/2026',
-      vencimento: '2026-04-10',
-      valor: 250.00,
-      status: 'em_aberto',
-      boleto: 'boleto-abril-2026.pdf'
+      mes: "Abril/2026",
+      vencimento: "2026-04-10",
+      valor: 250.0,
+      status: "em_aberto",
+      boleto: "boleto-abril-2026.pdf",
     },
     {
-      mes: 'Março/2026',
-      vencimento: '2026-03-10',
-      valor: 250.00,
-      status: 'pago',
-      dataPagamento: '2026-03-08',
-      boleto: 'boleto-marco-2026.pdf'
+      mes: "Março/2026",
+      vencimento: "2026-03-10",
+      valor: 250.0,
+      status: "pago",
+      dataPagamento: "2026-03-08",
+      boleto: "boleto-marco-2026.pdf",
     },
     {
-      mes: 'Fevereiro/2026',
-      vencimento: '2026-02-10',
-      valor: 250.00,
-      status: 'pago',
-      dataPagamento: '2026-02-09',
-      boleto: 'boleto-fevereiro-2026.pdf'
+      mes: "Fevereiro/2026",
+      vencimento: "2026-02-10",
+      valor: 250.0,
+      status: "pago",
+      dataPagamento: "2026-02-09",
+      boleto: "boleto-fevereiro-2026.pdf",
     },
     {
-      mes: 'Janeiro/2026',
-      vencimento: '2026-01-10',
-      valor: 250.00,
-      status: 'pago',
-      dataPagamento: '2026-01-08',
-      boleto: 'boleto-janeiro-2026.pdf'
+      mes: "Janeiro/2026",
+      vencimento: "2026-01-10",
+      valor: 250.0,
+      status: "pago",
+      dataPagamento: "2026-01-08",
+      boleto: "boleto-janeiro-2026.pdf",
     },
     {
-      mes: 'Dezembro/2025',
-      vencimento: '2025-12-10',
-      valor: 250.00,
-      status: 'pago',
-      dataPagamento: '2025-12-07',
-      boleto: 'boleto-dezembro-2025.pdf'
+      mes: "Dezembro/2025",
+      vencimento: "2025-12-10",
+      valor: 250.0,
+      status: "pago",
+      dataPagamento: "2025-12-07",
+      boleto: "boleto-dezembro-2025.pdf",
     },
     {
-      mes: 'Novembro/2025',
-      vencimento: '2025-11-10',
-      valor: 250.00,
-      status: 'pago',
-      dataPagamento: '2025-11-09',
-      boleto: 'boleto-novembro-2025.pdf'
-    }
+      mes: "Novembro/2025",
+      vencimento: "2025-11-10",
+      valor: 250.0,
+      status: "pago",
+      dataPagamento: "2025-11-09",
+      boleto: "boleto-novembro-2025.pdf",
+    },
   ];
 
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case 'pago':
+      case "pago":
         return {
-          label: 'Pago',
-          color: 'text-green-700',
-          bg: 'bg-green-100',
-          icon: CheckCircle
+          label: "Pago",
+          color: "text-green-700",
+          bg: "bg-green-100",
+          icon: CheckCircle,
         };
-      case 'em_aberto':
+      case "em_aberto":
         return {
-          label: 'Em Aberto',
-          color: 'text-orange-700',
-          bg: 'bg-orange-100',
-          icon: Clock
+          label: "Em Aberto",
+          color: "text-orange-700",
+          bg: "bg-orange-100",
+          icon: Clock,
         };
-      case 'atrasado':
+      case "atrasado":
         return {
-          label: 'Atrasado',
-          color: 'text-red-700',
-          bg: 'bg-red-100',
-          icon: AlertCircle
+          label: "Atrasado",
+          color: "text-red-700",
+          bg: "bg-red-100",
+          icon: AlertCircle,
         };
       default:
         return {
-          label: 'Desconhecido',
-          color: 'text-gray-700',
-          bg: 'bg-gray-100',
-          icon: Clock
+          label: "Desconhecido",
+          color: "text-gray-700",
+          bg: "bg-gray-100",
+          icon: Clock,
         };
     }
   };
@@ -95,30 +102,35 @@ export default function Mensalidades() {
     alert(`Download do boleto: ${boleto}`);
   };
 
-  const mensalidadesEmAberto = mensalidades.filter(m => m.status === 'em_aberto' || m.status === 'atrasado');
-  const totalEmAberto = mensalidadesEmAberto.reduce((acc, m) => acc + m.valor, 0);
+  const mensalidadesEmAberto = mensalidades.filter(
+    (m) => m.status === "em_aberto" || m.status === "atrasado",
+  );
+  const totalEmAberto = mensalidadesEmAberto.reduce(
+    (acc, m) => acc + m.valor,
+    0,
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0C3A59] to-[#226897] flex flex-col">
       {/* Header */}
 
       <Header
-      showEmployeeArea={false}
-      showAssociateArea={false}
-      rightContent={
-        <button
-          onClick={() => navigate("/area-associado")}
-          className="px-6 py-2.5 bg-[#5DA5FF] text-white rounded-lg hover:bg-[#226897] transition-colors"
-        >
-          Voltar à Área do Associado
-        </button>
-      }
+        showEmployeeArea={false}
+        showAssociateArea={false}
+        rightContent={
+          <button
+            onClick={() => navigate("/area-associado")}
+            className="px-6 py-2.5 bg-[#5DA5FF] text-white rounded-lg hover:bg-[#226897] transition-colors"
+          >
+            Voltar à Área do Associado
+          </button>
+        }
       />
 
       {/* Main Content */}
       <div className="flex-1 max-w-5xl mx-auto px-6 py-8 w-full">
         <button
-          onClick={() => navigate('/area-associado')}
+          onClick={() => navigate("/area-associado")}
           className="flex items-center gap-2 text-blue-100 hover:text-white mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -126,7 +138,9 @@ export default function Mensalidades() {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-white text-3xl font-semibold mb-2">Mensalidades</h1>
+          <h1 className="text-white text-3xl font-semibold mb-2">
+            Mensalidades
+          </h1>
           <p className="text-blue-100">
             Acompanhe suas mensalidades e faça o download dos boletos
           </p>
@@ -156,7 +170,7 @@ export default function Mensalidades() {
               <div>
                 <p className="text-gray-600 text-sm">Pagas</p>
                 <p className="text-2xl font-bold text-[#0C3A59]">
-                  {mensalidades.filter(m => m.status === 'pago').length}
+                  {mensalidades.filter((m) => m.status === "pago").length}
                 </p>
               </div>
             </div>
@@ -180,7 +194,9 @@ export default function Mensalidades() {
         {/* Lista de Mensalidades */}
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="p-6 bg-gradient-to-r from-[#0C3A59] to-[#226897] text-white">
-            <h2 className="text-2xl font-semibold">Histórico de Mensalidades</h2>
+            <h2 className="text-2xl font-semibold">
+              Histórico de Mensalidades
+            </h2>
           </div>
 
           <div className="p-6">
@@ -200,9 +216,15 @@ export default function Mensalidades() {
                           <h3 className="text-lg font-semibold text-[#0C3A59]">
                             {mensalidade.mes}
                           </h3>
-                          <div className={`inline-flex items-center gap-2 px-3 py-1 ${statusConfig.bg} rounded-full`}>
-                            <StatusIcon className={`h-4 w-4 ${statusConfig.color}`} />
-                            <span className={`text-sm font-semibold ${statusConfig.color}`}>
+                          <div
+                            className={`inline-flex items-center gap-2 px-3 py-1 ${statusConfig.bg} rounded-full`}
+                          >
+                            <StatusIcon
+                              className={`h-4 w-4 ${statusConfig.color}`}
+                            />
+                            <span
+                              className={`text-sm font-semibold ${statusConfig.color}`}
+                            >
                               {statusConfig.label}
                             </span>
                           </div>
@@ -210,17 +232,23 @@ export default function Mensalidades() {
 
                         <div className="grid md:grid-cols-2 gap-2 text-sm text-gray-600">
                           <div>
-                            <span className="font-semibold">Vencimento:</span>{' '}
-                            {new Date(mensalidade.vencimento).toLocaleDateString('pt-BR')}
+                            <span className="font-semibold">Vencimento:</span>{" "}
+                            {new Date(
+                              mensalidade.vencimento,
+                            ).toLocaleDateString("pt-BR")}
                           </div>
                           <div>
-                            <span className="font-semibold">Valor:</span>{' '}
-                            R$ {mensalidade.valor.toFixed(2)}
+                            <span className="font-semibold">Valor:</span> R${" "}
+                            {mensalidade.valor.toFixed(2)}
                           </div>
                           {mensalidade.dataPagamento && (
                             <div>
-                              <span className="font-semibold">Data do Pagamento:</span>{' '}
-                              {new Date(mensalidade.dataPagamento).toLocaleDateString('pt-BR')}
+                              <span className="font-semibold">
+                                Data do Pagamento:
+                              </span>{" "}
+                              {new Date(
+                                mensalidade.dataPagamento,
+                              ).toLocaleDateString("pt-BR")}
                             </div>
                           )}
                         </div>
@@ -255,7 +283,6 @@ export default function Mensalidades() {
       {/* Footer */}
 
       <Footer />
-
     </div>
   );
 }

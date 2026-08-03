@@ -1,8 +1,8 @@
-import { useNavigate } from 'react-router';
-import { Calendar, MapPin, Users, Clock, ArrowLeft } from 'lucide-react';
-import Logo from '../components/Logo';
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
+import { useNavigate } from "react-router";
+import { Calendar, MapPin, Users, Clock, ArrowLeft } from "lucide-react";
+import Logo from "../components/Logo";
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
 
 export default function EventosLista() {
   const navigate = useNavigate();
@@ -11,94 +11,96 @@ export default function EventosLista() {
   const eventos = [
     {
       id: 1,
-      name: 'Café de Negócios - Networking',
-      data: '2026-04-25',
-      horario: '08:00 - 10:00',
-      local: 'Sede ACIST',
+      name: "Café de Negócios - Networking",
+      data: "2026-04-25",
+      horario: "08:00 - 10:00",
+      local: "Sede ACIST",
       inscritos: 32,
       vagas: 50,
-      categoria: 'Networking'
+      categoria: "Networking",
     },
     {
       id: 2,
-      name: 'Workshop: Marketing Digital para Empresas',
-      data: '2026-05-02',
-      horario: '14:00 - 18:00',
-      local: 'Auditório ACIST',
+      name: "Workshop: Marketing Digital para Empresas",
+      data: "2026-05-02",
+      horario: "14:00 - 18:00",
+      local: "Auditório ACIST",
       inscritos: 28,
       vagas: 40,
-      categoria: 'Capacitação'
+      categoria: "Capacitação",
     },
     {
       id: 3,
-      name: 'Assembleia Geral de Associados',
-      data: '2026-05-15',
-      horario: '19:00 - 21:00',
-      local: 'Sede ACIST',
+      name: "Assembleia Geral de Associados",
+      data: "2026-05-15",
+      horario: "19:00 - 21:00",
+      local: "Sede ACIST",
       inscritos: 45,
       vagas: 100,
-      categoria: 'Institucional'
+      categoria: "Institucional",
     },
     {
       id: 4,
-      name: 'Palestra: Inovação e Tecnologia',
-      data: '2026-05-20',
-      horario: '19:00 - 21:00',
-      local: 'Auditório ACIST',
+      name: "Palestra: Inovação e Tecnologia",
+      data: "2026-05-20",
+      horario: "19:00 - 21:00",
+      local: "Auditório ACIST",
       inscritos: 18,
       vagas: 60,
-      categoria: 'Capacitação'
+      categoria: "Capacitação",
     },
     {
       id: 5,
-      name: 'Encontro de Mulheres Empreendedoras',
-      data: '2026-06-01',
-      horario: '09:00 - 12:00',
-      local: 'Sede ACIST',
+      name: "Encontro de Mulheres Empreendedoras",
+      data: "2026-06-01",
+      horario: "09:00 - 12:00",
+      local: "Sede ACIST",
       inscritos: 22,
       vagas: 35,
-      categoria: 'Networking'
+      categoria: "Networking",
     },
     {
       id: 6,
-      name: 'Happy Hour Empresarial',
-      data: '2026-06-08',
-      horario: '18:00 - 21:00',
-      local: 'Rancho da ACIST',
+      name: "Happy Hour Empresarial",
+      data: "2026-06-08",
+      horario: "18:00 - 21:00",
+      local: "Rancho da ACIST",
       inscritos: 56,
       vagas: 80,
-      categoria: 'Networking'
-    }
+      categoria: "Networking",
+    },
   ];
 
   const getCategoriaColor = (categoria: string) => {
     switch (categoria) {
-      case 'Networking':
-        return 'bg-blue-100 text-blue-700';
-      case 'Capacitação':
-        return 'bg-purple-100 text-purple-700';
-      case 'Institucional':
-        return 'bg-green-100 text-green-700';
+      case "Networking":
+        return "bg-blue-100 text-blue-700";
+      case "Capacitação":
+        return "bg-purple-100 text-purple-700";
+      case "Institucional":
+        return "bg-green-100 text-green-700";
       default:
-        return 'bg-gray-100 text-gray-700';
+        return "bg-gray-100 text-gray-700";
     }
   };
 
   const getOcupacao = (inscritos: number, vagas: number) => {
     const percentual = (inscritos / vagas) * 100;
-    if (percentual >= 90) return { label: 'Quase lotado', color: 'text-red-600' };
-    if (percentual >= 70) return { label: 'Vagas limitadas', color: 'text-orange-600' };
-    return { label: 'Vagas disponíveis', color: 'text-green-600' };
+    if (percentual >= 90)
+      return { label: "Quase lotado", color: "text-red-600" };
+    if (percentual >= 70)
+      return { label: "Vagas limitadas", color: "text-orange-600" };
+    return { label: "Vagas disponíveis", color: "text-green-600" };
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0C3A59] to-[#226897] flex flex-col">
       {/* Header */}
-      
+
       <Header
         rightContent={
           <button
-            onClick={() => navigate('/area-associado')}
+            onClick={() => navigate("/area-associado")}
             className="px-6 py-2.5 bg-[#5DA5FF] text-white hover:bg-[#226897] rounded-lg transition-colors"
           >
             Voltar à Área do Associado
@@ -109,7 +111,7 @@ export default function EventosLista() {
       {/* Main Content */}
       <div className="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">
         <button
-          onClick={() => navigate('/area-associado')}
+          onClick={() => navigate("/area-associado")}
           className="flex items-center gap-2 text-blue-100 hover:text-white mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -117,7 +119,9 @@ export default function EventosLista() {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-white text-3xl font-semibold mb-2">Eventos ACIST</h1>
+          <h1 className="text-white text-3xl font-semibold mb-2">
+            Eventos ACIST
+          </h1>
           <p className="text-blue-100">
             Confira todos os eventos disponíveis e confirme sua presença
           </p>
@@ -125,7 +129,7 @@ export default function EventosLista() {
 
         {/* Grid de Eventos */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {eventos.map(evento => {
+          {eventos.map((evento) => {
             const ocupacao = getOcupacao(evento.inscritos, evento.vagas);
             const percentualOcupacao = (evento.inscritos / evento.vagas) * 100;
 
@@ -137,7 +141,9 @@ export default function EventosLista() {
               >
                 {/* Header do Card */}
                 <div className="bg-gradient-to-r from-[#0C3A59] to-[#226897] p-6 text-white">
-                  <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${getCategoriaColor(evento.categoria).replace('text-', 'text-white bg-white/20')}`}>
+                  <div
+                    className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${getCategoriaColor(evento.categoria).replace("text-", "text-white bg-white/20")}`}
+                  >
                     {evento.categoria}
                   </div>
                   <h3 className="text-lg font-bold mb-2 group-hover:text-blue-100 transition-colors">
@@ -150,11 +156,13 @@ export default function EventosLista() {
                   <div className="space-y-3 mb-4">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Calendar className="h-4 w-4 text-[#5DA5FF]" />
-                      <span>{new Date(evento.data).toLocaleDateString('pt-BR', {
-                        weekday: 'long',
-                        day: '2-digit',
-                        month: 'long'
-                      })}</span>
+                      <span>
+                        {new Date(evento.data).toLocaleDateString("pt-BR", {
+                          weekday: "long",
+                          day: "2-digit",
+                          month: "long",
+                        })}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Clock className="h-4 w-4 text-[#5DA5FF]" />
@@ -171,9 +179,13 @@ export default function EventosLista() {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Users className="h-4 w-4 text-[#5DA5FF]" />
-                        <span>{evento.inscritos} / {evento.vagas} inscritos</span>
+                        <span>
+                          {evento.inscritos} / {evento.vagas} inscritos
+                        </span>
                       </div>
-                      <span className={`text-xs font-semibold ${ocupacao.color}`}>
+                      <span
+                        className={`text-xs font-semibold ${ocupacao.color}`}
+                      >
                         {ocupacao.label}
                       </span>
                     </div>
@@ -186,9 +198,7 @@ export default function EventosLista() {
                   </div>
 
                   {/* Botão */}
-                  <button
-                    className="w-full bg-[#5DA5FF] hover:bg-[#226897] text-white py-3 rounded-lg transition-colors font-semibold group-hover:shadow-lg"
-                  >
+                  <button className="w-full bg-[#5DA5FF] hover:bg-[#226897] text-white py-3 rounded-lg transition-colors font-semibold group-hover:shadow-lg">
                     Ver Detalhes
                   </button>
                 </div>
@@ -199,10 +209,14 @@ export default function EventosLista() {
 
         {/* Informações Adicionais */}
         <div className="mt-12 bg-white/10 backdrop-blur border border-white/20 rounded-lg p-6">
-          <h3 className="text-white font-semibold mb-4">Informações Importantes</h3>
+          <h3 className="text-white font-semibold mb-4">
+            Informações Importantes
+          </h3>
           <ul className="text-blue-100 space-y-2 text-sm">
             <li>• Os eventos são exclusivos para associados da ACIST</li>
-            <li>• Confirme sua presença com antecedência para garantir sua vaga</li>
+            <li>
+              • Confirme sua presença com antecedência para garantir sua vaga
+            </li>
             <li>• Em caso de cancelamento, avise com 24h de antecedência</li>
             <li>• Dúvidas? Entre em phone através do (51) 99999-9999</li>
           </ul>
@@ -210,9 +224,8 @@ export default function EventosLista() {
       </div>
 
       {/* Footer */}
-      
+
       <Footer />
-      
     </div>
   );
 }

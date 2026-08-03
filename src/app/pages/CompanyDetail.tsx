@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router';
-import { useAuth } from '../context/AuthContext';
+import { useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 import {
   ArrowLeft,
   Building2,
@@ -16,188 +16,216 @@ import {
   Download,
   CheckCircle,
   XCircle,
-  AlertCircle
-} from 'lucide-react';
+  AlertCircle,
+  Link2,
+  Copy,
+  Check,
+} from "lucide-react";
 
-import api from '../services/api';
+import api from "../services/api";
 
 const STATUS_CADASTRO: Record<string, { label: string; color: string }> = {
-  INCOMPLETE: { label: 'Cadastro Incompleto', color: 'bg-yellow-100 text-yellow-700' },
-  PENDING_APPROVAL: { label: 'Cadastro Completo', color: 'bg-blue-100 text-blue-700' },
-  ACTIVE: { label: 'Cadastro Completo', color: 'bg-blue-100 text-blue-700' },
-  INACTIVE: { label: 'Cadastro Completo', color: 'bg-blue-100 text-blue-700' },
+  INCOMPLETE: {
+    label: "Cadastro Incompleto",
+    color: "bg-yellow-100 text-yellow-700",
+  },
+  PENDING_APPROVAL: {
+    label: "Cadastro Completo",
+    color: "bg-blue-100 text-blue-700",
+  },
+  ACTIVE: { label: "Cadastro Completo", color: "bg-blue-100 text-blue-700" },
+  INACTIVE: { label: "Cadastro Completo", color: "bg-blue-100 text-blue-700" },
 };
 
 function getLoggedUserInfo() {
-  const token = localStorage.getItem('token');
-  if (!token) return { id: '', role: '' };
+  const token = localStorage.getItem("token");
+  if (!token) return { id: "", role: "" };
   try {
-    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-    return { id: String(payload.sub ?? ''), role: payload.role ?? '' };
-  } catch { return { id: '', role: '' }; }
+    const payload = JSON.parse(
+      atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")),
+    );
+    return { id: String(payload.sub ?? ""), role: payload.role ?? "" };
+  } catch {
+    return { id: "", role: "" };
+  }
 }
 
 const STATUS_APROVACAO: Record<string, { label: string; color: string }> = {
-  INCOMPLETE: { label: 'Aguardando Aprovação', color: 'bg-orange-100 text-orange-700' },
-  PENDING_APPROVAL: { label: 'Aguardando Aprovação', color: 'bg-yellow-100 text-yellow-700' },
-  ACTIVE: { label: 'Aprovado', color: 'bg-green-100 text-green-700' },
-  INACTIVE: { label: 'Reprovado', color: 'bg-red-100 text-red-700' },
+  INCOMPLETE: {
+    label: "Aguardando Aprovação",
+    color: "bg-orange-100 text-orange-700",
+  },
+  PENDING_APPROVAL: {
+    label: "Aguardando Aprovação",
+    color: "bg-yellow-100 text-yellow-700",
+  },
+  ACTIVE: { label: "Aprovado", color: "bg-green-100 text-green-700" },
+  INACTIVE: { label: "Reprovado", color: "bg-red-100 text-red-700" },
 };
 
 const STATUS_LABELS: Record<string, string> = {
-  ACTIVE: 'Aprovada',
-  PENDING_APPROVAL: 'Aguardando Aprovação',
-  INCOMPLETE: 'Cadastro Incompleto',
-  INACTIVE: 'Reprovada',
+  ACTIVE: "Aprovada",
+  PENDING_APPROVAL: "Aguardando Aprovação",
+  INCOMPLETE: "Cadastro Incompleto",
+  INACTIVE: "Reprovada",
 };
 
-
 const DOCUMENTO_TIPOS: Record<string, string> = {
-  STATUTE: 'Guia FGTS',
-  LOGO: 'Logotipo da Empresa',
-  SOCIAL_CONTRACT: 'Contrato Social / Guia do Empresário',
-  CNPJ: 'Cartão CNPJ',
-  BUSINESS_LICENSE: 'Comprovante de Endereço',
-  STATE_REGISTRATION: 'RG dos Sócios',
-  OTHER: 'Comprovante PIX',
+  STATUTE: "Guia FGTS",
+  LOGO: "Logotipo da Empresa",
+  SOCIAL_CONTRACT: "Contrato Social / Guia do Empresário",
+  CNPJ: "Cartão CNPJ",
+  BUSINESS_LICENSE: "Comprovante de Endereço",
+  STATE_REGISTRATION: "RG dos Sócios",
+  OTHER: "Comprovante PIX",
 };
 
 const SOLUCOES_MAP: Record<number, string> = {
-  1: 'Assessoria Jurídica',
-  2: 'Consultoria Empresarial',
-  3: 'Capacitação e Treinamentos',
-  4: 'Networking',
-  5: 'Certificado Digital',
-  6: 'Convênios e Parcerias',
-  7: 'Divulgação de Eventos',
-  8: 'Representação Política',
-  9: 'Serviços Financeiros',
-  10: 'Marketing e Comunicação',
+  1: "Assessoria Jurídica",
+  2: "Consultoria Empresarial",
+  3: "Capacitação e Treinamentos",
+  4: "Networking",
+  5: "Certificado Digital",
+  6: "Convênios e Parcerias",
+  7: "Divulgação de Eventos",
+  8: "Representação Política",
+  9: "Serviços Financeiros",
+  10: "Marketing e Comunicação",
 };
 
 interface Company {
+  id: number;
 
-  id:number;
+  companyName: string;
 
-  companyName:string;
+  corporateName: string;
 
-  corporateName:string;
+  cnpjcpf: string;
 
-  cnpjcpf:string;
+  stateRegistration?: string;
 
-  stateRegistration?:string;
+  email: string;
 
-  email:string;
+  phone: string;
 
-  phone:string;
+  companySize: string;
 
-  companySize:string;
+  website?: string;
 
-  website?:string;
+  address?: string;
 
-  address?:string;
+  neighborhood?: string;
 
-  neighborhood?:string;
+  city?: string;
 
-  city?:string;
+  state?: string;
 
-  state?:string;
+  zipCode?: string;
 
-  zipCode?:string;
+  establishmentType?: string;
 
-  establishmentType?:string;
+  headquartersType?: string;
 
-  headquartersType?:string;
+  employeesCount?: number;
 
-  employeesCount?:number;
+  foundationDate?: string;
 
-  foundationDate?:string;
+  eventPresentation?: string;
 
-  eventPresentation?:string;
+  associationDate?: string;
 
-  associationDate?:string;
+  status: string;
 
-  status:string;
+  createdAt: string;
 
-  createdAt:string;
-
-  updatedAt:string;
-
+  updatedAt: string;
 }
 
-
-
-export default function CompanyDetail(){
-
-
+export default function CompanyDetail() {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const isAprovador = user?.role === 'COLABORADOR_APROVADOR';
+  const isAprovador = user?.role === "COLABORADOR_APROVADOR";
 
-  const [aprovacaoErro, setAprovacaoErro] = useState('');
+  const [aprovacaoErro, setAprovacaoErro] = useState("");
 
-  const [company,setCompany] =
-    useState<Company | null>(null);
+  const [company, setCompany] = useState<Company | null>(null);
 
+  const [loading, setLoading] = useState(true);
 
-  const [loading,setLoading] =
-    useState(true);
+  const [activeTab, setActiveTab] = useState<
+    "historico" | "documentos" | "tarefas"
+  >("historico");
 
+  const [novoComentario, setNovoComentario] = useState("");
 
-
-  const [activeTab,setActiveTab] =
-    useState<
-      'historico' |
-      'documentos' |
-      'tarefas'
-    >('historico');
-
-  const [novoComentario,setNovoComentario] =
-    useState('');
-
-  const [documentos, setDocumentos] =
-    useState<any[]>([]);
+  const [documentos, setDocumentos] = useState<any[]>([]);
 
   const [contatos, setContatos] = useState<any[]>([]);
   const [redesSociais, setRedesSociais] = useState<any>(null);
   const [solucoes, setSolucoes] = useState<any[]>([]);
   const [tarefas, setTarefas] = useState<any[]>([]);
-  const [novaTarefa, setNovaTarefa] = useState({ title: '', description: '', dueDate: '', assignedRole: '', assignedId: '' });
+  const [novaTarefa, setNovaTarefa] = useState({
+    title: "",
+    description: "",
+    dueDate: "",
+    assignedRole: "",
+    assignedId: "",
+  });
   const [criandoTarefa, setCriandoTarefa] = useState(false);
-  const [colabs, setColabs] = useState<{id:number;name:string;role:string}[]>([]);
+  const [colabs, setColabs] = useState<
+    { id: number; name: string; role: string }[]
+  >([]);
 
-  useEffect(()=>{
+  // =========================
+  // LINK DE CADASTRO
+  // =========================
+  const [linkCadastro, setLinkCadastro] = useState("");
+  const [gerandoLink, setGerandoLink] = useState(false);
+  const [linkErro, setLinkErro] = useState("");
+  const [linkCopiado, setLinkCopiado] = useState(false);
 
-    async function loadCompany(){
+  async function gerarLinkCadastro() {
+    try {
+      setGerandoLink(true);
+      setLinkErro("");
+      const response = await api.patch(
+        `/companies/${id}/resend-registration-link`,
+      );
+      setLinkCadastro(response.data.url);
+      setLinkCopiado(false);
+    } catch (error: any) {
+      console.error("Erro ao gerar link de cadastro:", error);
+      setLinkErro(error.response?.data?.message || "Erro ao gerar o link.");
+    } finally {
+      setGerandoLink(false);
+    }
+  }
 
+  async function copiarLinkCadastro() {
+    try {
+      await navigator.clipboard.writeText(linkCadastro);
+      setLinkCopiado(true);
+      setTimeout(() => setLinkCopiado(false), 2000);
+    } catch {
+      // silencioso
+    }
+  }
+
+  useEffect(() => {
+    async function loadCompany() {
       try {
+        const response = await api.get(`/companies/${id}`);
 
-        const response =
-          await api.get(
-            `/companies/${id}`
-          );
-
-        setCompany(
-          response.data
-        );
-
-      } catch(error){
-
-        console.error(
-          'Erro ao carregar empresa:',
-          error
-        );
-
+        setCompany(response.data);
+      } catch (error) {
+        console.error("Erro ao carregar empresa:", error);
       } finally {
-
         setLoading(false);
-
       }
-
     }
 
-    async function loadDocumentos(){
+    async function loadDocumentos() {
       try {
         const response = await api.get(`/documents/company/${id}`);
         setDocumentos(response.data || []);
@@ -206,7 +234,7 @@ export default function CompanyDetail(){
       }
     }
 
-    async function loadContatos(){
+    async function loadContatos() {
       try {
         const response = await api.get(`/company-contacts/company/${id}`);
         setContatos(response.data || []);
@@ -215,7 +243,7 @@ export default function CompanyDetail(){
       }
     }
 
-    async function loadRedesSociais(){
+    async function loadRedesSociais() {
       try {
         const response = await api.get(`/social-networks/company/${id}`);
         setRedesSociais(response.data || null);
@@ -224,7 +252,7 @@ export default function CompanyDetail(){
       }
     }
 
-    async function loadSolucoes(){
+    async function loadSolucoes() {
       try {
         const response = await api.get(`/company-solutions/company/${id}`);
         setSolucoes(response.data || []);
@@ -233,17 +261,20 @@ export default function CompanyDetail(){
       }
     }
 
-    async function loadTarefas(){
+    async function loadTarefas() {
       try {
         const response = await api.get(`/tasks/company/${id}`);
         setTarefas(response.data || []);
-        api.get('/users').then(r => setColabs(Array.isArray(r.data) ? r.data : [])).catch(()=>{});
+        api
+          .get("/users")
+          .then((r) => setColabs(Array.isArray(r.data) ? r.data : []))
+          .catch(() => {});
       } catch {
         // silencioso
       }
     }
 
-    if(id){
+    if (id) {
       loadCompany();
       loadDocumentos();
       loadContatos();
@@ -251,75 +282,26 @@ export default function CompanyDetail(){
       loadSolucoes();
       loadTarefas();
     }
+  }, [id]);
 
-  },[id]);
+  function formatDate(date: string) {
+    if (!date) return "-";
 
-
-
-
-  function formatDate(
-    date:string
-  ){
-
-    if(!date) return '-';
-
-
-    return new Intl.DateTimeFormat(
-      'pt-BR'
-    ).format(
-      new Date(date)
-    );
-
+    return new Intl.DateTimeFormat("pt-BR").format(new Date(date));
   }
 
-
-
-
-  if(loading){
-
-    return (
-
-      <div className="p-8">
-
-        Carregando empresa...
-
-      </div>
-
-    );
-
+  if (loading) {
+    return <div className="p-8">Carregando empresa...</div>;
   }
 
-
-
-
-  if(!company){
-
-    return (
-
-      <div className="p-8">
-
-        Empresa não encontrada.
-
-      </div>
-
-    );
-
+  if (!company) {
+    return <div className="p-8">Empresa não encontrada.</div>;
   }
-
-
-
 
   return (
-
     <div className="h-full bg-background">
-
-
       <div className="bg-card border-b border-border">
-
-
-        <div className="px-8 py-6">
-
-
+        <div className="px-4 sm:px-8 py-6">
           <Link
             to="/admin/funil"
             className="
@@ -331,113 +313,82 @@ export default function CompanyDetail(){
               mb-4
             "
           >
-
-            <ArrowLeft
-              className="h-4 w-4"
-            />
-
+            <ArrowLeft className="h-4 w-4" />
             Voltar ao Funil
-
           </Link>
 
-
-
-
-          <div className="
+          <div
+            className="
             flex
-            items-start
-            justify-between
-          ">
+            flex-col
+            lg:flex-row
+            lg:items-start
+            lg:justify-between
+            gap-4
+          "
+          >
+            <div className="min-w-0">
+              <h1 className="mb-2 break-words">{company.companyName}</h1>
 
-
-
-            <div>
-
-
-              <h1 className="mb-2">
-
-                {company.companyName}
-
-              </h1>
-
-
-
-              <div className="
+              <div
+                className="
                 flex
+                flex-wrap
                 items-center
-                gap-4
+                gap-x-4
+                gap-y-2
                 text-muted-foreground
-              ">
-
-
-                <span className="
+                text-sm
+              "
+              >
+                <span
+                  className="
                   flex
                   items-center
                   gap-2
-                ">
-
-                  <Building2
-                    className="h-4 w-4"
-                  />
+                "
+                >
+                  <Building2 className="h-4 w-4 shrink-0" />
 
                   {company.cnpjcpf}
-
                 </span>
 
-
-
-                <span className="
+                <span
+                  className="
                   flex
                   items-center
                   gap-2
-                ">
-
-                  <Calendar
-                    className="h-4 w-4"
-                  />
-
-                  Criado em:
-
-                  {' '}
-
-                  {formatDate(
-                    company.createdAt
-                  )}
-
+                "
+                >
+                  <Calendar className="h-4 w-4 shrink-0" />
+                  Criado em: {formatDate(company.createdAt)}
                 </span>
-
-
               </div>
-
-
             </div>
 
-
-
-
-
-            <div className="
+            <div
+              className="
               flex
+              flex-wrap
               items-center
               gap-3
-            ">
-
-              <span className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
+            "
+            >
+              <span className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium whitespace-nowrap">
                 {STATUS_CADASTRO[company.status]?.label || company.status}
               </span>
 
-              <span className={`px-3 py-1.5 rounded-lg text-sm font-medium ${STATUS_APROVACAO[company.status]?.color || 'bg-gray-100 text-gray-700'}`}>
+              <span
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap ${STATUS_APROVACAO[company.status]?.color || "bg-gray-100 text-gray-700"}`}
+              >
                 {STATUS_APROVACAO[company.status]?.label || company.status}
               </span>
-
-
-
 
               <button
                 type="button"
                 onClick={() => {
-                  localStorage.removeItem('companyData');
-                  localStorage.setItem('companyId', String(company.id));
+                  localStorage.removeItem("companyData");
+                  localStorage.setItem("companyId", String(company.id));
                   navigate(`/cadastro/${company.id}`);
                 }}
                 className="
@@ -447,647 +398,417 @@ export default function CompanyDetail(){
                   text-primary-foreground
                   rounded-lg
                   hover:bg-primary/90
+                  whitespace-nowrap
                 "
               >
-
                 Editar Cadastro
-
               </button>
-
-
             </div>
-
-
           </div>
-
-
         </div>
-
-
       </div>
-            <div className="
+      <div
+        className="
         grid
-        grid-cols-3
+        grid-cols-1
+        lg:grid-cols-3
         gap-6
-        p-8
-      ">
-
-
-        <div className="
-          col-span-2
+        p-4
+        sm:p-8
+      "
+      >
+        <div
+          className="
+          lg:col-span-2
           space-y-6
-        ">
-
-
-
+        "
+        >
           {/* INFORMAÇÕES DA EMPRESA */}
 
-          <div className="
+          <div
+            className="
             bg-card
             rounded-lg
             border
             border-border
-            p-6
-          ">
+            p-4
+            sm:p-6
+          "
+          >
+            <h3 className="mb-4">Informações da Empresa</h3>
 
-
-            <h3 className="mb-4">
-
-              Informações da Empresa
-
-            </h3>
-
-
-
-            <div className="
+            <div
+              className="
               grid
-              grid-cols-2
+              grid-cols-1
+              sm:grid-cols-2
               gap-6
-            ">
-
-
-
+            "
+            >
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Razão Social
-
                 </label>
 
-
-                <div className="
+                <div
+                  className="
                   flex
                   items-center
                   gap-2
-                ">
-
-
+                "
+                >
                   <Building2
                     className="
                       h-4
                       w-4
                       text-muted-foreground
+                      shrink-0
                     "
                   />
 
-
-                  <span>
-
-                    {company.corporateName}
-
-                  </span>
-
-
+                  <span className="break-words">{company.corporateName}</span>
                 </div>
-
               </div>
 
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Email
-
                 </label>
 
-
-                <div className="
+                <div
+                  className="
                   flex
                   items-center
                   gap-2
-                ">
-
-
+                "
+                >
                   <Mail
                     className="
                       h-4
                       w-4
                       text-muted-foreground
+                      shrink-0
                     "
                   />
 
-
-                  <span>
-
-                    {company.email}
-
-                  </span>
-
-
+                  <span className="break-all">{company.email}</span>
                 </div>
-
-
               </div>
 
-
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Telefone
-
                 </label>
 
-
-                <div className="
+                <div
+                  className="
                   flex
                   items-center
                   gap-2
-                ">
-
-
+                "
+                >
                   <Phone
                     className="
                       h-4
                       w-4
                       text-muted-foreground
+                      shrink-0
                     "
                   />
 
-
-                  <span>
-
-                    {company.phone}
-
-                  </span>
-
-
+                  <span>{company.phone}</span>
                 </div>
-
-
               </div>
 
-
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Porte da Empresa
-
                 </label>
 
-
-                <span>
-
-                  {company.companySize}
-
-                </span>
-
-
+                <span>{company.companySize}</span>
               </div>
 
-
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Inscrição Estadual
-
                 </label>
 
-
-                <span>
-
-                  {company.stateRegistration || '-'}
-
-                </span>
-
-
+                <span>{company.stateRegistration || "-"}</span>
               </div>
 
-
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Quantidade de Funcionários
-
                 </label>
 
-
-                <span>
-
-                  {company.employeesCount ?? '-'}
-
-                </span>
-
-
+                <span>{company.employeesCount ?? "-"}</span>
               </div>
 
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Tipo de Estabelecimento
-
                 </label>
 
-
                 <span>
-
-                  {company.headquartersType || company.establishmentType || '-'}
-
+                  {company.headquartersType || company.establishmentType || "-"}
                 </span>
-
-
               </div>
-
             </div>
-
           </div>
-
-
-
-
-
-
-
-
-
 
           {/* ENDEREÇO */}
 
-
-          <div className="
+          <div
+            className="
             bg-card
             rounded-lg
             border
             border-border
-            p-6
-          ">
+            p-4
+            sm:p-6
+          "
+          >
+            <h3 className="mb-4">Endereço</h3>
 
-
-            <h3 className="mb-4">
-
-              Endereço
-
-            </h3>
-
-
-
-            <div className="
+            <div
+              className="
               grid
-              grid-cols-2
+              grid-cols-1
+              sm:grid-cols-2
               gap-6
-            ">
-
-
+            "
+            >
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Logradouro
-
                 </label>
 
-
-                <div className="
+                <div
+                  className="
                   flex
                   items-center
                   gap-2
-                ">
-
-
+                "
+                >
                   <MapPin
                     className="
                       h-4
                       w-4
                       text-muted-foreground
+                      shrink-0
                     "
                   />
 
-
-                  <span>
-
-                    {company.address || '-'}
-
-                  </span>
-
-
+                  <span className="break-words">{company.address || "-"}</span>
                 </div>
-
-
               </div>
 
-
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Bairro
-
                 </label>
 
-
-                <span>
-
-                  {company.neighborhood || '-'}
-
-                </span>
-
-
+                <span>{company.neighborhood || "-"}</span>
               </div>
 
-
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Cidade
-
                 </label>
 
-
-                <span>
-
-                  {company.city || '-'}
-
-                </span>
-
-
+                <span>{company.city || "-"}</span>
               </div>
 
-
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   Estado
-
                 </label>
 
-
-                <span>
-
-                  {company.state || '-'}
-
-                </span>
-
-
+                <span>{company.state || "-"}</span>
               </div>
 
-
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   mb-1
                   block
-                ">
-
+                "
+                >
                   CEP
-
                 </label>
 
-
-                <span>
-
-                  {company.zipCode || '-'}
-
-                </span>
-
-
+                <span>{company.zipCode || "-"}</span>
               </div>
-
-
-
             </div>
-
-
           </div>
-
-
-
-
 
           {/* DADOS INSTITUCIONAIS */}
 
-
-          <div className="
+          <div
+            className="
             bg-card
             rounded-lg
             border
             border-border
-            p-6
-          ">
-
-
-            <h3 className="mb-4">
-
-              Dados Institucionais
-
-            </h3>
-
-
+            p-4
+            sm:p-6
+          "
+          >
+            <h3 className="mb-4">Dados Institucionais</h3>
 
             <div className="space-y-4">
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   block
-                ">
-
+                "
+                >
                   Data de Fundação
-
                 </label>
 
-
-                <span>
-
-                  {formatDate(
-                    company.foundationDate || ''
-                  )}
-
-                </span>
-
-
+                <span>{formatDate(company.foundationDate || "")}</span>
               </div>
 
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   block
-                ">
-
+                "
+                >
                   Data de Associação
-
                 </label>
 
-
-                <span>
-
-                  {formatDate(
-                    company.associationDate || ''
-                  )}
-
-                </span>
-
-
+                <span>{formatDate(company.associationDate || "")}</span>
               </div>
 
-
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   block
-                ">
-
+                "
+                >
                   Apresentação da Empresa
-
                 </label>
 
-
-                <p className="mt-1">
-
-                  {company.eventPresentation || '-'}
-
+                <p className="mt-1 break-words">
+                  {company.eventPresentation || "-"}
                 </p>
-
-
               </div>
 
-
-
-
               <div>
-
-                <label className="
+                <label
+                  className="
                   text-muted-foreground
                   text-[0.875rem]
                   block
-                ">
-
+                "
+                >
                   Website
-
                 </label>
 
-
-                <span>
-
-                  {company.website || '-'}
-
-                </span>
-
-
+                <span className="break-all">{company.website || "-"}</span>
               </div>
-
-
             </div>
-
-
           </div>
 
           {/* CONTATOS */}
           {contatos.length > 0 && (
-            <div className="bg-card rounded-lg border border-border p-6 mt-4">
+            <div className="bg-card rounded-lg border border-border p-4 sm:p-6 mt-4">
               <h3 className="font-semibold mb-4">Contatos</h3>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {contatos.map((c: any) => (
-                  <div key={c.id} className="border border-border rounded-lg p-4">
-                    <p className="font-medium">{c.name}</p>
+                  <div
+                    key={c.id}
+                    className="border border-border rounded-lg p-4 min-w-0"
+                  >
+                    <p className="font-medium break-words">{c.name}</p>
                     <p className="text-sm text-muted-foreground">{c.role}</p>
-                    {c.email && <p className="text-sm">{c.email}</p>}
+                    {c.email && <p className="text-sm break-all">{c.email}</p>}
                     {c.phone && <p className="text-sm">{c.phone}</p>}
                   </div>
                 ))}
@@ -1096,25 +817,52 @@ export default function CompanyDetail(){
           )}
 
           {/* REDES SOCIAIS */}
-          {redesSociais && (redesSociais.facebook || redesSociais.instagram || redesSociais.linkedin || redesSociais.other) && (
-            <div className="bg-card rounded-lg border border-border p-6 mt-4">
-              <h3 className="font-semibold mb-4">Redes Sociais</h3>
-              <div className="grid md:grid-cols-2 gap-3 text-sm">
-                {redesSociais.facebook && <p><span className="text-muted-foreground">Facebook: </span>{redesSociais.facebook}</p>}
-                {redesSociais.instagram && <p><span className="text-muted-foreground">Instagram: </span>{redesSociais.instagram}</p>}
-                {redesSociais.linkedin && <p><span className="text-muted-foreground">LinkedIn: </span>{redesSociais.linkedin}</p>}
-                {redesSociais.other && <p><span className="text-muted-foreground">Outros: </span>{redesSociais.other}</p>}
+          {redesSociais &&
+            (redesSociais.facebook ||
+              redesSociais.instagram ||
+              redesSociais.linkedin ||
+              redesSociais.other) && (
+              <div className="bg-card rounded-lg border border-border p-4 sm:p-6 mt-4">
+                <h3 className="font-semibold mb-4">Redes Sociais</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  {redesSociais.facebook && (
+                    <p className="break-words">
+                      <span className="text-muted-foreground">Facebook: </span>
+                      {redesSociais.facebook}
+                    </p>
+                  )}
+                  {redesSociais.instagram && (
+                    <p className="break-words">
+                      <span className="text-muted-foreground">Instagram: </span>
+                      {redesSociais.instagram}
+                    </p>
+                  )}
+                  {redesSociais.linkedin && (
+                    <p className="break-words">
+                      <span className="text-muted-foreground">LinkedIn: </span>
+                      {redesSociais.linkedin}
+                    </p>
+                  )}
+                  {redesSociais.other && (
+                    <p className="break-words">
+                      <span className="text-muted-foreground">Outros: </span>
+                      {redesSociais.other}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* SOLUÇÕES */}
           {solucoes.length > 0 && (
-            <div className="bg-card rounded-lg border border-border p-6 mt-4">
+            <div className="bg-card rounded-lg border border-border p-4 sm:p-6 mt-4">
               <h3 className="font-semibold mb-4">Soluções de Interesse</h3>
               <div className="flex flex-wrap gap-2">
                 {solucoes.map((s: any) => (
-                  <span key={s.id} className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">
+                  <span
+                    key={s.id}
+                    className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full"
+                  >
                     {SOLUCOES_MAP[s.solutionId] || `Solução ${s.solutionId}`}
                   </span>
                 ))}
@@ -1122,143 +870,128 @@ export default function CompanyDetail(){
             </div>
           )}
 
-                    {/* ABAS: HISTÓRICO / DOCUMENTOS / TAREFAS */}
+          {/* ABAS: HISTÓRICO / DOCUMENTOS / TAREFAS */}
 
-          <div className="
+          <div
+            className="
             bg-card
             rounded-lg
             border
             border-border
-          ">
-
-
-            <div className="
+          "
+          >
+            <div
+              className="
               flex
               border-b
               border-border
-            ">
-
-
+              overflow-x-auto
+            "
+            >
               <button
-                onClick={() => setActiveTab('historico')}
+                onClick={() => setActiveTab("historico")}
                 className={`
                   flex-1
-                  px-6
-                  py-4
+                  min-w-[110px]
+                  px-3
+                  sm:px-6
+                  py-3
+                  sm:py-4
                   flex
                   items-center
                   justify-center
                   gap-2
+                  text-sm
+                  sm:text-base
                   transition-colors
+                  whitespace-nowrap
                   ${
-                    activeTab === 'historico'
-                    ? 'border-b-2 border-primary text-primary'
-                    : 'text-muted-foreground hover:text-foreground'
+                    activeTab === "historico"
+                      ? "border-b-2 border-primary text-primary"
+                      : "text-muted-foreground hover:text-foreground"
                   }
                 `}
               >
-
-                <Clock className="h-4 w-4"/>
-
+                <Clock className="h-4 w-4 shrink-0" />
                 Histórico
-
               </button>
 
-
-
-
               <button
-                onClick={() => setActiveTab('documentos')}
+                onClick={() => setActiveTab("documentos")}
                 className={`
                   flex-1
-                  px-6
-                  py-4
+                  min-w-[110px]
+                  px-3
+                  sm:px-6
+                  py-3
+                  sm:py-4
                   flex
                   items-center
                   justify-center
                   gap-2
+                  text-sm
+                  sm:text-base
                   transition-colors
+                  whitespace-nowrap
                   ${
-                    activeTab === 'documentos'
-                    ? 'border-b-2 border-primary text-primary'
-                    : 'text-muted-foreground hover:text-foreground'
+                    activeTab === "documentos"
+                      ? "border-b-2 border-primary text-primary"
+                      : "text-muted-foreground hover:text-foreground"
                   }
                 `}
               >
-
-                <FileText className="h-4 w-4"/>
-
+                <FileText className="h-4 w-4 shrink-0" />
                 Documentos
-
               </button>
 
-
-
-
-
               <button
-                onClick={() => setActiveTab('tarefas')}
+                onClick={() => setActiveTab("tarefas")}
                 className={`
                   flex-1
-                  px-6
-                  py-4
+                  min-w-[110px]
+                  px-3
+                  sm:px-6
+                  py-3
+                  sm:py-4
                   flex
                   items-center
                   justify-center
                   gap-2
+                  text-sm
+                  sm:text-base
                   transition-colors
+                  whitespace-nowrap
                   ${
-                    activeTab === 'tarefas'
-                    ? 'border-b-2 border-primary text-primary'
-                    : 'text-muted-foreground hover:text-foreground'
+                    activeTab === "tarefas"
+                      ? "border-b-2 border-primary text-primary"
+                      : "text-muted-foreground hover:text-foreground"
                   }
                 `}
               >
-
-                <CheckSquare className="h-4 w-4"/>
-
+                <CheckSquare className="h-4 w-4 shrink-0" />
                 Tarefas
-
               </button>
-
-
             </div>
 
-
-
-
-            <div className="p-6">
-
-
-              {activeTab === 'historico' && (
-
+            <div className="p-4 sm:p-6">
+              {activeTab === "historico" && (
                 <div>
+                  <h4 className="mb-4">Adicionar comentário</h4>
 
-
-                  <h4 className="mb-4">
-
-                    Adicionar comentário
-
-                  </h4>
-
-
-                  <div className="
+                  <div
+                    className="
                     flex
+                    flex-col
+                    sm:flex-row
                     gap-3
                     mb-6
-                  ">
-
-
+                  "
+                  >
                     <input
                       type="text"
                       placeholder="Digite uma observação..."
                       value={novoComentario}
-                      onChange={
-                        e =>
-                        setNovoComentario(
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => setNovoComentario(e.target.value)}
                       className="
                         flex-1
                         px-4
@@ -1270,8 +1003,6 @@ export default function CompanyDetail(){
                       "
                     />
 
-
-
                     <button
                       className="
                         px-4
@@ -1279,41 +1010,30 @@ export default function CompanyDetail(){
                         bg-primary
                         text-primary-foreground
                         rounded-lg
+                        flex
+                        items-center
+                        justify-center
+                        gap-2
                       "
                     >
+                      <MessageSquare className="h-4 w-4" />
 
-                      <MessageSquare
-                        className="h-4 w-4"
-                      />
-
+                      <span className="sm:hidden">Comentar</span>
                     </button>
-
-
                   </div>
 
-
-
-                  <div className="
+                  <div
+                    className="
                     text-muted-foreground
                     text-sm
-                  ">
-
+                  "
+                  >
                     Nenhum histórico disponível.
-
                   </div>
-
-
                 </div>
-
               )}
 
-
-
-
-
-
-
-              {activeTab === 'documentos' && (
+              {activeTab === "documentos" && (
                 <div className="space-y-4">
                   {documentos.length === 0 ? (
                     <div className="p-6 text-center text-muted-foreground border border-border rounded-lg">
@@ -1321,31 +1041,45 @@ export default function CompanyDetail(){
                     </div>
                   ) : (
                     documentos.map((doc: any) => (
-                      <div key={doc.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <FileText className="h-6 w-6 text-primary" />
-                          <div>
-                            <p className="font-medium">{DOCUMENTO_TIPOS[doc.documentType] || doc.documentType}</p>
-                            <span className="text-sm text-muted-foreground">{doc.fileName}</span>
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between gap-3 p-4 border border-border rounded-lg"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <FileText className="h-6 w-6 text-primary shrink-0" />
+                          <div className="min-w-0">
+                            <p className="font-medium break-words">
+                              {DOCUMENTO_TIPOS[doc.documentType] ||
+                                doc.documentType}
+                            </p>
+                            <span className="text-sm text-muted-foreground break-all">
+                              {doc.fileName}
+                            </span>
                           </div>
                         </div>
                         <button
-                          className="p-2 hover:bg-muted rounded-lg"
-                          onClick={() => api.get(`/documents/${doc.id}/download`, { responseType: 'blob' }).then(res => {
-                            const url = window.URL.createObjectURL(new Blob([res.data]));
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = doc.fileName;
-                            a.click();
-                          })}
+                          className="p-2 hover:bg-muted rounded-lg shrink-0"
+                          onClick={() =>
+                            api
+                              .get(`/documents/${doc.id}/download`, {
+                                responseType: "blob",
+                              })
+                              .then((res) => {
+                                const url = window.URL.createObjectURL(
+                                  new Blob([res.data]),
+                                );
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = doc.fileName;
+                                a.click();
+                              })
+                          }
                         >
                           <Download className="h-4 w-4" />
                         </button>
                       </div>
                     ))
                   )}
-
-
 
                   <button
                     className="
@@ -1362,46 +1096,41 @@ export default function CompanyDetail(){
                       hover:border-primary
                     "
                   >
-
-                    <Upload
-                      className="h-4 w-4"
-                    />
-
+                    <Upload className="h-4 w-4" />
                     Adicionar Documento
-
-
                   </button>
-
-
                 </div>
-
               )}
 
-
-
-
-
-
-              {activeTab === 'tarefas' && (
+              {activeTab === "tarefas" && (
                 <div className="space-y-4">
-
                   {/* LISTA DE TAREFAS */}
                   {tarefas.length === 0 && !criandoTarefa ? (
-                    <div className="text-muted-foreground text-sm">Nenhuma tarefa cadastrada.</div>
+                    <div className="text-muted-foreground text-sm">
+                      Nenhuma tarefa cadastrada.
+                    </div>
                   ) : (
                     tarefas.map((t: any) => (
-                      <div key={t.id} className="flex items-start justify-between p-4 border border-border rounded-lg">
-                        <div>
-                          <p className="font-medium">{t.title}</p>
-                          <p className="text-sm text-muted-foreground mt-1">{t.description}</p>
+                      <div
+                        key={t.id}
+                        className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 p-4 border border-border rounded-lg"
+                      >
+                        <div className="min-w-0">
+                          <p className="font-medium break-words">{t.title}</p>
+                          <p className="text-sm text-muted-foreground mt-1 break-words">
+                            {t.description}
+                          </p>
                           {t.dueDate && (
                             <p className="text-xs text-muted-foreground mt-1">
-                              Prazo: {new Date(t.dueDate).toLocaleDateString('pt-BR')}
+                              Prazo:{" "}
+                              {new Date(t.dueDate).toLocaleDateString("pt-BR")}
                             </p>
                           )}
                         </div>
-                        <span className={`text-xs px-2 py-1 rounded-full ${t.status === 'DONE' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                          {t.status === 'DONE' ? 'Concluída' : 'Pendente'}
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full self-start whitespace-nowrap ${t.status === "DONE" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}
+                        >
+                          {t.status === "DONE" ? "Concluída" : "Pendente"}
                         </span>
                       </div>
                     ))
@@ -1414,25 +1143,46 @@ export default function CompanyDetail(){
                         type="text"
                         placeholder="Título da tarefa *"
                         value={novaTarefa.title}
-                        onChange={e => setNovaTarefa(p => ({ ...p, title: e.target.value }))}
+                        onChange={(e) =>
+                          setNovaTarefa((p) => ({
+                            ...p,
+                            title: e.target.value,
+                          }))
+                        }
                         className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                       <textarea
                         placeholder="Descrição"
                         value={novaTarefa.description}
-                        onChange={e => setNovaTarefa(p => ({ ...p, description: e.target.value }))}
+                        onChange={(e) =>
+                          setNovaTarefa((p) => ({
+                            ...p,
+                            description: e.target.value,
+                          }))
+                        }
                         rows={2}
                         className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                       />
                       <input
                         type="date"
                         value={novaTarefa.dueDate}
-                        onChange={e => setNovaTarefa(p => ({ ...p, dueDate: e.target.value }))}
+                        onChange={(e) =>
+                          setNovaTarefa((p) => ({
+                            ...p,
+                            dueDate: e.target.value,
+                          }))
+                        }
                         className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                       <select
                         value={novaTarefa.assignedRole}
-                        onChange={e => setNovaTarefa(p => ({ ...p, assignedRole: e.target.value, assignedId: '' }))}
+                        onChange={(e) =>
+                          setNovaTarefa((p) => ({
+                            ...p,
+                            assignedRole: e.target.value,
+                            assignedId: "",
+                          }))
+                        }
                         className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       >
                         <option value="">Qualquer perfil (opcional)</option>
@@ -1441,49 +1191,91 @@ export default function CompanyDetail(){
                       </select>
                       <select
                         value={novaTarefa.assignedId}
-                        onChange={e => setNovaTarefa(p => ({ ...p, assignedId: e.target.value }))}
+                        onChange={(e) =>
+                          setNovaTarefa((p) => ({
+                            ...p,
+                            assignedId: e.target.value,
+                          }))
+                        }
                         className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       >
-                        <option value="">Colaborador específico (opcional)</option>
-                        {(novaTarefa.assignedRole ? colabs.filter(u => u.role === novaTarefa.assignedRole) : colabs).map(u => (
+                        <option value="">
+                          Colaborador específico (opcional)
+                        </option>
+                        {(novaTarefa.assignedRole
+                          ? colabs.filter(
+                              (u) => u.role === novaTarefa.assignedRole,
+                            )
+                          : colabs
+                        ).map((u) => (
                           <option key={u.id} value={String(u.id)}>
-                            {u.name} ({u.role === 'COLABORADOR_ADMIN' ? 'Admin' : 'Aprovador'})
+                            {u.name} (
+                            {u.role === "COLABORADOR_ADMIN"
+                              ? "Admin"
+                              : "Aprovador"}
+                            )
                           </option>
                         ))}
                       </select>
-                      <div className="flex gap-2">
+                      <div className="flex flex-col sm:flex-row gap-2">
                         <button
                           onClick={async () => {
-                            if (!novaTarefa.title || !novaTarefa.dueDate) return;
+                            if (!novaTarefa.title || !novaTarefa.dueDate)
+                              return;
                             try {
-                              let assignedTo = novaTarefa.assignedId ? Number(novaTarefa.assignedId) : null;
+                              let assignedTo = novaTarefa.assignedId
+                                ? Number(novaTarefa.assignedId)
+                                : null;
                               if (!assignedTo && novaTarefa.assignedRole) {
-                                const group = colabs.filter(u => u.role === novaTarefa.assignedRole);
-                                if (group.length > 0) assignedTo = group[Math.floor(Math.random() * group.length)].id;
+                                const group = colabs.filter(
+                                  (u) => u.role === novaTarefa.assignedRole,
+                                );
+                                if (group.length > 0)
+                                  assignedTo =
+                                    group[
+                                      Math.floor(Math.random() * group.length)
+                                    ].id;
                               }
                               if (!assignedTo) {
                                 const info = getLoggedUserInfo();
                                 assignedTo = info.id ? Number(info.id) : 1;
                               }
-                              await api.post('/tasks', {
+                              await api.post("/tasks", {
                                 companyId: Number(id),
                                 title: novaTarefa.title,
-                                description: novaTarefa.description || '-',
+                                description: novaTarefa.description || "-",
                                 assignedTo,
                                 dueDate: novaTarefa.dueDate,
                               });
                               const res = await api.get(`/tasks/company/${id}`);
                               setTarefas(res.data || []);
-                              setNovaTarefa({ title: '', description: '', dueDate: '', assignedRole: '', assignedId: '' });
+                              setNovaTarefa({
+                                title: "",
+                                description: "",
+                                dueDate: "",
+                                assignedRole: "",
+                                assignedId: "",
+                              });
                               setCriandoTarefa(false);
-                            } catch { /* silencioso */ }
+                            } catch {
+                              /* silencioso */
+                            }
                           }}
                           className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm hover:bg-primary/90"
                         >
                           Salvar
                         </button>
                         <button
-                          onClick={() => { setCriandoTarefa(false); setNovaTarefa({ title: '', description: '', dueDate: '', assignedRole: '', assignedId: '' }); }}
+                          onClick={() => {
+                            setCriandoTarefa(false);
+                            setNovaTarefa({
+                              title: "",
+                              description: "",
+                              dueDate: "",
+                              assignedRole: "",
+                              assignedId: "",
+                            });
+                          }}
                           className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-muted"
                         >
                           Cancelar
@@ -1495,390 +1287,360 @@ export default function CompanyDetail(){
                   {/* BOTÃO NOVA TAREFA */}
                   {!criandoTarefa && (
                     <button
-                      onClick={() => { const info = getLoggedUserInfo(); setNovaTarefa(p => ({ ...p, assignedRole: info.role, assignedId: info.id })); setCriandoTarefa(true); }}
+                      onClick={() => {
+                        const info = getLoggedUserInfo();
+                        setNovaTarefa((p) => ({
+                          ...p,
+                          assignedRole: info.role,
+                          assignedId: info.id,
+                        }));
+                        setCriandoTarefa(true);
+                      }}
                       className="mt-2 w-full py-3 border-2 border-dashed border-border rounded-lg flex items-center justify-center gap-2 hover:bg-muted transition-colors"
                     >
                       <CheckSquare className="h-4 w-4" />
                       Nova tarefa
                     </button>
                   )}
-
                 </div>
               )}
-
-
-
             </div>
-
-
           </div>
-                  </div>
-
-
+        </div>
 
         {/* COLUNA DIREITA */}
 
-        <div className="
+        <div
+          className="
           space-y-6
-        ">
-
-
-
+        "
+        >
           {/* STATUS DA EMPRESA */}
 
-          <div className="
+          <div
+            className="
             bg-card
             rounded-lg
             border
             border-border
-            p-6
-          ">
+            p-4
+            sm:p-6
+          "
+          >
+            <h3 className="mb-4">Status da Empresa</h3>
 
-
-            <h3 className="mb-4">
-
-              Status da Empresa
-
-            </h3>
-
-
-
-            <div className="
+            <div
+              className="
               flex
               items-center
               gap-3
-            ">
-
-
-              {company.status === 'ACTIVE' ? (
-
+            "
+            >
+              {company.status === "ACTIVE" ? (
                 <CheckCircle
                   className="
                     h-6
                     w-6
                     text-green-600
+                    shrink-0
                   "
                 />
-
-              ) : company.status === 'INACTIVE' ? (
-
+              ) : company.status === "INACTIVE" ? (
                 <XCircle
                   className="
                     h-6
                     w-6
                     text-red-600
+                    shrink-0
                   "
                 />
-
               ) : (
-
                 <AlertCircle
                   className="
                     h-6
                     w-6
                     text-yellow-600
+                    shrink-0
                   "
                 />
-
               )}
 
-
-
-
-              <div className="flex flex-col gap-1">
-                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
+              <div className="flex flex-col gap-1 min-w-0">
+                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium w-fit">
                   {STATUS_CADASTRO[company.status]?.label || company.status}
                 </span>
-                <span className={`px-3 py-1 rounded-lg text-sm font-medium ${STATUS_APROVACAO[company.status]?.color || 'bg-gray-100 text-gray-700'}`}>
+                <span
+                  className={`px-3 py-1 rounded-lg text-sm font-medium w-fit ${STATUS_APROVACAO[company.status]?.color || "bg-gray-100 text-gray-700"}`}
+                >
                   {STATUS_APROVACAO[company.status]?.label || company.status}
                 </span>
               </div>
-
-
             </div>
-
-
-
           </div>
 
+          {/* LINK DE CADASTRO */}
 
+          <div
+            className="
+            bg-card
+            rounded-lg
+            border
+            border-border
+            p-4
+            sm:p-6
+          "
+          >
+            <h3 className="mb-2 flex items-center gap-2">
+              <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
+              Link de Cadastro
+            </h3>
 
+            <p className="text-sm text-muted-foreground mb-4">
+              Gere um link para o associado continuar o cadastro. Válido por 7
+              dias.
+            </p>
 
+            {linkErro && (
+              <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {linkErro}
+              </div>
+            )}
 
+            {linkCadastro ? (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 p-3 border border-border rounded-lg bg-muted/30 min-w-0">
+                  <span className="flex-1 text-sm break-all">
+                    {linkCadastro}
+                  </span>
+                </div>
 
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <button
+                    onClick={copiarLinkCadastro}
+                    className="
+                      flex-1
+                      px-4
+                      py-2
+                      rounded-lg
+                      border
+                      border-border
+                      flex
+                      items-center
+                      justify-center
+                      gap-2
+                      text-sm
+                      hover:bg-muted
+                    "
+                  >
+                    {linkCopiado ? (
+                      <>
+                        <Check className="h-4 w-4 text-green-600" />
+                        Copiado!
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        Copiar link
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={gerarLinkCadastro}
+                    disabled={gerandoLink}
+                    className="
+                      flex-1
+                      px-4
+                      py-2
+                      rounded-lg
+                      border
+                      border-border
+                      text-sm
+                      hover:bg-muted
+                      disabled:opacity-50
+                    "
+                  >
+                    {gerandoLink ? "Gerando..." : "Gerar novo link"}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={gerarLinkCadastro}
+                disabled={gerandoLink}
+                className="
+                  w-full
+                  px-4
+                  py-2
+                  bg-primary
+                  text-primary-foreground
+                  rounded-lg
+                  hover:bg-primary/90
+                  disabled:opacity-50
+                  flex
+                  items-center
+                  justify-center
+                  gap-2
+                "
+              >
+                <Link2 className="h-4 w-4" />
+                {gerandoLink ? "Gerando..." : "Gerar Link"}
+              </button>
+            )}
+          </div>
 
           {/* DATAS */}
 
-          <div className="
+          <div
+            className="
             bg-card
             rounded-lg
             border
             border-border
-            p-6
-          ">
-
-
-            <h3 className="mb-4">
-
-              Datas
-
-            </h3>
-
-
+            p-4
+            sm:p-6
+          "
+          >
+            <h3 className="mb-4">Datas</h3>
 
             <div className="space-y-3">
-
-
               <div>
-
-                <p className="
+                <p
+                  className="
                   text-sm
                   text-muted-foreground
-                ">
-
+                "
+                >
                   Cadastro criado
-
                 </p>
 
-
-                <p>
-
-                  {formatDate(
-                    company.createdAt
-                  )}
-
-                </p>
-
-
+                <p>{formatDate(company.createdAt)}</p>
               </div>
-
-
-
-
 
               <div>
-
-                <p className="
+                <p
+                  className="
                   text-sm
                   text-muted-foreground
-                ">
-
+                "
+                >
                   Última atualização
-
                 </p>
 
-
-                <p>
-
-                  {formatDate(
-                    company.updatedAt
-                  )}
-
-                </p>
-
-
+                <p>{formatDate(company.updatedAt)}</p>
               </div>
-
-
-
             </div>
-
-
-
           </div>
-
-
-
-
-
-
-
 
           {/* RESUMO */}
 
-          <div className="
+          <div
+            className="
             bg-card
             rounded-lg
             border
             border-border
-            p-6
-          ">
-
-
-            <h3 className="mb-4">
-
-              Resumo
-
-            </h3>
-
-
+            p-4
+            sm:p-6
+          "
+          >
+            <h3 className="mb-4">Resumo</h3>
 
             <div className="space-y-4">
-
-
               <div>
-
-                <p className="
+                <p
+                  className="
                   text-sm
                   text-muted-foreground
-                ">
-
+                "
+                >
                   CNPJ/CPF
-
                 </p>
 
-
-                <p>
-
-                  {company.cnpjcpf}
-
-                </p>
-
-
+                <p>{company.cnpjcpf}</p>
               </div>
 
-
-
-
-
               <div>
-
-                <p className="
+                <p
+                  className="
                   text-sm
                   text-muted-foreground
-                ">
-
+                "
+                >
                   Funcionários
-
                 </p>
 
-
-                <p>
-
-                  {company.employeesCount ?? '-'}
-
-                </p>
-
-
+                <p>{company.employeesCount ?? "-"}</p>
               </div>
-
-
-
-
 
               <div>
-
-                <p className="
+                <p
+                  className="
                   text-sm
                   text-muted-foreground
-                ">
-
+                "
+                >
                   Cidade
-
                 </p>
 
-
-                <p>
-
-                  {company.city || '-'}
-
-                </p>
-
-
+                <p>{company.city || "-"}</p>
               </div>
-
-
-
             </div>
-
-
-
           </div>
-
-
-
-
-
-
-
 
           {/* AÇÕES DE APROVAÇÃO */}
 
-          {
-            company.status === 'PENDING_APPROVAL' && (
-
-              <div className="
+          {company.status === "PENDING_APPROVAL" && (
+            <div
+              className="
                 bg-card
                 rounded-lg
                 border
                 border-border
-                p-6
-              ">
+                p-4
+                sm:p-6
+              "
+            >
+              <h3 className="mb-4">Ações</h3>
 
-
-                <h3 className="mb-4">
-
-                  Ações
-
-                </h3>
-
-
-
-                <div className="
+              <div
+                className="
                   flex
                   gap-3
                   flex-wrap
-                ">
+                "
+              >
+                {aprovacaoErro && (
+                  <div className="w-full p-3 mb-2 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                    {aprovacaoErro}
+                  </div>
+                )}
 
-                  {aprovacaoErro && (
-                    <div className="w-full p-3 mb-2 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                      {aprovacaoErro}
-                    </div>
-                  )}
-
-
-                  <button
-
-                    onClick={
-                      async()=>{
-
-                        try{
-                        if(!isAprovador){
-                          setAprovacaoErro('Apenas usuários com perfil de Aprovador podem aprovar cadastros.');
-                          setTimeout(() => setAprovacaoErro(''), 4000);
-                          return;
-                        }
-
-
-                          await api.patch(
-                            `/companies/${company.id}/approve`
-                          );
-
-
-                          setCompany({
-
-                            ...company,
-
-                            status:
-                              'ACTIVE'
-
-                          });
-
-
-                        }catch(error){
-
-                          console.error(
-                            'Erro ao aprovar:',
-                            error
-                          );
-
-                        }
-
+                <button
+                  onClick={async () => {
+                    try {
+                      if (!isAprovador) {
+                        setAprovacaoErro(
+                          "Apenas usuários com perfil de Aprovador podem aprovar cadastros.",
+                        );
+                        setTimeout(() => setAprovacaoErro(""), 4000);
+                        return;
                       }
-                    }
 
-                    className="
+                      await api.patch(`/companies/${company.id}/approve`);
+
+                      setCompany({
+                        ...company,
+
+                        status: "ACTIVE",
+                      });
+                    } catch (error) {
+                      console.error("Erro ao aprovar:", error);
+                    }
+                  }}
+                  className="
                       flex-1
+                      min-w-[120px]
                       px-4
                       py-2
                       bg-green-600
@@ -1886,69 +1648,35 @@ export default function CompanyDetail(){
                       rounded-lg
                       hover:bg-green-700
                     "
+                >
+                  Aprovar
+                </button>
 
-                  >
-
-                    Aprovar
-
-
-                  </button>
-
-
-
-
-
-
-                  <button
-
-                    onClick={
-                      async()=>{
-
-                        if(!isAprovador){
-                          setAprovacaoErro('Apenas usuários com perfil de Aprovador podem reprovar cadastros.');
-                          setTimeout(() => setAprovacaoErro(''), 4000);
-                          return;
-                        }
-
-
-                        try{
-
-
-                          await api.patch(
-                            `/companies/${company.id}/reject`
-                          );
-
-
-
-                          setCompany({
-
-                            ...company,
-
-                            status:
-                              'INACTIVE'
-
-                          });
-
-
-
-                        }catch(error){
-
-
-                          console.error(
-                            'Erro ao rejeitar:',
-                            error
-                          );
-
-
-                        }
-
-
-                      }
+                <button
+                  onClick={async () => {
+                    if (!isAprovador) {
+                      setAprovacaoErro(
+                        "Apenas usuários com perfil de Aprovador podem reprovar cadastros.",
+                      );
+                      setTimeout(() => setAprovacaoErro(""), 4000);
+                      return;
                     }
 
+                    try {
+                      await api.patch(`/companies/${company.id}/reject`);
 
-                    className="
+                      setCompany({
+                        ...company,
+
+                        status: "INACTIVE",
+                      });
+                    } catch (error) {
+                      console.error("Erro ao rejeitar:", error);
+                    }
+                  }}
+                  className="
                       flex-1
+                      min-w-[120px]
                       px-4
                       py-2
                       bg-red-600
@@ -1956,36 +1684,14 @@ export default function CompanyDetail(){
                       rounded-lg
                       hover:bg-red-700
                     "
-
-                  >
-
-                    Reprovar
-
-
-                  </button>
-
-
-
-                </div>
-
-
+                >
+                  Reprovar
+                </button>
               </div>
-
-            )
-          }
-
-
-
+            </div>
+          )}
         </div>
-
-
-        </div>
-
       </div>
-
-
-
-
+    </div>
   );
-
 }

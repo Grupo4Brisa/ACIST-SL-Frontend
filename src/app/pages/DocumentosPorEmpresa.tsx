@@ -1,7 +1,4 @@
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from "react";
 
 import {
   FileText,
@@ -15,15 +12,13 @@ import {
   ChevronDown,
   ChevronUp,
   Building2,
-} from 'lucide-react';
+} from "lucide-react";
 
-import api from '../services/api';
+import api from "../services/api";
 
-import type { DocumentStatus } from '../types';
-
+import type { DocumentStatus } from "../types";
 
 interface Document {
-
   id: number;
 
   companyId: number;
@@ -43,224 +38,142 @@ interface Document {
   status: DocumentStatus;
 
   uploadedAt: string;
-
 }
 
-
 interface CompanyGroup {
-
   companyId: number;
 
   companyName: string;
 
   documents: Document[];
-
 }
 
-
 export default function DocumentosPorEmpresa() {
+  const [documents, setDocuments] = useState<Document[]>([]);
 
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const [documents, setDocuments] =
-    useState<Document[]>([]);
+  const [filterStatus, setFilterStatus] = useState<DocumentStatus | "ALL">(
+    "ALL",
+  );
 
+  const [filterRamo, setFilterRamo] = useState("ALL");
 
-  const [searchTerm, setSearchTerm] =
-    useState('');
+  const [dateFrom, setDateFrom] = useState("");
 
+  const [dateTo, setDateTo] = useState("");
 
-  const [filterStatus, setFilterStatus] =
-    useState<DocumentStatus | 'ALL'>('ALL');
+  const [expandedCompanies, setExpandedCompanies] = useState<Set<number>>(
+    new Set(),
+  );
 
-
-  const [filterRamo, setFilterRamo] =
-    useState('ALL');
-
-
-  const [dateFrom, setDateFrom] =
-    useState('');
-
-
-  const [dateTo, setDateTo] =
-    useState('');
-
-
-  const [expandedCompanies, setExpandedCompanies] =
-    useState<Set<number>>(new Set());
-
-
-  const [loading, setLoading] =
-    useState(true);
-
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     loadDocuments();
-
   }, []);
 
-
   async function loadDocuments() {
-
     try {
-
       setLoading(true);
 
-      const response =
-        await api.get('/documents');
+      const response = await api.get("/documents");
 
       setDocuments(response.data);
-
     } catch (error) {
-
-      console.error(
-        'Erro ao carregar documentos',
-        error,
-      );
-
+      console.error("Erro ao carregar documentos", error);
     } finally {
-
       setLoading(false);
-
     }
-
   }
-
 
   // =========================
   // AGRUPAR POR EMPRESA
   // =========================
 
-  function groupByCompany(
-    docs: Document[],
-  ): CompanyGroup[] {
-
-    const groupsMap =
-      new Map<number, CompanyGroup>();
+  function groupByCompany(docs: Document[]): CompanyGroup[] {
+    const groupsMap = new Map<number, CompanyGroup>();
 
     for (const doc of docs) {
-
-      const existing =
-        groupsMap.get(doc.companyId);
+      const existing = groupsMap.get(doc.companyId);
 
       if (existing) {
-
         existing.documents.push(doc);
-
       } else {
-
         groupsMap.set(doc.companyId, {
-
           companyId: doc.companyId,
 
-          companyName:
-            doc.companyName ??
-            `Empresa #${doc.companyId}`,
+          companyName: doc.companyName ?? `Empresa #${doc.companyId}`,
 
           documents: [doc],
-
         });
-
       }
-
     }
 
-    return Array.from(groupsMap.values())
-      .sort((a, b) =>
-        a.companyName.localeCompare(b.companyName),
-      );
-
+    return Array.from(groupsMap.values()).sort((a, b) =>
+      a.companyName.localeCompare(b.companyName),
+    );
   }
-
 
   // =========================
   // OPÇÕES DE RAMO
   // (derivadas dos documentos carregados)
   // =========================
 
-  const ramoOptions =
-    Array.from(
-      new Set(
-        documents
-          .map(doc => doc.establishmentType)
-          .filter((ramo): ramo is string => !!ramo),
-      ),
-    ).sort((a, b) => a.localeCompare(b));
+  const ramoOptions = Array.from(
+    new Set(
+      documents
+        .map((doc) => doc.establishmentType)
+        .filter((ramo): ramo is string => !!ramo),
+    ),
+  ).sort((a, b) => a.localeCompare(b));
 
+  const filteredDocuments = documents.filter((doc) => {
+    const matchesSearch =
+      doc.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (doc.companyName ?? "").toLowerCase().includes(searchTerm.toLowerCase());
 
-  const filteredDocuments =
-    documents.filter(doc => {
+    const matchesStatus = filterStatus === "ALL" || doc.status === filterStatus;
 
-      const matchesSearch =
-        doc.fileName
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
-        ||
-        (doc.companyName ?? '')
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
+    const matchesRamo =
+      filterRamo === "ALL" || doc.establishmentType === filterRamo;
 
-      const matchesStatus =
-        filterStatus === 'ALL' ||
-        doc.status === filterStatus;
+    const uploadedDate = doc.uploadedAt.slice(0, 10); // 'YYYY-MM-DD'
 
-      const matchesRamo =
-        filterRamo === 'ALL' ||
-        doc.establishmentType === filterRamo;
+    const matchesDateFrom = !dateFrom || uploadedDate >= dateFrom;
 
-      const uploadedDate =
-        doc.uploadedAt.slice(0, 10); // 'YYYY-MM-DD'
+    const matchesDateTo = !dateTo || uploadedDate <= dateTo;
 
-      const matchesDateFrom =
-        !dateFrom || uploadedDate >= dateFrom;
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesRamo &&
+      matchesDateFrom &&
+      matchesDateTo
+    );
+  });
 
-      const matchesDateTo =
-        !dateTo || uploadedDate <= dateTo;
-
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesRamo &&
-        matchesDateFrom &&
-        matchesDateTo
-      );
-
-    });
-
-
-  const companyGroups =
-    groupByCompany(filteredDocuments);
-
+  const companyGroups = groupByCompany(filteredDocuments);
 
   function toggleCompany(companyId: number) {
-
-    setExpandedCompanies(prev => {
-
+    setExpandedCompanies((prev) => {
       const next = new Set(prev);
 
       if (next.has(companyId)) {
-
         next.delete(companyId);
-
       } else {
-
         next.add(companyId);
-
       }
 
       return next;
-
     });
-
   }
-
 
   // =========================
   // HELPERS DE STATUS
   // =========================
 
   function getStatusIcon(status: DocumentStatus) {
-
     const icons = {
       PENDING: AlertCircle,
       APPROVED: CheckCircle,
@@ -268,109 +181,79 @@ export default function DocumentosPorEmpresa() {
     };
 
     return icons[status];
-
   }
 
-
   const statusLabels = {
-    PENDING: 'Pendente',
-    APPROVED: 'Aprovado',
-    REJECTED: 'Rejeitado',
+    PENDING: "Pendente",
+    APPROVED: "Aprovado",
+    REJECTED: "Rejeitado",
   };
 
-
   function getStatusColor(status: DocumentStatus) {
-
     const colors = {
-      PENDING: 'text-gray-600 bg-gray-100',
-      APPROVED: 'text-green-600 bg-green-100',
-      REJECTED: 'text-red-600 bg-red-100',
+      PENDING: "text-gray-600 bg-gray-100",
+      APPROVED: "text-green-600 bg-green-100",
+      REJECTED: "text-red-600 bg-red-100",
     };
 
     return colors[status];
-
   }
-
 
   function formatDate(date: string) {
-
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
     }).format(new Date(date));
-
   }
 
-
   function formatFileSize(size: number) {
-
     if (size < 1024) {
-
       return `${size} Bytes`;
-
     }
 
     if (size < 1024 * 1024) {
-
       return `${(size / 1024).toFixed(2)} KB`;
-
     }
 
     return `${(size / (1024 * 1024)).toFixed(2)} MB`;
-
   }
-
 
   // =========================
   // AÇÕES
   // =========================
 
   async function viewDocument(id: number) {
-
     try {
+      const response = await api.get(`/documents/${id}/download`, {
+        responseType: "blob",
+      });
 
-      const response = await api.get(
-        `/documents/${id}/download`,
-        { responseType: 'blob' },
-      );
-
-      const blob = new Blob(
-        [response.data],
-        { type: response.headers['content-type'] },
-      );
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
 
       const url = window.URL.createObjectURL(blob);
 
-      window.open(url, '_blank');
-
+      window.open(url, "_blank");
     } catch (error) {
-
-      console.error('Erro ao visualizar documento', error);
-
+      console.error("Erro ao visualizar documento", error);
     }
-
   }
 
-
   async function downloadDocument(id: number, fileName: string) {
-
     try {
+      const response = await api.get(`/documents/${id}/download`, {
+        responseType: "blob",
+      });
 
-      const response = await api.get(
-        `/documents/${id}/download`,
-        { responseType: 'blob' },
-      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
 
-      const url = window.URL.createObjectURL(
-        new Blob([response.data]),
-      );
-
-      const link = document.createElement('a');
+      const link = document.createElement("a");
 
       link.href = url;
 
-      link.setAttribute('download', fileName);
+      link.setAttribute("download", fileName);
 
       document.body.appendChild(link);
 
@@ -379,108 +262,68 @@ export default function DocumentosPorEmpresa() {
       link.remove();
 
       window.URL.revokeObjectURL(url);
-
     } catch (error) {
-
-      console.error('Erro ao baixar documento', error);
-
+      console.error("Erro ao baixar documento", error);
     }
-
   }
-
 
   async function approveDocument(id: number) {
-
     try {
-
       await api.patch(`/documents/${id}`, {
-        status: 'APPROVED',
+        status: "APPROVED",
       });
 
       loadDocuments();
-
     } catch (error) {
-
-      console.error('Erro ao aprovar documento', error);
-
+      console.error("Erro ao aprovar documento", error);
     }
-
   }
-
 
   async function rejectDocument(id: number) {
-
     try {
-
       await api.patch(`/documents/${id}`, {
-        status: 'REJECTED',
+        status: "REJECTED",
       });
 
       loadDocuments();
-
     } catch (error) {
-
-      console.error('Erro ao rejeitar documento', error);
-
+      console.error("Erro ao rejeitar documento", error);
     }
-
   }
 
-
   async function deleteDocument(id: number) {
-
     const confirmed = window.confirm(
-      'Tem certeza que deseja remover este documento? Essa ação não pode ser desfeita.',
+      "Tem certeza que deseja remover este documento? Essa ação não pode ser desfeita.",
     );
 
     if (!confirmed) return;
 
     try {
-
       await api.delete(`/documents/${id}`);
 
       loadDocuments();
-
     } catch (error) {
-
-      console.error('Erro ao remover documento', error);
-
+      console.error("Erro ao remover documento", error);
     }
-
   }
-
 
   // =========================
   // RENDER
   // =========================
 
   if (loading) {
-
-    return (
-      <div className="p-8">
-        Carregando documentos...
-      </div>
-    );
-
+    return <div className="p-8">Carregando documentos...</div>;
   }
 
-
   return (
-
-    <div className="p-8">
-
+    <div className="p-4 sm:p-8">
       <div className="mb-8">
-
-        <h1 className="text-2xl font-semibold">
-          Documentos por Empresa
-        </h1>
+        <h1 className="text-2xl font-semibold">Documentos por Empresa</h1>
 
         <p className="text-muted-foreground mt-1">
           Documentos enviados, organizados por empresa associada
         </p>
-
       </div>
-
 
       {/* ==========================
           RESUMO
@@ -490,31 +333,27 @@ export default function DocumentosPorEmpresa() {
         className="
           grid
           grid-cols-1
-          gap-6
+          gap-4
+          sm:gap-6
           sm:grid-cols-2
           mb-8
         "
       >
-
         <div
           className="
             bg-card
             border
             border-border
             rounded-lg
-            p-6
+            p-4
+            sm:p-6
           "
         >
-
           <div className="bg-blue-500 rounded-lg p-3 w-fit mb-4">
-
             <Building2 className="h-6 w-6 text-white" />
-
           </div>
 
-          <p className="text-muted-foreground mb-1">
-            Empresas com documentos
-          </p>
+          <p className="text-muted-foreground mb-1">Empresas com documentos</p>
 
           <p className="text-[2rem] leading-none mb-2">
             {companyGroups.length}
@@ -523,9 +362,7 @@ export default function DocumentosPorEmpresa() {
           <p className="text-muted-foreground text-[0.875rem]">
             Empresas com pelo menos um envio
           </p>
-
         </div>
-
 
         <div
           className="
@@ -533,19 +370,15 @@ export default function DocumentosPorEmpresa() {
             border
             border-border
             rounded-lg
-            p-6
+            p-4
+            sm:p-6
           "
         >
-
           <div className="bg-green-500 rounded-lg p-3 w-fit mb-4">
-
             <FileText className="h-6 w-6 text-white" />
-
           </div>
 
-          <p className="text-muted-foreground mb-1">
-            Total de documentos
-          </p>
+          <p className="text-muted-foreground mb-1">Total de documentos</p>
 
           <p className="text-[2rem] leading-none mb-2">
             {filteredDocuments.length}
@@ -554,11 +387,8 @@ export default function DocumentosPorEmpresa() {
           <p className="text-muted-foreground text-[0.875rem]">
             Considerando os filtros aplicados
           </p>
-
         </div>
-
       </div>
-
 
       {/* ==========================
           FILTROS
@@ -570,15 +400,13 @@ export default function DocumentosPorEmpresa() {
           border
           border-border
           rounded-lg
-          p-6
+          p-4
+          sm:p-6
           mb-6
         "
       >
-
         <div className="flex gap-4 flex-wrap">
-
           <div className="flex-1 min-w-[240px] relative">
-
             <Search
               className="
                 absolute
@@ -595,7 +423,7 @@ export default function DocumentosPorEmpresa() {
               type="text"
               placeholder="Buscar por empresa ou arquivo..."
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="
                 w-full
                 pl-10
@@ -607,15 +435,12 @@ export default function DocumentosPorEmpresa() {
                 bg-input-background
               "
             />
-
           </div>
 
           <select
             value={filterStatus}
-            onChange={e =>
-              setFilterStatus(
-                e.target.value as DocumentStatus | 'ALL',
-              )
+            onChange={(e) =>
+              setFilterStatus(e.target.value as DocumentStatus | "ALL")
             }
             className="
               px-4
@@ -626,17 +451,15 @@ export default function DocumentosPorEmpresa() {
               bg-input-background
             "
           >
-
             <option value="ALL">Todos os status</option>
             <option value="PENDING">Pendente</option>
             <option value="APPROVED">Aprovado</option>
             <option value="REJECTED">Rejeitado</option>
-
           </select>
 
           <select
             value={filterRamo}
-            onChange={e => setFilterRamo(e.target.value)}
+            onChange={(e) => setFilterRamo(e.target.value)}
             className="
               px-4
               py-3
@@ -646,24 +469,18 @@ export default function DocumentosPorEmpresa() {
               bg-input-background
             "
           >
-
             <option value="ALL">Todos os ramos</option>
 
-            {ramoOptions.map(ramo => (
+            {ramoOptions.map((ramo) => (
               <option key={ramo} value={ramo}>
                 {ramo}
               </option>
             ))}
-
           </select>
-
         </div>
 
-
         <div className="flex gap-4 flex-wrap mt-4">
-
           <div className="flex items-center gap-2">
-
             <label className="text-sm text-muted-foreground whitespace-nowrap">
               De:
             </label>
@@ -671,7 +488,7 @@ export default function DocumentosPorEmpresa() {
             <input
               type="date"
               value={dateFrom}
-              onChange={e => setDateFrom(e.target.value)}
+              onChange={(e) => setDateFrom(e.target.value)}
               className="
                 px-4
                 py-2
@@ -681,11 +498,9 @@ export default function DocumentosPorEmpresa() {
                 bg-input-background
               "
             />
-
           </div>
 
           <div className="flex items-center gap-2">
-
             <label className="text-sm text-muted-foreground whitespace-nowrap">
               Até:
             </label>
@@ -693,7 +508,7 @@ export default function DocumentosPorEmpresa() {
             <input
               type="date"
               value={dateTo}
-              onChange={e => setDateTo(e.target.value)}
+              onChange={(e) => setDateTo(e.target.value)}
               className="
                 px-4
                 py-2
@@ -703,17 +518,15 @@ export default function DocumentosPorEmpresa() {
                 bg-input-background
               "
             />
-
           </div>
 
-          {(dateFrom || dateTo || filterRamo !== 'ALL') && (
-
+          {(dateFrom || dateTo || filterRamo !== "ALL") && (
             <button
               type="button"
               onClick={() => {
-                setDateFrom('');
-                setDateTo('');
-                setFilterRamo('ALL');
+                setDateFrom("");
+                setDateTo("");
+                setFilterRamo("ALL");
               }}
               className="
                 text-sm
@@ -724,32 +537,23 @@ export default function DocumentosPorEmpresa() {
             >
               Limpar filtros de ramo/período
             </button>
-
           )}
-
         </div>
-
       </div>
-
 
       {/* ==========================
           LISTA AGRUPADA POR EMPRESA
       =========================== */}
 
       <div className="space-y-4">
+        {companyGroups.map((group) => {
+          const isExpanded = expandedCompanies.has(group.companyId);
 
-        {companyGroups.map(group => {
-
-          const isExpanded =
-            expandedCompanies.has(group.companyId);
-
-          const pendingCount =
-            group.documents.filter(
-              d => d.status === 'PENDING',
-            ).length;
+          const pendingCount = group.documents.filter(
+            (d) => d.status === "PENDING",
+          ).length;
 
           return (
-
             <div
               key={group.companyId}
               className="
@@ -760,7 +564,6 @@ export default function DocumentosPorEmpresa() {
                 overflow-hidden
               "
             >
-
               {/* CABEÇALHO DA EMPRESA */}
 
               <button
@@ -770,14 +573,14 @@ export default function DocumentosPorEmpresa() {
                   flex
                   items-center
                   justify-between
-                  p-6
+                  gap-3
+                  p-4
+                  sm:p-6
                   hover:bg-muted
                   transition-colors
                 "
               >
-
-                <div className="flex items-center gap-4">
-
+                <div className="flex items-center gap-4 min-w-0">
                   <div
                     className="
                       w-12
@@ -787,74 +590,68 @@ export default function DocumentosPorEmpresa() {
                       flex
                       items-center
                       justify-center
+                      shrink-0
                     "
                   >
-
                     <Building2 className="h-6 w-6 text-blue-600" />
-
                   </div>
 
-                  <div className="text-left">
-
-                    <h4 className="text-lg font-medium">
+                  <div className="text-left min-w-0">
+                    <h4 className="text-lg font-medium truncate">
                       {group.companyName}
                     </h4>
 
                     <p className="text-sm text-muted-foreground">
-                      {group.documents.length}{' '}
+                      {group.documents.length}{" "}
                       {group.documents.length === 1
-                        ? 'documento'
-                        : 'documentos'}
+                        ? "documento"
+                        : "documentos"}
                       {pendingCount > 0 && (
                         <>
-                          {' · '}
+                          {" · "}
                           <span className="text-yellow-600">
                             {pendingCount} pendente
-                            {pendingCount > 1 ? 's' : ''}
+                            {pendingCount > 1 ? "s" : ""}
                           </span>
                         </>
                       )}
                     </p>
-
                   </div>
-
                 </div>
 
-                {isExpanded ? (
-                  <ChevronUp className="h-5 w-5 text-muted-foreground" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                )}
-
+                <div className="shrink-0">
+                  {isExpanded ? (
+                    <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                  )}
+                </div>
               </button>
-
 
               {/* DOCUMENTOS DA EMPRESA */}
 
               {isExpanded && (
-
                 <div className="border-t border-border divide-y divide-border">
-
-                  {group.documents.map(doc => {
-
+                  {group.documents.map((doc) => {
                     const StatusIcon = getStatusIcon(doc.status);
 
                     const statusColor = getStatusColor(doc.status);
 
                     return (
-
                       <div
                         key={doc.id}
                         className="
-                          p-6
+                          p-4
+                          sm:p-6
                           flex
-                          items-start
+                          flex-col
+                          lg:flex-row
+                          lg:items-start
                           justify-between
+                          gap-4
                         "
                       >
-
-                        <div className="flex gap-4 flex-1">
-
+                        <div className="flex gap-4 flex-1 min-w-0">
                           <div
                             className="
                               w-12
@@ -864,18 +661,15 @@ export default function DocumentosPorEmpresa() {
                               flex
                               items-center
                               justify-center
+                              shrink-0
                             "
                           >
-
                             <FileText className="h-6 w-6 text-gray-600" />
-
                           </div>
 
-                          <div className="flex-1">
-
-                            <div className="flex justify-between mb-2">
-
-                              <h5 className="font-medium">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between gap-3 flex-wrap mb-2">
+                              <h5 className="font-medium break-words">
                                 {doc.fileName}
                               </h5>
 
@@ -888,16 +682,14 @@ export default function DocumentosPorEmpresa() {
                                   py-1
                                   rounded-full
                                   text-sm
+                                  shrink-0
                                   ${statusColor}
                                 `}
                               >
-
                                 <StatusIcon className="h-4 w-4" />
 
                                 {statusLabels[doc.status]}
-
                               </span>
-
                             </div>
 
                             <div
@@ -909,29 +701,20 @@ export default function DocumentosPorEmpresa() {
                                 text-muted-foreground
                               "
                             >
-
                               <span>Tipo: {doc.documentType}</span>
 
-                              <span>
-                                Enviado: {formatDate(doc.uploadedAt)}
-                              </span>
+                              <span>Enviado: {formatDate(doc.uploadedAt)}</span>
 
                               <span>
                                 Tamanho: {formatFileSize(doc.fileSize)}
                               </span>
-
                             </div>
-
                           </div>
-
                         </div>
 
-                        <div className="flex items-center gap-2 ml-4">
-
-                          {doc.status === 'PENDING' && (
-
+                        <div className="flex items-center gap-2 flex-wrap lg:ml-4">
+                          {doc.status === "PENDING" && (
                             <>
-
                               <button
                                 onClick={() => approveDocument(doc.id)}
                                 className="
@@ -969,9 +752,7 @@ export default function DocumentosPorEmpresa() {
                                 <XCircle className="h-4 w-4" />
                                 Rejeitar
                               </button>
-
                             </>
-
                           )}
 
                           <button
@@ -1004,30 +785,18 @@ export default function DocumentosPorEmpresa() {
                           >
                             <Trash2 className="h-5 w-5" />
                           </button>
-
                         </div>
-
                       </div>
-
                     );
-
                   })}
-
                 </div>
-
               )}
-
             </div>
-
           );
-
         })}
-
       </div>
 
-
       {companyGroups.length === 0 && (
-
         <div
           className="
             bg-card
@@ -1038,17 +807,9 @@ export default function DocumentosPorEmpresa() {
             text-center
           "
         >
-
-          <p className="text-muted-foreground">
-            Nenhum documento encontrado
-          </p>
-
+          <p className="text-muted-foreground">Nenhum documento encontrado</p>
         </div>
-
       )}
-
     </div>
-
   );
-
 }

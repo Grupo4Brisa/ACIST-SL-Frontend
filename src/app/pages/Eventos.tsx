@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Calendar,
   MapPin,
@@ -10,8 +10,8 @@ import {
   X,
   Eye,
   Target,
-} from 'lucide-react';
-import api from '../services/api';
+} from "lucide-react";
+import api from "../services/api";
 
 interface EventItem {
   id: number;
@@ -33,19 +33,18 @@ interface EventForm {
 }
 
 const EMPTY_FORM: EventForm = {
-  title: '',
-  description: '',
-  eventDate: '',
-  location: '',
-  vacancies: '',
+  title: "",
+  description: "",
+  eventDate: "",
+  location: "",
+  vacancies: "",
 };
 
 export default function Eventos() {
-
   const [events, setEvents] = useState<EventItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [error, setError] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState("");
 
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -55,184 +54,143 @@ export default function Eventos() {
   const [viewedEvent, setViewedEvent] = useState<EventItem | null>(null);
   const [viewLoading, setViewLoading] = useState(false);
 
-
   // =========================
   // LISTAR TODOS
   // =========================
 
   async function loadEvents() {
-
     try {
-
       setLoading(true);
 
-      const response = await api.get('/events');
+      const response = await api.get("/events");
 
       setEvents(response.data);
-
     } catch (error) {
-
-      console.error('Erro ao carregar eventos', error);
-
+      console.error("Erro ao carregar eventos", error);
     } finally {
-
       setLoading(false);
-
     }
-
   }
 
   useEffect(() => {
-
     loadEvents();
-
   }, []);
-
 
   // =========================
   // BUSCAR UM SÓ (detalhe)
   // =========================
 
   async function viewEvent(id: number) {
-
     try {
-
       setViewLoading(true);
 
       const response = await api.get(`/events/${id}`);
 
       setViewedEvent(response.data);
-
     } catch (error) {
-
-      console.error('Erro ao buscar evento', error);
-
+      console.error("Erro ao buscar evento", error);
     } finally {
-
       setViewLoading(false);
-
     }
-
   }
-
 
   // =========================
   // FILTRO LOCAL (título/local)
   // =========================
 
-  const filteredEvents = events.filter(event => {
-
+  const filteredEvents = events.filter((event) => {
     const term = searchTerm.toLowerCase();
 
     return (
       event.title.toLowerCase().includes(term) ||
-      (event.location ?? '').toLowerCase().includes(term)
+      (event.location ?? "").toLowerCase().includes(term)
     );
-
   });
-
 
   // =========================
   // HELPERS
   // =========================
 
   function formatDate(date: string) {
+    if (!date) return "-";
 
-    if (!date) return '-';
-
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     }).format(new Date(date));
-
   }
 
   function toDateTimeLocal(date: string) {
-
     // 'YYYY-MM-DDTHH:mm' exigido pelo input datetime-local
     const d = new Date(date);
 
-    const pad = (n: number) => String(n).padStart(2, '0');
+    const pad = (n: number) => String(n).padStart(2, "0");
 
     return (
       `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
       `T${pad(d.getHours())}:${pad(d.getMinutes())}`
     );
-
   }
 
   function getStatusColor(status: string) {
-
     const colors: Record<string, string> = {
-      OPEN: 'text-green-600 bg-green-100',
-      CLOSED: 'text-gray-600 bg-gray-100',
-      CANCELLED: 'text-red-600 bg-red-100',
+      OPEN: "text-green-600 bg-green-100",
+      CLOSED: "text-gray-600 bg-gray-100",
+      CANCELLED: "text-red-600 bg-red-100",
     };
 
-    return colors[status] ?? 'text-gray-600 bg-gray-100';
-
+    return colors[status] ?? "text-gray-600 bg-gray-100";
   }
-
 
   // =========================
   // MODAL: CRIAR
   // =========================
 
   function openCreateModal() {
-
     setEditingId(null);
 
     setForm(EMPTY_FORM);
 
-    setError('');
+    setError("");
 
     setShowModal(true);
-
   }
-
 
   // =========================
   // MODAL: EDITAR
   // =========================
 
   function openEditModal(event: EventItem) {
-
     setEditingId(event.id);
 
     setForm({
       title: event.title,
-      description: event.description ?? '',
-      eventDate: event.eventDate
-        ? toDateTimeLocal(event.eventDate)
-        : '',
-      location: event.location ?? '',
-      vacancies: event.vacancies?.toString() ?? '',
+      description: event.description ?? "",
+      eventDate: event.eventDate ? toDateTimeLocal(event.eventDate) : "",
+      location: event.location ?? "",
+      vacancies: event.vacancies?.toString() ?? "",
     });
 
-    setError('');
+    setError("");
 
     setShowModal(true);
-
   }
-
 
   // =========================
   // CRIAR / ATUALIZAR
   // =========================
 
   async function handleSubmit(event: React.FormEvent) {
-
     event.preventDefault();
 
-    setError('');
+    setError("");
 
     setSaving(true);
 
     try {
-
       const payload = {
         title: form.title,
         description: form.description || undefined,
@@ -242,85 +200,58 @@ export default function Eventos() {
       };
 
       if (editingId) {
-
         await api.patch(`/events/${editingId}`, payload);
-
       } else {
-
-        await api.post('/events', payload);
-
+        await api.post("/events", payload);
       }
 
       setShowModal(false);
 
       loadEvents();
-
     } catch (error: any) {
-
-      setError(
-        error.response?.data?.message ?? 'Erro ao salvar evento.',
-      );
-
+      setError(error.response?.data?.message ?? "Erro ao salvar evento.");
     } finally {
-
       setSaving(false);
-
     }
-
   }
-
 
   // =========================
   // DELETAR
   // =========================
 
   async function deleteEvent(id: number) {
-
     const confirmed = window.confirm(
-      'Tem certeza que deseja remover este evento? Essa ação não pode ser desfeita.',
+      "Tem certeza que deseja remover este evento? Essa ação não pode ser desfeita.",
     );
 
     if (!confirmed) return;
 
     try {
-
       await api.delete(`/events/${id}`);
 
       loadEvents();
-
     } catch (error) {
-
-      console.error('Erro ao remover evento', error);
-
+      console.error("Erro ao remover evento", error);
     }
-
   }
-
 
   // =========================
   // RENDER
   // =========================
 
   if (loading) {
-
     return <div className="p-8">Carregando eventos...</div>;
-
   }
 
   return (
-
     <div className="p-8">
-
       <div className="mb-8 flex items-start justify-between flex-wrap gap-4">
-
         <div>
-
           <h1 className="text-2xl font-semibold">Eventos</h1>
 
           <p className="text-muted-foreground mt-1">
             Gerencie os eventos disponíveis para os associados
           </p>
-
         </div>
 
         <button
@@ -339,40 +270,32 @@ export default function Eventos() {
           <Plus className="h-4 w-4" />
           Novo Evento
         </button>
-
       </div>
-
 
       {/* RESUMO */}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-
         <div className="bg-card border border-border rounded-lg p-6">
-
           <div className="bg-blue-500 rounded-lg p-3 w-fit mb-4">
             <Target className="h-6 w-6 text-white" />
           </div>
 
           <p className="text-muted-foreground mb-1">Total de eventos</p>
           <p className="text-[2rem] leading-none mb-2">{events.length}</p>
-
         </div>
 
         <div className="bg-card border border-border rounded-lg p-6">
-
           <div className="bg-green-500 rounded-lg p-3 w-fit mb-4">
             <Calendar className="h-6 w-6 text-white" />
           </div>
 
           <p className="text-muted-foreground mb-1">Abertos</p>
           <p className="text-[2rem] leading-none mb-2">
-            {events.filter(e => e.status === 'OPEN').length}
+            {events.filter((e) => e.status === "OPEN").length}
           </p>
-
         </div>
 
         <div className="bg-card border border-border rounded-lg p-6">
-
           <div className="bg-gray-500 rounded-lg p-3 w-fit mb-4">
             <Users className="h-6 w-6 text-white" />
           </div>
@@ -381,18 +304,13 @@ export default function Eventos() {
           <p className="text-[2rem] leading-none mb-2">
             {events.reduce((sum, e) => sum + (e.vacancies ?? 0), 0)}
           </p>
-
         </div>
-
       </div>
-
 
       {/* BUSCA */}
 
       <div className="bg-card border border-border rounded-lg p-6 mb-6">
-
         <div className="relative">
-
           <Search
             className="
               absolute
@@ -409,7 +327,7 @@ export default function Eventos() {
             type="text"
             placeholder="Buscar por título ou local..."
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="
               w-full
               pl-10
@@ -421,29 +339,20 @@ export default function Eventos() {
               bg-input-background
             "
           />
-
         </div>
-
       </div>
-
 
       {/* LISTA */}
 
       <div className="space-y-4">
-
-        {filteredEvents.map(event => (
-
+        {filteredEvents.map((event) => (
           <div
             key={event.id}
             className="bg-card border border-border rounded-lg p-6"
           >
-
             <div className="flex items-start justify-between gap-4 flex-wrap">
-
               <div className="flex-1 min-w-[240px]">
-
                 <div className="flex items-center gap-3 mb-2">
-
                   <h3 className="text-lg font-medium">{event.title}</h3>
 
                   <span
@@ -457,19 +366,15 @@ export default function Eventos() {
                   >
                     {event.status}
                   </span>
-
                 </div>
 
                 {event.description && (
-
                   <p className="text-muted-foreground text-sm mb-3">
                     {event.description}
                   </p>
-
                 )}
 
                 <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
-
                   <span className="flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
                     {formatDate(event.eventDate)}
@@ -484,13 +389,10 @@ export default function Eventos() {
                     <Users className="h-4 w-4" />
                     {event.vacancies ?? 0} vagas
                   </span>
-
                 </div>
-
               </div>
 
               <div className="flex items-center gap-2">
-
                 <button
                   onClick={() => viewEvent(event.id)}
                   className="p-2 rounded-lg hover:bg-muted"
@@ -514,42 +416,29 @@ export default function Eventos() {
                 >
                   <Trash2 className="h-5 w-5" />
                 </button>
-
               </div>
-
             </div>
-
           </div>
-
         ))}
 
         {filteredEvents.length === 0 && (
-
           <div className="bg-card border border-border rounded-lg p-12 text-center">
             <p className="text-muted-foreground">Nenhum evento encontrado</p>
           </div>
-
         )}
-
       </div>
-
 
       {/* MODAL CRIAR/EDITAR */}
 
       {showModal && (
-
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-
           <div className="bg-card rounded-lg border p-6 w-full max-w-lg">
-
             <div className="flex justify-between items-center mb-6">
-
-              <h2>{editingId ? 'Editar Evento' : 'Novo Evento'}</h2>
+              <h2>{editingId ? "Editar Evento" : "Novo Evento"}</h2>
 
               <button onClick={() => setShowModal(false)}>
                 <X className="h-5 w-5" />
               </button>
-
             </div>
 
             {error && (
@@ -559,13 +448,12 @@ export default function Eventos() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-
               <div>
                 <label className="text-sm">Título</label>
                 <input
                   required
                   value={form.title}
-                  onChange={e => setForm({ ...form, title: e.target.value })}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2"
                 />
               </div>
@@ -574,7 +462,7 @@ export default function Eventos() {
                 <label className="text-sm">Descrição</label>
                 <textarea
                   value={form.description}
-                  onChange={e =>
+                  onChange={(e) =>
                     setForm({ ...form, description: e.target.value })
                   }
                   className="w-full border rounded-lg px-3 py-2"
@@ -587,7 +475,7 @@ export default function Eventos() {
                   type="datetime-local"
                   required
                   value={form.eventDate}
-                  onChange={e =>
+                  onChange={(e) =>
                     setForm({ ...form, eventDate: e.target.value })
                   }
                   className="w-full border rounded-lg px-3 py-2"
@@ -599,7 +487,7 @@ export default function Eventos() {
                 <input
                   required
                   value={form.location}
-                  onChange={e =>
+                  onChange={(e) =>
                     setForm({ ...form, location: e.target.value })
                   }
                   className="w-full border rounded-lg px-3 py-2"
@@ -613,7 +501,7 @@ export default function Eventos() {
                   min={1}
                   required
                   value={form.vacancies}
-                  onChange={e =>
+                  onChange={(e) =>
                     setForm({ ...form, vacancies: e.target.value })
                   }
                   className="w-full border rounded-lg px-3 py-2"
@@ -621,7 +509,6 @@ export default function Eventos() {
               </div>
 
               <div className="flex justify-end gap-3 pt-4">
-
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
@@ -642,77 +529,63 @@ export default function Eventos() {
                     disabled:opacity-50
                   "
                 >
-                  {saving ? 'Salvando...' : 'Salvar'}
+                  {saving ? "Salvando..." : "Salvar"}
                 </button>
-
               </div>
-
             </form>
-
           </div>
-
         </div>
-
       )}
-
 
       {/* MODAL VER DETALHES */}
 
       {(viewedEvent || viewLoading) && (
-
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-
           <div className="bg-card rounded-lg border p-6 w-full max-w-lg">
-
             <div className="flex justify-between items-center mb-6">
-
               <h2>Detalhes do Evento</h2>
 
               <button onClick={() => setViewedEvent(null)}>
                 <X className="h-5 w-5" />
               </button>
-
             </div>
 
             {viewLoading ? (
-
               <p className="text-muted-foreground">Carregando...</p>
-
-            ) : viewedEvent && (
-
-              <div className="space-y-3">
-
-                <div>
-                  <p className="text-sm text-muted-foreground">Título</p>
-                  <p className="font-medium">{viewedEvent.title}</p>
-                </div>
-
-                {viewedEvent.description && (
+            ) : (
+              viewedEvent && (
+                <div className="space-y-3">
                   <div>
-                    <p className="text-sm text-muted-foreground">Descrição</p>
-                    <p>{viewedEvent.description}</p>
+                    <p className="text-sm text-muted-foreground">Título</p>
+                    <p className="font-medium">{viewedEvent.title}</p>
                   </div>
-                )}
 
-                <div>
-                  <p className="text-sm text-muted-foreground">Data</p>
-                  <p>{formatDate(viewedEvent.eventDate)}</p>
-                </div>
+                  {viewedEvent.description && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Descrição</p>
+                      <p>{viewedEvent.description}</p>
+                    </div>
+                  )}
 
-                <div>
-                  <p className="text-sm text-muted-foreground">Local</p>
-                  <p>{viewedEvent.location}</p>
-                </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Data</p>
+                    <p>{formatDate(viewedEvent.eventDate)}</p>
+                  </div>
 
-                <div>
-                  <p className="text-sm text-muted-foreground">Vagas</p>
-                  <p>{viewedEvent.vacancies ?? 0}</p>
-                </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Local</p>
+                    <p>{viewedEvent.location}</p>
+                  </div>
 
-                <div>
-                  <p className="text-sm text-muted-foreground">Status</p>
-                  <span
-                    className={`
+                  <div>
+                    <p className="text-sm text-muted-foreground">Vagas</p>
+                    <p>{viewedEvent.vacancies ?? 0}</p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-muted-foreground">Status</p>
+                    <span
+                      className={`
                       inline-block
                       px-3
                       py-1
@@ -720,23 +593,16 @@ export default function Eventos() {
                       text-sm
                       ${getStatusColor(viewedEvent.status)}
                     `}
-                  >
-                    {viewedEvent.status}
-                  </span>
+                    >
+                      {viewedEvent.status}
+                    </span>
+                  </div>
                 </div>
-
-              </div>
-
+              )
             )}
-
           </div>
-
         </div>
-
       )}
-
     </div>
-
   );
-
 }

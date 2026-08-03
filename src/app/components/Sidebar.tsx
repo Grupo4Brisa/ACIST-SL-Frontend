@@ -11,6 +11,7 @@ import {
   Calendar,
   DollarSign,
   UserCog,
+  X,
 } from 'lucide-react';
 import Logo from './Logo';
 import { useAuth } from '../context/AuthContext';
@@ -27,7 +28,12 @@ const navigation = [
   { name: 'Relatórios',     href: '/admin/relatorios',     icon: BarChart3 },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -37,13 +43,39 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex h-screen w-64 flex-col bg-sidebar">
-      <nav className="flex-1 space-y-1 px-3 py-4 mt-4">
+    <div
+      className={`
+        fixed md:static
+        top-0 left-0
+        h-screen
+        w-64
+        flex flex-col
+        bg-sidebar
+        z-50
+        transform transition-transform duration-200
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:translate-x-0
+      `}
+    >
+      {/* Cabeçalho do drawer, só aparece no mobile */}
+      <div className="flex items-center justify-between px-3 py-4 md:hidden">
+        <Logo size="sm" theme="light" />
+        <button
+          onClick={onClose}
+          className="p-2 rounded-lg text-sidebar-foreground/80 hover:bg-sidebar-accent"
+          aria-label="Fechar menu"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+
+      <nav className="flex-1 space-y-1 px-3 py-4 md:mt-4 overflow-y-auto">
         {navigation.map((item) => (
           <NavLink
             key={item.name}
             to={item.href}
             end={item.href === '/admin'}
+            onClick={onClose}
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors ${
                 isActive

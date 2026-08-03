@@ -1,8 +1,8 @@
-import { Link, useNavigate } from 'react-router';
-import { AlertTriangle, Home } from 'lucide-react';
-import Logo from '../components/Logo';
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
+import { Link, useNavigate } from "react-router";
+import { AlertTriangle, Home } from "lucide-react";
+import Logo from "../components/Logo";
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
 
 export default function ErrorPage() {
   const navigate = useNavigate();
@@ -38,9 +38,8 @@ export default function ErrorPage() {
       </div>
 
       {/* Footer */}
-      
+
       <Footer />
-      
     </div>
   );
 }

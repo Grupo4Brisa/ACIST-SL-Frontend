@@ -1,12 +1,6 @@
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from "react";
 
-import {
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import {
   CheckCircle,
@@ -19,381 +13,167 @@ import {
   ShieldCheck,
   Megaphone,
   Rocket,
-} from 'lucide-react';
+} from "lucide-react";
 
-import api from '../services/api';
+import api from "../services/api";
 
-import Logo from '../components/Logo';
+import Logo from "../components/Logo";
 
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
-
-
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
 
 const beneficios = [
-
   {
     icon: Users,
-    title:'Networking Empresarial',
-    description:
-      'Conecte-se com empresários da região',
+    title: "Networking Empresarial",
+    description: "Conecte-se com empresários da região",
   },
-
 
   {
     icon: Calendar,
-    title:'Eventos e Capacitações',
-    description:
-      'Acesso a workshops e palestras exclusivas',
+    title: "Eventos e Capacitações",
+    description: "Acesso a workshops e palestras exclusivas",
   },
-
 
   {
     icon: Award,
-    title:'Convênios e Benefícios',
-    description:
-      'Descontos em produtos e serviços',
+    title: "Convênios e Benefícios",
+    description: "Descontos em produtos e serviços",
   },
-
 
   {
     icon: ShieldCheck,
-    title:'Certificado Digital',
-    description:
-      'Facilite processos com certificação',
+    title: "Certificado Digital",
+    description: "Facilite processos com certificação",
   },
-
 
   {
     icon: Megaphone,
-    title:'Divulgação da Empresa',
-    description:
-      'Visibilidade em eventos e materiais',
+    title: "Divulgação da Empresa",
+    description: "Visibilidade em eventos e materiais",
   },
-
 
   {
     icon: Rocket,
-    title:'Programa Empreender',
-    description:
-      'Participe de núcleos e grupos setoriais',
+    title: "Programa Empreender",
+    description: "Participe de núcleos e grupos setoriais",
   },
-
 ];
 
-
-
-
-
-
-
-
 const valoresPorPorte = {
+  MEI: 42,
 
-  MEI:42,
+  PEQUENA: 103,
 
-  PEQUENA:103,
+  MEDIA: 230,
 
-  MEDIA:230,
-
-  GRANDE:496,
-
-
+  GRANDE: 496,
 };
 
-
-
-
-
-
-
-
-function normalizarPorte(
-  porte:string
-){
-
+function normalizarPorte(porte: string) {
   return porte
     .toUpperCase()
-    .normalize('NFD')
-    .replace(
-      /[\u0300-\u036f]/g,
-      ''
-    );
-
-
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
+export default function PagamentoPix() {
+  const navigate = useNavigate();
 
+  const companyId = localStorage.getItem("companyId");
 
+  const [searchParams] = useSearchParams();
 
+  const [copiado, setCopiado] = useState(false);
 
+  const [enviando, setEnviando] = useState(false);
 
+  const [error, setError] = useState("");
 
+  const [porte, setPorte] = useState(() => {
+    const saved = localStorage.getItem("companySize");
+    return saved ? normalizarPorte(saved) : "MEI";
+  });
 
-export default function PagamentoPix(){
-
-
-
-  const navigate =
-    useNavigate();
-
-
-
-  const companyId =
-    localStorage.getItem('companyId');
-
-
-
-  const [
-    searchParams
-  ] =
-    useSearchParams();
-
-
-
-
-  const [
-    copiado,
-    setCopiado
-  ] =
-    useState(false);
-
-
-
-  const [
-    enviando,
-    setEnviando
-  ] =
-    useState(false);
-
-
-
-  const [
-    error,
-    setError
-  ] =
-    useState('');
-
-
-
-
-
-  const [
-    porte,
-    setPorte
-  ] =
-    useState(() => {
-      const saved = localStorage.getItem('companySize');
-      return saved ? normalizarPorte(saved) : 'MEI';
-    });
-
-
-
-
-
-  useEffect(()=>{
-
-
+  useEffect(() => {
     // Primeiro tenta pegar da URL
 
-    const porteUrl =
-      searchParams.get(
-        'porte'
-      );
+    const porteUrl = searchParams.get("porte");
 
-
-
-    if(porteUrl){
-
-      setPorte(
-        normalizarPorte(
-          porteUrl
-        )
-      );
+    if (porteUrl) {
+      setPorte(normalizarPorte(porteUrl));
 
       return;
-
     }
-
-
-
-
 
     // Caso contrário busca cadastro salvo
 
-    const dadosCadastro =
-      localStorage.getItem(
-        'companyData'
-      );
+    const dadosCadastro = localStorage.getItem("companyData");
 
+    if (dadosCadastro) {
+      const dados = JSON.parse(dadosCadastro);
 
-
-    if(dadosCadastro){
-
-
-      const dados =
-        JSON.parse(
-          dadosCadastro
-        );
-
-
-
-      if(dados.companySize){
-
-
-        setPorte(
-
-          normalizarPorte(
-            dados.companySize
-          )
-
-        );
-
-
+      if (dados.companySize) {
+        setPorte(normalizarPorte(dados.companySize));
       }
-
-
     }
+  }, [searchParams]);
 
+  const valor = valoresPorPorte[porte as keyof typeof valoresPorPorte] || 103;
 
+  const chavePix = "00.000.000/0001-00";
 
-  },[
-    searchParams
-  ]);
-
-
-
-
-
-
-
-
-  const valor =
-
-    valoresPorPorte[
-      porte as keyof typeof valoresPorPorte
-    ]
-
-    ||
-
-    103;
-
-
-
-
-
-
-  const chavePix =
-    '00.000.000/0001-00';
-    
   const handleCopiarChave = () => {
-
-
-    navigator.clipboard.writeText(
-      chavePix
-    );
-
+    navigator.clipboard.writeText(chavePix);
 
     setCopiado(true);
 
-
-
-    setTimeout(()=>{
-
+    setTimeout(() => {
       setCopiado(false);
-
-    },2000);
-
-
-
+    }, 2000);
   };
 
-
-
-
-
-
   const handleConfirmarPagamento = async () => {
-
-
-    if(!companyId){
-
+    if (!companyId) {
       setError(
-        'Não foi possível identificar o cadastro. Volte e tente novamente.',
+        "Não foi possível identificar o cadastro. Volte e tente novamente.",
       );
 
       return;
-
     }
 
-
-
-    setError('');
+    setError("");
 
     setEnviando(true);
 
-
-
     try {
-
-
-      await api.post('/payments', {
-
+      await api.post("/payments", {
         companyId: Number(companyId),
 
         amount: valor,
 
-        paymentType: 'PIX',
+        paymentType: "PIX",
 
         // Vencimento no momento da confirmação —
         // o pagamento fica PENDING até o aprovador
         // validar manualmente (sem gateway PIX real
         // integrado ainda).
         dueDate: new Date().toISOString(),
-
       });
 
-
-
-      navigate(
-        '/boas-vindas'
-      );
-
-
+      navigate("/boas-vindas");
     } catch (err: any) {
-
-
       setError(
-
         err.response?.data?.message ??
-
-        'Erro ao registrar o pagamento. Tente novamente.',
-
+          "Erro ao registrar o pagamento. Tente novamente.",
       );
-
-
     } finally {
-
-
       setEnviando(false);
-
-
     }
-
-
   };
 
-
-
-
-
-
-
   return (
-
-
     <div
-
       className="
         min-h-screen
         bg-gradient-to-br
@@ -402,43 +182,25 @@ export default function PagamentoPix(){
         flex
         flex-col
       "
-
     >
-
-
-
-
-
       {/* HEADER */}
 
-
       <Header
-      showEmployeeArea={false}
-      showAssociateArea={false}
-      rightContent={
-        <button
+        showEmployeeArea={false}
+        showAssociateArea={false}
+        rightContent={
+          <button
             onClick={() => navigate("/associar")}
             className="px-6 py-2.5 bg-[#5DA5FF] text-white hover:bg-[#226897] rounded-lg transition-colors"
-        >
-          Voltar
-        </button>
-      }
+          >
+            Voltar
+          </button>
+        }
       />
-
-
-
-
-
-
-
-
 
       {/* CONTEÚDO */}
 
-
-
       <div
-
         className="
           flex-1
           max-w-7xl
@@ -447,117 +209,58 @@ export default function PagamentoPix(){
           py-12
           w-full
         "
-
       >
-
-
-
-
         <div
-
           className="
             text-center
             mb-12
           "
-
         >
-
-
-
           <h1
-
             className="
               text-white
               text-3xl
               font-semibold
               mb-2
             "
-
           >
-
             Pagamento da Associação
-
-
           </h1>
 
-
-
-
-
           <p
-
             className="
               text-blue-100
               text-lg
             "
-
           >
-
-            Finalize sua associação realizando
-            o pagamento via PIX.
-
-
+            Finalize sua associação realizando o pagamento via PIX.
           </p>
-
-
-
-
         </div>
-
-
-
-
-
-
-
-
 
         {/* CARD PAGAMENTO */}
 
-
-
         <div
-
           className="
             max-w-2xl
             mx-auto
             mb-16
           "
-
         >
-
-
-
           <div
-
             className="
               bg-white
               rounded-2xl
               shadow-2xl
               p-8
             "
-
           >
-
-
-
-
-
-
             <div
-
               className="
                 text-center
                 mb-8
               "
-
             >
-
-
-
-
               <div
-
                 className="
                   inline-block
                   p-3
@@ -565,92 +268,46 @@ export default function PagamentoPix(){
                   rounded-full
                   mb-4
                 "
-
               >
-
-
                 <QrCode
-
                   className="
                     h-8
                     w-8
                     text-[#5DA5FF]
                   "
-
                 />
-
-
               </div>
 
-
-
-
-
-
               <h2
-
                 className="
                   text-2xl
                   font-semibold
                   text-[#0C3A59]
                   mb-2
                 "
-
               >
-
                 Pague via PIX
-
-
               </h2>
 
-
-
-
-
               <p
-
                 className="
                   text-gray-600
                 "
-
               >
-
-                Escaneie o QR Code ou copie
-                a chave PIX abaixo.
-
-
+                Escaneie o QR Code ou copie a chave PIX abaixo.
               </p>
-
-
-
             </div>
-
-
-
-
-
-
-
-
 
             {/* QR CODE */}
 
-
-
             <div
-
               className="
                 flex
                 justify-center
                 mb-8
               "
-
             >
-
-
-
               <div
-
                 className="
                   bg-white
                   border-4
@@ -658,13 +315,8 @@ export default function PagamentoPix(){
                   rounded-2xl
                   p-8
                 "
-
               >
-
-
-
                 <div
-
                   className="
                     w-64
                     h-64
@@ -674,43 +326,21 @@ export default function PagamentoPix(){
                     items-center
                     justify-center
                   "
-
                 >
-
-
                   <QrCode
-
                     className="
                       h-32
                       w-32
                       text-gray-400
                     "
-
                   />
-
-
                 </div>
-
-
               </div>
-
-
             </div>
-
-
-
-
-
-
-
-
 
             {/* VALOR */}
 
-
-
             <div
-
               className="
                 bg-green-50
                 border
@@ -719,100 +349,48 @@ export default function PagamentoPix(){
                 p-6
                 mb-6
               "
-
             >
-
-
-
               <div
-
                 className="
                   text-center
                 "
-
               >
-
-
-
                 <p
-
                   className="
                     text-green-700
                     text-sm
                     mb-2
                   "
-
                 >
-
-                  Valor da mensalidade
-                  (
-                  {porte}
-                  )
-
-
+                  Valor da mensalidade ({porte})
                 </p>
 
-
-
-
-
                 <p
-
                   className="
                     text-4xl
                     font-bold
                     text-green-800
                   "
-
                 >
-
-                  R$ {
-                    valor
-                      .toFixed(2)
-                      .replace(
-                        '.',
-                        ','
-                      )
-                  }
-
-
+                  R$ {valor.toFixed(2).replace(".", ",")}
                 </p>
 
-
-
-
-
                 <p
-
                   className="
                     text-green-600
                     text-sm
                     mt-1
                   "
-
                 >
-
                   mensal
-
-
                 </p>
-
-
-
-
               </div>
-
-
             </div>
-            
+
             {/* CHAVE PIX */}
 
-
             <div className="mb-6">
-
-
               <label
-
                 className="
                   block
                   text-sm
@@ -820,28 +398,15 @@ export default function PagamentoPix(){
                   text-gray-700
                   mb-2
                 "
-
               >
-
                 Chave PIX (CNPJ)
-
               </label>
 
-
-
-
               <div className="flex gap-2">
-
-
                 <input
-
                   type="text"
-
                   value={chavePix}
-
                   readOnly
-
-
                   className="
                     flex-1
                     px-4
@@ -853,22 +418,11 @@ export default function PagamentoPix(){
                     text-center
                     font-mono
                   "
-
                 />
 
-
-
-
-
                 <button
-
-
                   onClick={handleCopiarChave}
-
-
-                  className={
-
-                    `
+                  className={`
 
                     px-6
                     py-3
@@ -879,95 +433,40 @@ export default function PagamentoPix(){
 
                     ${
                       copiado
-
-                      ?
-
-                      'bg-green-500 text-white'
-
-                      :
-
-                      'bg-[#5DA5FF] text-white hover:bg-[#226897]'
-
+                        ? "bg-green-500 text-white"
+                        : "bg-[#5DA5FF] text-white hover:bg-[#226897]"
                     }
 
-                    `
-
-                  }
-
-
+                    `}
                 >
-
-
-
-                  {
-
-                    copiado
-
-                    ?
-
-
+                  {copiado ? (
                     <>
-
                       <CheckCircle
                         className="
                           h-5
                           w-5
                         "
                       />
-
                       Copiado!
-
-
                     </>
-
-
-                    :
-
-
+                  ) : (
                     <>
-
-
                       <Copy
                         className="
                           h-5
                           w-5
                         "
                       />
-
-
                       Copiar
-
-
                     </>
-
-
-                  }
-
-
-
+                  )}
                 </button>
-
-
-
               </div>
-
-
             </div>
-
-
-
-
-
-
-
-
 
             {/* INSTRUÇÕES */}
 
-
-
             <div
-
               className="
                 bg-blue-50
                 border
@@ -976,110 +475,41 @@ export default function PagamentoPix(){
                 p-4
                 mb-6
               "
-
             >
-
-
-
               <h3
-
                 className="
                   font-semibold
                   text-[#0C3A59]
                   mb-3
                 "
-
               >
-
                 Como pagar:
-
-
               </h3>
 
-
-
-
               <ol
-
                 className="
                   space-y-2
                   text-sm
                   text-gray-700
                 "
-
               >
+                <li>1. Abra o aplicativo do seu banco.</li>
 
+                <li>2. Escolha pagamento via PIX.</li>
 
-
-                <li>
-
-                  1. Abra o aplicativo do seu banco.
-
-
-                </li>
-
-
+                <li>3. Escaneie o QR Code ou cole a chave PIX.</li>
 
                 <li>
-
-                  2. Escolha pagamento via PIX.
-
-
+                  4. Confirme o valor de R$ {valor.toFixed(2).replace(".", ",")}
+                  .
                 </li>
 
-
-
-                <li>
-
-                  3. Escaneie o QR Code ou cole a chave PIX.
-
-
-                </li>
-
-
-
-                <li>
-
-                  4. Confirme o valor de R$ {
-                    valor
-                      .toFixed(2)
-                      .replace(
-                        '.',
-                        ','
-                      )
-                  }.
-
-
-                </li>
-
-
-
-                <li>
-
-                  5. Clique em "Já fiz o pagamento".
-
-
-                </li>
-
-
-
+                <li>5. Clique em "Já fiz o pagamento".</li>
               </ol>
-
-
             </div>
 
-
-
-
-
-
-
-
-
             {error && (
-
               <div
-
                 className="
                   bg-red-50
                   border
@@ -1090,39 +520,16 @@ export default function PagamentoPix(){
                   text-red-700
                   text-sm
                 "
-
               >
-
                 {error}
-
               </div>
-
             )}
-
-
-
-
-
-
-
-
 
             {/* CONFIRMAÇÃO */}
 
-
-
             <button
-
-
-              onClick={
-                handleConfirmarPagamento
-              }
-
-
+              onClick={handleConfirmarPagamento}
               disabled={enviando}
-
-
-
               className="
                 w-full
                 bg-[#5DA5FF]
@@ -1137,175 +544,82 @@ export default function PagamentoPix(){
                 gap-2
                 disabled:opacity-50
               "
-
-
             >
-
-
-              {
-                enviando
-
-                ? 'Registrando pagamento...'
-
-                : 'Já fiz o pagamento'
-              }
-
-
+              {enviando ? "Registrando pagamento..." : "Já fiz o pagamento"}
 
               {!enviando && (
-
                 <ArrowRight
-
                   className="
                     h-5
                     w-5
                   "
-
                 />
-
               )}
-
-
             </button>
 
-
-
-
-
-
             <p
-
               className="
                 text-center
                 text-sm
                 text-gray-500
                 mt-4
               "
-
             >
-
-              Após o pagamento, sua associação será
-              ativada em até 24 horas úteis.
-
-
+              Após o pagamento, sua associação será ativada em até 24 horas
+              úteis.
             </p>
-
-
-
-
-
-
           </div>
-
-
         </div>
-
-
-
-
-
-
-
-
 
         {/* BENEFÍCIOS */}
 
-
-
         <div className="mb-12">
-
-
           <div
-
             className="
               text-center
               mb-8
             "
-
           >
-
-
             <h2
-
               className="
                 text-white
                 text-2xl
                 font-semibold
                 mb-2
               "
-
             >
-
               Benefícios da Associação
-
-
             </h2>
 
-
-
-
             <p
-
               className="
                 text-blue-100
               "
-
             >
-
               Vantagens exclusivas ao se tornar associado.
-
-
             </p>
-
-
-
           </div>
 
-
-
-
-
-
-
-
           <div
-
             className="
               grid
               md:grid-cols-2
               lg:grid-cols-3
               gap-6
             "
-
           >
-
-
-
-            {
-
-              beneficios.map(
-
-                (beneficio,index)=>(
-
-
-                  <div
-
-                    key={index}
-
-                    className="
+            {beneficios.map((beneficio, index) => (
+              <div
+                key={index}
+                className="
                       bg-white
                       rounded-xl
                       p-6
                       shadow-lg
                     "
-
-                  >
-
-
-
-                    <div
-
-                      className="
+              >
+                <div
+                  className="
                         w-12
                         h-12
                         bg-blue-100
@@ -1315,103 +629,43 @@ export default function PagamentoPix(){
                         justify-center
                         mb-4
                       "
-
-                    >
-
-
-
-                      <beneficio.icon
-
-                        className="
+                >
+                  <beneficio.icon
+                    className="
                           h-6
                           w-6
                           text-[#5DA5FF]
                         "
+                  />
+                </div>
 
-                      />
-
-
-
-                    </div>
-
-
-
-
-
-                    <h3
-
-                      className="
+                <h3
+                  className="
                         font-semibold
                         text-[#0C3A59]
                         mb-2
                       "
+                >
+                  {beneficio.title}
+                </h3>
 
-                    >
-
-                      {beneficio.title}
-
-
-                    </h3>
-
-
-
-
-
-                    <p
-
-                      className="
+                <p
+                  className="
                         text-gray-600
                         text-sm
                       "
-
-                    >
-
-                      {beneficio.description}
-
-
-                    </p>
-
-
-
-                  </div>
-
-
-                )
-
-              )
-
-
-            }
-
-
-
+                >
+                  {beneficio.description}
+                </p>
+              </div>
+            ))}
           </div>
-
-
         </div>
-
-
-
-
       </div>
-
-
-
-
-
-
-
-
 
       {/* FOOTER */}
 
       <Footer />
-
-
     </div>
-
-
   );
-
-
 }

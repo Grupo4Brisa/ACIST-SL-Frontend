@@ -1,7 +1,4 @@
-import { 
-  useEffect, 
-  useState 
-} from 'react';
+import { useEffect, useState } from "react";
 
 import {
   FileText,
@@ -12,16 +9,13 @@ import {
   AlertCircle,
   Search,
   Eye,
-} from 'lucide-react';
+} from "lucide-react";
 
-import api from '../services/api';
+import api from "../services/api";
 
-import type { DocumentStatus } from '../types';
-
-
+import type { DocumentStatus } from "../types";
 
 interface Document {
-
   id: number;
 
   companyId: number;
@@ -39,588 +33,200 @@ interface Document {
   status: DocumentStatus;
 
   uploadedAt: string;
-
 }
 
-
-
-
 export default function Documentos() {
+  const [documents, setDocuments] = useState<Document[]>([]);
 
+  const [filterStatus, setFilterStatus] = useState<DocumentStatus | "ALL">(
+    "ALL",
+  );
 
-  const [documents, setDocuments] =
-    useState<Document[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-
-
-  const [filterStatus, setFilterStatus] =
-    useState<DocumentStatus | 'ALL'>('ALL');
-
-
-
-  const [searchTerm, setSearchTerm] =
-    useState('');
-
-
-
-  const [selectedFile, setSelectedFile] =
-    useState<File | null>(null);
-
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
-
     loadDocuments();
-
   }, []);
 
-
-
-
-
-  async function loadDocuments(){
-
+  async function loadDocuments() {
     try {
+      const response = await api.get("/documents");
 
-      const response =
-        await api.get('/documents');
-
-
-      setDocuments(
-        response.data
-      );
-
-
-    } catch(error){
-
-      console.error(
-        'Erro ao carregar documentos',
-        error
-      );
-
+      setDocuments(response.data);
+    } catch (error) {
+      console.error("Erro ao carregar documentos", error);
     }
-
   }
 
+  const filteredDocuments = documents.filter((doc) => {
+    const matchesSearch = doc.fileName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
 
+    const matchesStatus = filterStatus === "ALL" || doc.status === filterStatus;
 
+    return matchesSearch && matchesStatus;
+  });
 
-
-
-  const filteredDocuments =
-    documents.filter(doc=>{
-
-
-      const matchesSearch =
-        doc.fileName
-          .toLowerCase()
-          .includes(
-            searchTerm.toLowerCase()
-          );
-
-
-
-      const matchesStatus =
-        filterStatus === 'ALL'
-        ||
-        doc.status === filterStatus;
-
-
-
-      return (
-        matchesSearch &&
-        matchesStatus
-      );
-
-
-    });
-
-
-
-
-
-
-
-  function getStatusIcon(
-    status:DocumentStatus
-  ){
-
-
+  function getStatusIcon(status: DocumentStatus) {
     const icons = {
-
       PENDING: AlertCircle,
 
       APPROVED: CheckCircle,
 
       REJECTED: XCircle,
-
     };
-
 
     return icons[status];
-
   }
-
-
-
-
-
-
 
   const statusLabels = {
+    PENDING: "Pendente",
 
+    APPROVED: "Aprovado",
 
-    PENDING:
-      'Pendente',
-
-
-    APPROVED:
-      'Aprovado',
-
-
-    REJECTED:
-      'Rejeitado',
-
+    REJECTED: "Rejeitado",
   };
 
-
-
-
-
-
-
-
-  function getStatusColor(
-    status:DocumentStatus
-  ){
-
-
+  function getStatusColor(status: DocumentStatus) {
     const colors = {
+      PENDING: "text-gray-600 bg-gray-100",
 
+      APPROVED: "text-green-600 bg-green-100",
 
-      PENDING:
-        'text-gray-600 bg-gray-100',
-
-
-      APPROVED:
-        'text-green-600 bg-green-100',
-
-
-      REJECTED:
-        'text-red-600 bg-red-100',
-
-
+      REJECTED: "text-red-600 bg-red-100",
     };
 
-
     return colors[status];
-
   }
 
-
-
-
-
-
-
-  function formatDate(
-    date:string
-  ){
-
-    return new Intl.DateTimeFormat(
-      'pt-BR',
-      {
-        day:'2-digit',
-        month:'2-digit',
-        year:'numeric'
-      }
-    )
-    .format(
-      new Date(date)
-    );
-
+  function formatDate(date: string) {
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(new Date(date));
   }
 
-
-
-
-
-
-
-  function formatFileSize(
-    size:number
-  ){
-
-
-    if(size < 1024){
-
+  function formatFileSize(size: number) {
+    if (size < 1024) {
       return `${size} Bytes`;
-
     }
 
-
-
-    if(size < 1024 * 1024){
-
-      return `${(
-        size / 1024
-      ).toFixed(2)} KB`;
-
+    if (size < 1024 * 1024) {
+      return `${(size / 1024).toFixed(2)} KB`;
     }
 
-
-
-    return `${(
-      size /
-      (1024 * 1024)
-    ).toFixed(2)} MB`;
-
-
+    return `${(size / (1024 * 1024)).toFixed(2)} MB`;
   }
-
-
-
-
-
-
-
 
   const statusCounts = {
+    PENDING: documents.filter((doc) => doc.status === "PENDING").length,
 
+    APPROVED: documents.filter((doc) => doc.status === "APPROVED").length,
 
-    PENDING:
-      documents.filter(
-        doc =>
-          doc.status === 'PENDING'
-      ).length,
-
-
-
-    APPROVED:
-      documents.filter(
-        doc =>
-          doc.status === 'APPROVED'
-      ).length,
-
-
-
-    REJECTED:
-      documents.filter(
-        doc =>
-          doc.status === 'REJECTED'
-      ).length,
-
-
+    REJECTED: documents.filter((doc) => doc.status === "REJECTED").length,
   };
 
-
-
-
-
-
-  async function approveDocument(
-    id:number
-  ){
-
-
-    try{
-
-
-      await api.patch(
-        `/documents/${id}`,
-        {
-          status:'APPROVED'
-        }
-      );
-
+  async function approveDocument(id: number) {
+    try {
+      await api.patch(`/documents/${id}`, {
+        status: "APPROVED",
+      });
 
       loadDocuments();
-
-
-    }catch(error){
-
-      console.error(
-        'Erro ao aprovar documento',
-        error
-      );
-
+    } catch (error) {
+      console.error("Erro ao aprovar documento", error);
     }
-
   }
 
-
-
-
-
-
-  async function rejectDocument(
-    id:number
-  ){
-
-
-    try{
-
-
-      await api.patch(
-        `/documents/${id}`,
-        {
-          status:'REJECTED'
-        }
-      );
-
+  async function rejectDocument(id: number) {
+    try {
+      await api.patch(`/documents/${id}`, {
+        status: "REJECTED",
+      });
 
       loadDocuments();
-
-
-    }catch(error){
-
-      console.error(
-        'Erro ao rejeitar documento',
-        error
-      );
-
+    } catch (error) {
+      console.error("Erro ao rejeitar documento", error);
     }
-
   }
-    async function downloadDocument(
-    id:number,
-    fileName:string
-  ){
+  async function downloadDocument(id: number, fileName: string) {
+    try {
+      const response = await api.get(`/documents/${id}/download`, {
+        responseType: "blob",
+      });
 
+      const url = window.URL.createObjectURL(new Blob([response.data]));
 
-    try{
-
-
-      const response =
-        await api.get(
-          `/documents/${id}/download`,
-          {
-            responseType:'blob'
-          }
-        );
-
-
-
-      const url =
-        window.URL.createObjectURL(
-          new Blob([
-            response.data
-          ])
-        );
-
-
-
-      const link =
-        document.createElement('a');
-
-
+      const link = document.createElement("a");
 
       link.href = url;
 
+      link.setAttribute("download", fileName);
 
-
-      link.setAttribute(
-        'download',
-        fileName
-      );
-
-
-
-      document.body.appendChild(
-        link
-      );
-
+      document.body.appendChild(link);
 
       link.click();
 
-
       link.remove();
 
-
-      window.URL.revokeObjectURL(
-        url
-      );
-
-
-
-    }catch(error){
-
-
-      console.error(
-        'Erro ao baixar documento',
-        error
-      );
-
-
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Erro ao baixar documento", error);
     }
-
-
   }
 
+  async function viewDocument(id: number) {
+    try {
+      const response = await api.get(`/documents/${id}/download`, {
+        responseType: "blob",
+      });
 
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
 
+      const url = window.URL.createObjectURL(blob);
 
-
-
-
-
-  async function viewDocument(
-    id:number
-  ){
-
-
-    try{
-
-
-      const response =
-        await api.get(
-          `/documents/${id}/download`,
-          {
-            responseType:'blob'
-          }
-        );
-
-
-
-      const blob =
-        new Blob(
-          [
-            response.data
-          ],
-          {
-            type:
-              response.headers[
-                'content-type'
-              ]
-          }
-        );
-
-
-
-      const url =
-        window.URL.createObjectURL(
-          blob
-        );
-
-
-
-      window.open(
-        url,
-        '_blank'
-      );
-
-
-
-    }catch(error){
-
-
-      console.error(
-        'Erro ao visualizar documento',
-        error
-      );
-
-
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("Erro ao visualizar documento", error);
     }
-
-
   }
 
-
-
-
-
-
-
-
-  async function replaceDocument(
-    id:number
-  ){
-
-
-    if(!selectedFile){
-
-      alert(
-        'Selecione um arquivo'
-      );
+  async function replaceDocument(id: number) {
+    if (!selectedFile) {
+      alert("Selecione um arquivo");
 
       return;
-
     }
 
+    try {
+      const formData = new FormData();
 
+      formData.append("file", selectedFile);
 
-    try{
-
-
-      const formData =
-        new FormData();
-
-
-
-      formData.append(
-        'file',
-        selectedFile
-      );
-
-
-
-      await api.patch(
-        `/documents/${id}/file`,
-        formData,
-        {
-          headers:{
-            'Content-Type':
-              'multipart/form-data'
-          }
-        }
-      );
-
-
+      await api.patch(`/documents/${id}/file`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       setSelectedFile(null);
 
-
       loadDocuments();
-
-
-
-    }catch(error){
-
-
-      console.error(
-        'Erro ao substituir documento',
-        error
-      );
-
-
+    } catch (error) {
+      console.error("Erro ao substituir documento", error);
     }
-
-
   }
 
-
-
-
-
-
-
-
   return (
-
-    <div className="p-8">
-
-
-
+    <div className="p-4 sm:p-8">
       <div className="mb-8">
-
-
-        <h1 className="text-2xl font-semibold">
-
-          Documentos
-
-        </h1>
-
-
+        <h1 className="text-2xl font-semibold">Documentos</h1>
 
         <p
           className="
@@ -628,150 +234,75 @@ export default function Documentos() {
             mt-1
           "
         >
-
           Gestão e validação dos documentos enviados pelas empresas
-
         </p>
-
-
       </div>
-
-
-
-
-
-
-
 
       <div
         className="
           grid
-          grid-cols-3
-          gap-6
+          grid-cols-1
+          sm:grid-cols-3
+          gap-4
+          sm:gap-6
           mb-8
         "
       >
+        {Object.entries(statusCounts).map(([status, count]) => {
+          const StatusIcon = getStatusIcon(status as DocumentStatus);
 
+          const color = getStatusColor(status as DocumentStatus);
 
-
-        {
-          Object.entries(
-            statusCounts
-          )
-          .map(
-            (
-              [
-                status,
-                count
-              ]
-            )=>{
-
-
-              const StatusIcon =
-                getStatusIcon(
-                  status as DocumentStatus
-                );
-
-
-
-              const color =
-                getStatusColor(
-                  status as DocumentStatus
-                );
-
-
-
-              return (
-
-                <div
-                  key={status}
-                  className="
+          return (
+            <div
+              key={status}
+              className="
                     bg-card
                     border
                     border-border
                     rounded-lg
-                    p-6
+                    p-4
+                    sm:p-6
                   "
-                >
-
-
-                  <div
-                    className="
+            >
+              <div
+                className="
                       flex
                       items-center
                       gap-3
                       mb-4
                     "
-                  >
-
-
-                    <div
-                      className={`
+              >
+                <div
+                  className={`
                         ${color}
                         rounded-lg
                         p-3
                       `}
-                    >
-
-                      <StatusIcon
-                        className="
+                >
+                  <StatusIcon
+                    className="
                           h-5
                           w-5
                         "
-                      />
+                  />
+                </div>
+              </div>
 
-
-                    </div>
-
-
-                  </div>
-
-
-
-                  <p
-                    className="
+              <p
+                className="
                       text-muted-foreground
                       mb-1
                     "
-                  >
+              >
+                {statusLabels[status as DocumentStatus]}
+              </p>
 
-                    {
-                      statusLabels[
-                        status as DocumentStatus
-                      ]
-                    }
-
-                  </p>
-
-
-
-                  <p className="text-3xl">
-
-                    {count}
-
-                  </p>
-
-
-
-                </div>
-
-
-              );
-
-
-            }
-          )
-        }
-
-
+              <p className="text-3xl">{count}</p>
+            </div>
+          );
+        })}
       </div>
-
-
-
-
-
-
-
 
       <div
         className="
@@ -779,30 +310,25 @@ export default function Documentos() {
           border
           border-border
           rounded-lg
-          p-6
+          p-4
+          sm:p-6
           mb-6
         "
       >
-
-
-
         <div
           className="
             flex
             gap-4
+            flex-wrap
           "
         >
-
-
-
           <div
             className="
               flex-1
+              min-w-[240px]
               relative
             "
           >
-
-
             <Search
               className="
                 absolute
@@ -815,29 +341,13 @@ export default function Documentos() {
               "
             />
 
-
-
             <input
-
               type="text"
-
               placeholder="
                 Buscar documento...
               "
-
-              value={
-                searchTerm
-              }
-
-
-              onChange={
-                e =>
-                  setSearchTerm(
-                    e.target.value
-                  )
-              }
-
-
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="
                 w-full
                 pl-10
@@ -848,33 +358,14 @@ export default function Documentos() {
                 border-border
                 bg-input-background
               "
-
             />
-
-
           </div>
 
-
-
-
-
-
           <select
-
-            value={
-              filterStatus
+            value={filterStatus}
+            onChange={(e) =>
+              setFilterStatus(e.target.value as DocumentStatus | "ALL")
             }
-
-
-            onChange={
-              e =>
-                setFilterStatus(
-                  e.target.value as
-                  DocumentStatus | 'ALL'
-                )
-            }
-
-
             className="
               px-4
               py-3
@@ -883,103 +374,55 @@ export default function Documentos() {
               border-border
               bg-input-background
             "
-
           >
+            <option value="ALL">Todos os status</option>
 
+            <option value="PENDING">Pendente</option>
 
-            <option value="ALL">
-              Todos os status
-            </option>
+            <option value="APPROVED">Aprovado</option>
 
-
-            <option value="PENDING">
-              Pendente
-            </option>
-
-
-            <option value="APPROVED">
-              Aprovado
-            </option>
-
-
-            <option value="REJECTED">
-              Rejeitado
-            </option>
-
-
+            <option value="REJECTED">Rejeitado</option>
           </select>
-
-
-
         </div>
-
-
       </div>
-            <div className="space-y-4">
+      <div className="space-y-4">
+        {filteredDocuments.map((doc) => {
+          const StatusIcon = getStatusIcon(doc.status);
 
+          const statusColor = getStatusColor(doc.status);
 
-        {
-          filteredDocuments.map(
-            doc => {
-
-
-              const StatusIcon =
-                getStatusIcon(
-                  doc.status
-                );
-
-
-
-              const statusColor =
-                getStatusColor(
-                  doc.status
-                );
-
-
-
-              return (
-
-                <div
-
-                  key={doc.id}
-
-                  className="
+          return (
+            <div
+              key={doc.id}
+              className="
                     bg-card
                     border
                     border-border
                     rounded-lg
-                    p-6
+                    p-4
+                    sm:p-6
                   "
-
-                >
-
-
-
-                  <div
-                    className="
+            >
+              <div
+                className="
                       flex
-                      items-start
+                      flex-col
+                      lg:flex-row
+                      lg:items-start
                       justify-between
+                      gap-4
                     "
-                  >
-
-
-
-
-
-                    <div
-                      className="
+              >
+                <div
+                  className="
                         flex
                         gap-4
                         flex-1
+                        min-w-0
                       "
-                    >
-
-
-
-
-                      <div
-                        className="
+                >
+                  <div
+                    className="
                           w-14
                           h-14
                           bg-blue-100
@@ -987,89 +430,51 @@ export default function Documentos() {
                           flex
                           items-center
                           justify-center
+                          shrink-0
                         "
-                      >
-
-                        <FileText
-                          className="
+                  >
+                    <FileText
+                      className="
                             h-7
                             w-7
                             text-blue-600
                           "
-                        />
+                    />
+                  </div>
 
-                      </div>
-
-
-
-
-
-
-
-                      <div className="flex-1">
-
-
-
-
-
-                        <div
-                          className="
+                  <div className="flex-1 min-w-0">
+                    <div
+                      className="
                             flex
                             justify-between
+                            gap-3
+                            flex-wrap
                             mb-3
                           "
-                        >
-
-
-
-
-                          <div>
-
-
-                            <h4
-                              className="
+                    >
+                      <div className="min-w-0">
+                        <h4
+                          className="
                                 text-lg
                                 font-medium
+                                break-words
                               "
-                            >
+                        >
+                          {doc.fileName}
+                        </h4>
 
-                              {doc.fileName}
-
-                            </h4>
-
-
-
-
-                            <p
-                              className="
+                        <p
+                          className="
                                 text-sm
                                 text-muted-foreground
                               "
-                            >
+                        >
+                          Empresa: {doc.companyName ?? `ID ${doc.companyId}`}
+                        </p>
+                      </div>
 
-                              Empresa:
-
-                              {' '}
-
-                              {
-                                doc.companyName ??
-                                `ID ${doc.companyId}`
-                              }
-
-                            </p>
-
-
-
-                          </div>
-
-
-
-
-
-
-                          <span
-
-                            className={`
+                      <span
+                        className={`
                               flex
                               items-center
                               gap-2
@@ -1077,168 +482,56 @@ export default function Documentos() {
                               py-1.5
                               rounded-full
                               text-sm
+                              shrink-0
                               ${statusColor}
                             `}
-
-                          >
-
-                            <StatusIcon
-                              className="
+                      >
+                        <StatusIcon
+                          className="
                                 h-4
                                 w-4
                               "
-                            />
+                        />
 
-
-                            {
-                              statusLabels[
-                                doc.status
-                              ]
-                            }
-
-
-                          </span>
-
-
-
-                        </div>
-
-
-
-
-
-
-
-
-                        <div
-                          className="
-                            flex
-                            flex-wrap
-                            gap-6
-                            text-sm
-                            text-muted-foreground
-                          "
-                        >
-
-
-
-                          <span>
-
-                            Tipo:
-
-                            {' '}
-
-                            {
-                              doc.documentType
-                            }
-
-                          </span>
-
-
-
-
-                          <span>
-
-                            Enviado:
-
-                            {' '}
-
-                            {
-                              formatDate(
-                                doc.uploadedAt
-                              )
-                            }
-
-                          </span>
-
-
-
-
-
-                          <span>
-
-                            Tamanho:
-
-                            {' '}
-
-                            {
-                              formatFileSize(
-                                doc.fileSize
-                              )
-                            }
-
-                          </span>
-
-
-
-
-                          <span>
-
-                            Arquivo:
-
-                            {' '}
-
-                            {
-                              doc.mimeType
-                            }
-
-                          </span>
-
-
-
-                        </div>
-
-
-
-
-                      </div>
-
-
-
-
+                        {statusLabels[doc.status]}
+                      </span>
                     </div>
-
-
-
-
-
-
-
-
 
                     <div
                       className="
+                            flex
+                            flex-wrap
+                            gap-x-6
+                            gap-y-1
+                            text-sm
+                            text-muted-foreground
+                          "
+                    >
+                      <span>Tipo: {doc.documentType}</span>
+
+                      <span>Enviado: {formatDate(doc.uploadedAt)}</span>
+
+                      <span>Tamanho: {formatFileSize(doc.fileSize)}</span>
+
+                      <span>Arquivo: {doc.mimeType}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  className="
                         flex
                         items-center
                         gap-2
-                        ml-6
+                        flex-wrap
+                        lg:ml-6
                       "
-                    >
-
-
-
-
-
-
-                      {
-                        doc.status === 'PENDING'
-                        &&
-                        (
-
-                          <>
-
-
-                            <button
-
-                              onClick={
-                                () =>
-                                  approveDocument(
-                                    doc.id
-                                  )
-                              }
-
-
-                              className="
+                >
+                  {doc.status === "PENDING" && (
+                    <>
+                      <button
+                        onClick={() => approveDocument(doc.id)}
+                        className="
                                 px-4
                                 py-2
                                 rounded-lg
@@ -1249,39 +542,19 @@ export default function Documentos() {
                                 items-center
                                 gap-2
                               "
-
-                            >
-
-
-                              <CheckCircle
-                                className="
+                      >
+                        <CheckCircle
+                          className="
                                   h-4
                                   w-4
                                 "
-                              />
+                        />
+                        Aprovar
+                      </button>
 
-
-                              Aprovar
-
-
-                            </button>
-
-
-
-
-
-
-                            <button
-
-                              onClick={
-                                () =>
-                                  rejectDocument(
-                                    doc.id
-                                  )
-                              }
-
-
-                              className="
+                      <button
+                        onClick={() => rejectDocument(doc.id)}
+                        className="
                                 px-4
                                 py-2
                                 rounded-lg
@@ -1292,212 +565,92 @@ export default function Documentos() {
                                 items-center
                                 gap-2
                               "
-
-                            >
-
-
-                              <XCircle
-                                className="
+                      >
+                        <XCircle
+                          className="
                                   h-4
                                   w-4
                                 "
-                              />
+                        />
+                        Rejeitar
+                      </button>
+                    </>
+                  )}
 
-
-                              Rejeitar
-
-
-                            </button>
-
-
-
-                          </>
-
-                        )
-
-                      }
-
-
-
-
-
-
-
-
-                      <button
-
-                        onClick={
-                          () =>
-                            viewDocument(
-                              doc.id
-                            )
-                        }
-
-
-                        className="
+                  <button
+                    onClick={() => viewDocument(doc.id)}
+                    className="
                           p-2
                           rounded-lg
                           hover:bg-muted
                         "
-
-
-                        title="Visualizar documento"
-
-                      >
-
-                        <Eye
-                          className="
+                    title="Visualizar documento"
+                  >
+                    <Eye
+                      className="
                             h-5
                             w-5
                           "
-                        />
+                    />
+                  </button>
 
-                      </button>
-
-
-
-
-
-
-
-                      <button
-
-                        onClick={
-                          () =>
-                            downloadDocument(
-                              doc.id,
-                              doc.fileName
-                            )
-                        }
-
-
-                        className="
+                  <button
+                    onClick={() => downloadDocument(doc.id, doc.fileName)}
+                    className="
                           p-2
                           rounded-lg
                           hover:bg-muted
                         "
-
-
-                        title="Baixar documento"
-
-                      >
-
-                        <Download
-                          className="
+                    title="Baixar documento"
+                  >
+                    <Download
+                      className="
                             h-5
                             w-5
                           "
-                        />
+                    />
+                  </button>
 
-                      </button>
-
-
-
-
-
-
-                      <label
-
-                        className="
+                  <label
+                    className="
                           p-2
                           rounded-lg
                           hover:bg-muted
                           cursor-pointer
                         "
-
-                        title="Substituir arquivo"
-
-                      >
-
-                        <Upload
-                          className="
+                    title="Substituir arquivo"
+                  >
+                    <Upload
+                      className="
                             h-5
                             w-5
                           "
-                        />
+                    />
 
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
 
+                        if (file) {
+                          setSelectedFile(file);
 
-                        <input
-
-                          type="file"
-
-                          className="hidden"
-
-
-                          onChange={
-                            e => {
-
-
-                              const file =
-                                e.target.files?.[0];
-
-
-                              if(file){
-
-                                setSelectedFile(
-                                  file
-                                );
-
-
-                                replaceDocument(
-                                  doc.id
-                                );
-
-                              }
-
-
-                            }
-                          }
-
-
-                        />
-
-
-                      </label>
-
-
-
-
-
-                    </div>
-
-
-
-
-
-                  </div>
-
-
-
+                          replaceDocument(doc.id);
+                        }
+                      }}
+                    />
+                  </label>
                 </div>
-
-
-              );
-
-
-            }
-          )
-        }
-
-
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-
-
-
-
-
-
-
-      {
-        filteredDocuments.length === 0
-        &&
-        (
-
-          <div
-
-            className="
+      {filteredDocuments.length === 0 && (
+        <div
+          className="
               bg-card
               border
               border-border
@@ -1505,31 +658,16 @@ export default function Documentos() {
               p-12
               text-center
             "
-
-          >
-
-            <p
-              className="
+        >
+          <p
+            className="
                 text-muted-foreground
               "
-            >
-
-              Nenhum documento encontrado
-
-            </p>
-
-
-          </div>
-
-
-        )
-
-      }
-
-
-
+          >
+            Nenhum documento encontrado
+          </p>
+        </div>
+      )}
     </div>
-
   );
-
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Users,
   Plus,
@@ -8,8 +8,8 @@ import {
   X,
   ShieldCheck,
   UserCheck,
-} from 'lucide-react';
-import api from '../services/api';
+} from "lucide-react";
+import api from "../services/api";
 
 interface Colaborador {
   id: number;
@@ -29,122 +29,97 @@ interface ColaboradorForm {
 }
 
 const EMPTY_FORM: ColaboradorForm = {
-  name: '',
-  email: '',
-  password: '',
-  role: 'COLABORADOR_APROVADOR',
+  name: "",
+  email: "",
+  password: "",
+  role: "COLABORADOR_APROVADOR",
   active: true,
 };
 
 const ROLE_LABELS: Record<string, string> = {
-  COLABORADOR_ADMIN: 'Administrador',
-  COLABORADOR_APROVADOR: 'Aprovador',
+  COLABORADOR_ADMIN: "Administrador",
+  COLABORADOR_APROVADOR: "Aprovador",
 };
 
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from "../context/AuthContext";
 
 export default function Colaboradores() {
-
   const { user } = useAuth();
-  const isAprovador = user?.role === 'COLABORADOR_APROVADOR';
-  const isAdmin = user?.role === 'COLABORADOR_ADMIN';
+  const isAprovador = user?.role === "COLABORADOR_APROVADOR";
+  const isAdmin = user?.role === "COLABORADOR_ADMIN";
 
   const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [error, setError] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState("");
 
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<ColaboradorForm>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
 
-
   async function loadColaboradores() {
-
     try {
-
       setLoading(true);
 
-      const response = await api.get('/users');
+      const response = await api.get("/users");
 
       setColaboradores(response.data);
-
     } catch (error) {
-
-      console.error('Erro ao carregar colaboradores', error);
-
+      console.error("Erro ao carregar colaboradores", error);
     } finally {
-
       setLoading(false);
-
     }
-
   }
 
   useEffect(() => {
-
     loadColaboradores();
-
   }, []);
 
-
-  const filteredColaboradores = colaboradores.filter(c => {
-
+  const filteredColaboradores = colaboradores.filter((c) => {
     const term = searchTerm.toLowerCase();
 
     return (
       c.name.toLowerCase().includes(term) ||
       c.email.toLowerCase().includes(term)
     );
-
   });
 
-
   function openCreateModal() {
-
     setEditingId(null);
 
     setForm(EMPTY_FORM);
 
-    setError('');
+    setError("");
 
     setShowModal(true);
-
   }
 
-
   function openEditModal(colaborador: Colaborador) {
-
     setEditingId(colaborador.id);
 
     setForm({
       name: colaborador.name,
       email: colaborador.email,
-      password: '',
+      password: "",
       role: colaborador.role,
       active: colaborador.active,
     });
 
-    setError('');
+    setError("");
 
     setShowModal(true);
-
   }
 
-
   async function handleSubmit(event: React.FormEvent) {
-
     event.preventDefault();
 
-    setError('');
+    setError("");
 
     setSaving(true);
 
     try {
-
       if (editingId) {
-
         // No update, senha só é enviada se o admin preencher
         // um valor novo (evita sobrescrever com string vazia).
         const payload: any = {
@@ -159,90 +134,61 @@ export default function Colaboradores() {
         }
 
         await api.patch(`/users/${editingId}`, payload);
-
       } else {
-
-        await api.post('/users', {
+        await api.post("/users", {
           name: form.name,
           email: form.email,
           password: form.password,
           role: form.role,
           active: form.active,
         });
-
       }
 
       setShowModal(false);
 
       loadColaboradores();
-
     } catch (error: any) {
-
-      setError(
-        error.response?.data?.message ?? 'Erro ao salvar colaborador.',
-      );
-
+      setError(error.response?.data?.message ?? "Erro ao salvar colaborador.");
     } finally {
-
       setSaving(false);
-
     }
-
   }
 
-
   async function deleteColaborador(id: number) {
-
     const confirmed = window.confirm(
-      'Tem certeza que deseja remover este colaborador? Essa ação não pode ser desfeita.',
+      "Tem certeza que deseja remover este colaborador? Essa ação não pode ser desfeita.",
     );
 
     if (!confirmed) return;
 
     try {
-
       await api.delete(`/users/${id}`);
 
       loadColaboradores();
-
     } catch (error: any) {
-
-      alert(
-        error.response?.data?.message ??
-          'Erro ao remover colaborador.',
-      );
-
+      alert(error.response?.data?.message ?? "Erro ao remover colaborador.");
     }
-
   }
 
-
   if (loading) {
-
     return <div className="p-8">Carregando colaboradores...</div>;
-
   }
 
   return (
-
     <div className="p-8">
-
       <div className="mb-8 flex items-start justify-between flex-wrap gap-4">
-
         <div>
-
           <h1 className="text-2xl font-semibold">Colaboradores</h1>
 
           <p className="text-muted-foreground mt-1">
             Gerencie os acessos de administradores e aprovadores
           </p>
-
         </div>
 
         {(isAprovador || isAdmin) && (
-        <button
-          onClick={openCreateModal}
-          className="
+          <button
+            onClick={openCreateModal}
+            className="
             px-4
             py-2
             bg-primary
@@ -252,21 +198,17 @@ export default function Colaboradores() {
             items-center
             gap-2
           "
-        >
-          <Plus className="h-4 w-4" />
-          Novo Colaborador
-        </button>
+          >
+            <Plus className="h-4 w-4" />
+            Novo Colaborador
+          </button>
         )}
-
       </div>
-
 
       {/* RESUMO */}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-
         <div className="bg-card border border-border rounded-lg p-6">
-
           <div className="bg-blue-500 rounded-lg p-3 w-fit mb-4">
             <Users className="h-6 w-6 text-white" />
           </div>
@@ -275,24 +217,20 @@ export default function Colaboradores() {
           <p className="text-[2rem] leading-none mb-2">
             {colaboradores.length}
           </p>
-
         </div>
 
         <div className="bg-card border border-border rounded-lg p-6">
-
           <div className="bg-purple-500 rounded-lg p-3 w-fit mb-4">
             <ShieldCheck className="h-6 w-6 text-white" />
           </div>
 
           <p className="text-muted-foreground mb-1">Administradores</p>
           <p className="text-[2rem] leading-none mb-2">
-            {colaboradores.filter(c => c.role === 'COLABORADOR_ADMIN').length}
+            {colaboradores.filter((c) => c.role === "COLABORADOR_ADMIN").length}
           </p>
-
         </div>
 
         <div className="bg-card border border-border rounded-lg p-6">
-
           <div className="bg-green-500 rounded-lg p-3 w-fit mb-4">
             <UserCheck className="h-6 w-6 text-white" />
           </div>
@@ -300,23 +238,17 @@ export default function Colaboradores() {
           <p className="text-muted-foreground mb-1">Aprovadores</p>
           <p className="text-[2rem] leading-none mb-2">
             {
-              colaboradores.filter(
-                c => c.role === 'COLABORADOR_APROVADOR',
-              ).length
+              colaboradores.filter((c) => c.role === "COLABORADOR_APROVADOR")
+                .length
             }
           </p>
-
         </div>
-
       </div>
-
 
       {/* BUSCA */}
 
       <div className="bg-card border border-border rounded-lg p-6 mb-6">
-
         <div className="relative">
-
           <Search
             className="
               absolute
@@ -333,7 +265,7 @@ export default function Colaboradores() {
             type="text"
             placeholder="Buscar por nome ou email..."
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="
               w-full
               pl-10
@@ -345,29 +277,20 @@ export default function Colaboradores() {
               bg-input-background
             "
           />
-
         </div>
-
       </div>
-
 
       {/* LISTA */}
 
       <div className="space-y-4">
-
-        {filteredColaboradores.map(colaborador => (
-
+        {filteredColaboradores.map((colaborador) => (
           <div
             key={colaborador.id}
             className="bg-card border border-border rounded-lg p-6"
           >
-
             <div className="flex items-start justify-between gap-4 flex-wrap">
-
               <div className="flex-1 min-w-[240px]">
-
                 <div className="flex items-center gap-3 mb-1 flex-wrap">
-
                   <h3 className="text-lg font-medium">{colaborador.name}</h3>
 
                   <span
@@ -377,9 +300,9 @@ export default function Colaboradores() {
                       rounded-full
                       text-sm
                       ${
-                        colaborador.role === 'COLABORADOR_ADMIN'
-                          ? 'text-purple-600 bg-purple-100'
-                          : 'text-green-600 bg-green-100'
+                        colaborador.role === "COLABORADOR_ADMIN"
+                          ? "text-purple-600 bg-purple-100"
+                          : "text-green-600 bg-green-100"
                       }
                     `}
                   >
@@ -394,81 +317,65 @@ export default function Colaboradores() {
                       text-sm
                       ${
                         colaborador.active
-                          ? 'text-green-600 bg-green-100'
-                          : 'text-gray-600 bg-gray-100'
+                          ? "text-green-600 bg-green-100"
+                          : "text-gray-600 bg-gray-100"
                       }
                     `}
                   >
-                    {colaborador.active ? 'Ativo' : 'Inativo'}
+                    {colaborador.active ? "Ativo" : "Inativo"}
                   </span>
-
                 </div>
 
                 <p className="text-muted-foreground text-sm">
                   {colaborador.email}
                 </p>
-
               </div>
 
               <div className="flex items-center gap-2">
-
                 {isAprovador && (
                   <>
-                <button
-                  onClick={() => openEditModal(colaborador)}
-                  className="p-2 rounded-lg hover:bg-muted"
-                  title="Editar colaborador"
-                >
-                  <Edit className="h-5 w-5" />
-                </button>
+                    <button
+                      onClick={() => openEditModal(colaborador)}
+                      className="p-2 rounded-lg hover:bg-muted"
+                      title="Editar colaborador"
+                    >
+                      <Edit className="h-5 w-5" />
+                    </button>
 
-                <button
-                  onClick={() => deleteColaborador(colaborador.id)}
-                  className="p-2 rounded-lg hover:bg-red-100 text-red-600"
-                  title="Remover colaborador"
-                >
-                  <Trash2 className="h-5 w-5" />
-                </button>
+                    <button
+                      onClick={() => deleteColaborador(colaborador.id)}
+                      className="p-2 rounded-lg hover:bg-red-100 text-red-600"
+                      title="Remover colaborador"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
                   </>
                 )}
-
               </div>
-
             </div>
-
           </div>
-
         ))}
 
         {filteredColaboradores.length === 0 && (
-
           <div className="bg-card border border-border rounded-lg p-12 text-center">
             <p className="text-muted-foreground">
               Nenhum colaborador encontrado
             </p>
           </div>
-
         )}
-
       </div>
-
 
       {/* MODAL CRIAR/EDITAR */}
 
       {showModal && (
-
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-
           <div className="bg-card rounded-lg border p-6 w-full max-w-lg">
-
             <div className="flex justify-between items-center mb-6">
-
-              <h2>{editingId ? 'Editar Colaborador' : 'Novo Colaborador'}</h2>
+              <h2>{editingId ? "Editar Colaborador" : "Novo Colaborador"}</h2>
 
               <button onClick={() => setShowModal(false)}>
                 <X className="h-5 w-5" />
               </button>
-
             </div>
 
             {error && (
@@ -478,13 +385,12 @@ export default function Colaboradores() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-
               <div>
                 <label className="text-sm">Nome</label>
                 <input
                   required
                   value={form.name}
-                  onChange={e => setForm({ ...form, name: e.target.value })}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2"
                 />
               </div>
@@ -495,7 +401,7 @@ export default function Colaboradores() {
                   type="email"
                   required
                   value={form.email}
-                  onChange={e => setForm({ ...form, email: e.target.value })}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2"
                 />
               </div>
@@ -505,7 +411,8 @@ export default function Colaboradores() {
                   Senha
                   {editingId && (
                     <span className="text-muted-foreground">
-                      {' '}(deixe em branco para manter a atual)
+                      {" "}
+                      (deixe em branco para manter a atual)
                     </span>
                   )}
                 </label>
@@ -513,7 +420,7 @@ export default function Colaboradores() {
                   type="password"
                   required={!editingId}
                   value={form.password}
-                  onChange={e =>
+                  onChange={(e) =>
                     setForm({ ...form, password: e.target.value })
                   }
                   className="w-full border rounded-lg px-3 py-2"
@@ -525,11 +432,13 @@ export default function Colaboradores() {
                 <label className="text-sm">Perfil</label>
                 <select
                   value={form.role}
-                  onChange={e => setForm({ ...form, role: e.target.value })}
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2"
                 >
                   <option value="COLABORADOR_ADMIN">Administrador</option>
-                  {isAprovador && <option value="COLABORADOR_APROVADOR">Aprovador</option>}
+                  {isAprovador && (
+                    <option value="COLABORADOR_APROVADOR">Aprovador</option>
+                  )}
                 </select>
               </div>
 
@@ -538,7 +447,7 @@ export default function Colaboradores() {
                   type="checkbox"
                   id="active"
                   checked={form.active}
-                  onChange={e =>
+                  onChange={(e) =>
                     setForm({ ...form, active: e.target.checked })
                   }
                   className="w-5 h-5"
@@ -549,7 +458,6 @@ export default function Colaboradores() {
               </div>
 
               <div className="flex justify-end gap-3 pt-4">
-
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
@@ -570,21 +478,13 @@ export default function Colaboradores() {
                     disabled:opacity-50
                   "
                 >
-                  {saving ? 'Salvando...' : 'Salvar'}
+                  {saving ? "Salvando..." : "Salvar"}
                 </button>
-
               </div>
-
             </form>
-
           </div>
-
         </div>
-
       )}
-
     </div>
-
   );
-
 }
