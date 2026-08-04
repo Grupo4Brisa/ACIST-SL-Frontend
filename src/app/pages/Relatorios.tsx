@@ -14,7 +14,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
 } from "recharts";
 
 import { TrendingUp, Users, Target, Clock } from "lucide-react";
