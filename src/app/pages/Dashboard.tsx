@@ -194,38 +194,6 @@ function formatDuration(ms: number | null | undefined): string {
   return parts.join(' ');
 }
 
-function getInsight(label: string, ms: number | null | undefined): string {
-  if (!ms || ms <= 0) return 'Sem dados suficientes ainda.';
-  const hours = ms / 1000 / 60 / 60;
-  const days = hours / 24;
-
-  if (label === 'landingToPayment') {
-    if (hours < 1) return 'Excelente! A maioria realiza o pagamento em menos de 1 hora.';
-    if (days < 1) return 'Bom engajamento — pagamento realizado no mesmo dia.';
-    if (days < 3) return 'Pagamento em até 3 dias. Considere um lembrete para agilizar.';
-    return 'Tempo alto até o pagamento. Um e-mail de incentivo pode ajudar.';
-  }
-  if (label === 'paymentToFinalized') {
-    if (hours < 2) return 'Ótimo! O associado conclui o cadastro rapidamente após o pagamento.';
-    if (days < 1) return 'Cadastro concluído no mesmo dia do pagamento.';
-    if (days < 7) return 'A maioria conclui em menos de uma semana.';
-    return 'Tempo elevado para concluir as etapas. Verifique se há etapas com dificuldade.';
-  }
-  if (label === 'finalizedToApproved') {
-    if (hours < 24) return 'Aprovação rápida — menos de 1 dia após o cadastro.';
-    if (days < 3) return 'Aprovação em até 3 dias. Dentro do esperado.';
-    if (days < 7) return 'Aprovação em até 1 semana. Pode ser otimizado.';
-    return 'Tempo elevado para aprovação. Considere revisar o processo interno.';
-  }
-  if (label === 'landingToApproved') {
-    if (days < 3) return 'Processo ágil! Da landing à aprovação em menos de 3 dias.';
-    if (days < 7) return 'Processo concluído em menos de uma semana.';
-    if (days < 30) return 'Processo dentro da média. Há espaço para otimização.';
-    return 'Processo longo. Analise cada etapa para identificar gargalos.';
-  }
-  return '';
-}
-
 export default function Dashboard() {
 
 
@@ -2021,29 +1989,25 @@ export default function Dashboard() {
           <div className="flex flex-col p-4 bg-blue-50 rounded-xl border border-blue-100">
             <p className="text-xs text-blue-600 font-medium uppercase tracking-wide mb-2">Landing → Pagamento</p>
             <p className="text-3xl font-bold text-blue-700 mb-1">{formatDuration(dashboard?.avgTimes?.landingToPayment)}</p>
-            <p className="text-xs text-muted-foreground mb-3">Da landing page até o pagamento</p>
-            <p className="text-xs text-blue-800 bg-blue-100 rounded-lg px-3 py-2 mt-auto">{getInsight('landingToPayment', dashboard?.avgTimes?.landingToPayment)}</p>
+            <p className="text-xs text-muted-foreground">Da landing page até o pagamento</p>
           </div>
 
           <div className="flex flex-col p-4 bg-purple-50 rounded-xl border border-purple-100">
             <p className="text-xs text-purple-600 font-medium uppercase tracking-wide mb-2">Pagamento → 8 Etapas</p>
             <p className="text-3xl font-bold text-purple-700 mb-1">{formatDuration(dashboard?.avgTimes?.paymentToFinalized)}</p>
-            <p className="text-xs text-muted-foreground mb-3">Do pagamento até concluir as 8 etapas</p>
-            <p className="text-xs text-purple-800 bg-purple-100 rounded-lg px-3 py-2 mt-auto">{getInsight('paymentToFinalized', dashboard?.avgTimes?.paymentToFinalized)}</p>
+            <p className="text-xs text-muted-foreground">Do pagamento até concluir as 8 etapas</p>
           </div>
 
           <div className="flex flex-col p-4 bg-yellow-50 rounded-xl border border-yellow-100">
             <p className="text-xs text-yellow-600 font-medium uppercase tracking-wide mb-2">8 Etapas → Aprovação</p>
             <p className="text-3xl font-bold text-yellow-700 mb-1">{formatDuration(dashboard?.avgTimes?.finalizedToApproved)}</p>
-            <p className="text-xs text-muted-foreground mb-3">Da conclusão das etapas até a aprovação</p>
-            <p className="text-xs text-yellow-800 bg-yellow-100 rounded-lg px-3 py-2 mt-auto">{getInsight('finalizedToApproved', dashboard?.avgTimes?.finalizedToApproved)}</p>
+            <p className="text-xs text-muted-foreground">Da conclusão das etapas até a aprovação</p>
           </div>
 
           <div className="flex flex-col p-4 bg-green-50 rounded-xl border border-green-100">
             <p className="text-xs text-green-600 font-medium uppercase tracking-wide mb-2">Landing → Aprovação (Total)</p>
             <p className="text-3xl font-bold text-green-700 mb-1">{formatDuration(dashboard?.avgTimes?.landingToApproved)}</p>
-            <p className="text-xs text-muted-foreground mb-3">Tempo total do processo</p>
-            <p className="text-xs text-green-800 bg-green-100 rounded-lg px-3 py-2 mt-auto">{getInsight('landingToApproved', dashboard?.avgTimes?.landingToApproved)}</p>
+            <p className="text-xs text-muted-foreground">Tempo total do processo</p>
           </div>
 
         </div>
@@ -2137,34 +2101,15 @@ export default function Dashboard() {
 
 
                   <p className="text-yellow-900">
-
-
                     Cadastros incompletos
-
-
                   </p>
-
-
-
-
-
-
-
-                  <p
-
-                    className="
-                      text-yellow-700
-                      text-sm
-                    "
-
-                  >
-
-
-
+                  <p className="text-yellow-700 text-sm">
                     Existem {empresasIncompletas} empresas aguardando finalização do cadastro.
-
-
-
+                  </p>
+                  <p className="text-yellow-800 text-xs mt-2 bg-yellow-100 rounded-lg px-3 py-2">
+                    {empresasIncompletas === 1
+                      ? 'Um associado iniciou o cadastro mas não concluiu. Considere enviar um lembrete por e-mail com o link de continuação.'
+                      : `${empresasIncompletas} associados iniciaram o cadastro mas não concluíram. Enviar lembretes pode recuperar parte dessas conversões.`}
                   </p>
 
 
@@ -2241,35 +2186,18 @@ export default function Dashboard() {
 
 
                   <p className="text-blue-900">
-
-
                     Empresas aguardando aprovação
-
-
                   </p>
-
-
-
-
-
-
-
-
-                  <p
-
-                    className="
-                      text-blue-700
-                      text-sm
-                    "
-
-                  >
-
-
-
+                  <p className="text-blue-700 text-sm">
                     Existem {empresasPendentes} empresas aguardando aprovação.
-
-
-
+                  </p>
+                  <p className="text-blue-800 text-xs mt-2 bg-blue-100 rounded-lg px-3 py-2">
+                    {empresasPendentes === 1
+                      ? 'Há 1 empresa com cadastro completo aguardando sua análise. Quanto mais rápida a aprovação, melhor a experiência do associado.'
+                      : `${empresasPendentes} empresas estão na fila de aprovação. Priorize as mais antigas para não comprometer a experiência.`}
+                    {dashboard?.avgTimes?.finalizedToApproved && dashboard.avgTimes.finalizedToApproved > 3 * 24 * 60 * 60 * 1000
+                      ? ' O tempo médio de aprovação está acima de 3 dias — vale revisar o processo.'
+                      : ''}
                   </p>
 
 
@@ -2342,53 +2270,14 @@ export default function Dashboard() {
 
 
                 <div>
-
-
-
-
-                  <p className="text-red-900">
-
-
-                    Empresas inativas
-
-
+                  <p className="text-red-900">Empresas inativas (reprovadas)</p>
+                  <p className="text-red-700 text-sm">Existem {empresasInativas} empresas marcadas como inativas.</p>
+                  <p className="text-red-800 text-xs mt-2 bg-red-100 rounded-lg px-3 py-2">
+                    {empresasInativas === 1
+                      ? 'Uma empresa foi reprovada. Verifique se há possibilidade de reativação ou se o processo foi encerrado corretamente.'
+                      : `${empresasInativas} empresas foram reprovadas. Analise os motivos para identificar padrões e melhorar o processo de aprovação.`}
                   </p>
-
-
-
-
-
-
-
-
-                  <p
-
-                    className="
-                      text-red-700
-                      text-sm
-                    "
-
-                  >
-
-
-
-                    Existem {empresasInativas} empresas marcadas como inativas.
-
-
-
-                  </p>
-
-
-
-
-
-
                 </div>
-
-
-
-
-
               </div>
 
 
