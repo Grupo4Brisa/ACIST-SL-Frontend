@@ -28,6 +28,7 @@ export default function Comunicados() {
   const [form, setForm]         = useState<AnnouncementForm>(EMPTY_FORM);
   const [saving, setSaving]     = useState(false);
   const [error, setError]       = useState('');
+  const [sendResult, setSendResult] = useState<{ sent: number; errors: number } | null>(null);
 
   async function load() {
     try {
