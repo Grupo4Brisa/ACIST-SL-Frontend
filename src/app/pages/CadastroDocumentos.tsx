@@ -19,9 +19,9 @@ interface DocSalvo {
 }
 
 const DOCS_CONFIG: DocConfig[] = [
-  { label: 'Guia FGTS',                           key: 'STATUTE',           obrigatorio: true  },
-  { label: 'Logotipo da Empresa',                 key: 'LOGO',              obrigatorio: true  },
-  { label: 'Contrato Social / Guia do Empresário',key: 'SOCIAL_CONTRACT',   obrigatorio: true  },
+  { label: 'Guia FGTS',                           key: 'STATUTE',           obrigatorio: false },
+  { label: 'Logotipo da Empresa',                 key: 'LOGO',              obrigatorio: false },
+  { label: 'Contrato Social / Guia do Empresário',key: 'SOCIAL_CONTRACT',   obrigatorio: false },
   { label: 'Cartão CNPJ',                         key: 'CNPJ',              obrigatorio: false },
   { label: 'Comprovante de Endereço',             key: 'BUSINESS_LICENSE',  obrigatorio: false },
   { label: 'RG dos Sócios',                       key: 'STATE_REGISTRATION',obrigatorio: false },
