@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, X, Megaphone, Eye, EyeOff } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Megaphone, Eye, EyeOff, Clock } from 'lucide-react';
 import api from '../services/api';
 
 interface Announcement {
@@ -7,6 +7,7 @@ interface Announcement {
   title: string;
   content: string;
   active: boolean;
+  scheduledAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -15,9 +16,10 @@ interface AnnouncementForm {
   title: string;
   content: string;
   active: boolean;
+  scheduledAt: string;
 }
 
-const EMPTY_FORM: AnnouncementForm = { title: '', content: '', active: true };
+const EMPTY_FORM: AnnouncementForm = { title: '', content: '', active: true, scheduledAt: '' };
 
 export default function Comunicados() {
 
@@ -49,7 +51,12 @@ export default function Comunicados() {
 
   function openEdit(a: Announcement) {
     setEditingId(a.id);
-    setForm({ title: a.title, content: a.content, active: a.active });
+    setForm({
+      title: a.title,
+      content: a.content,
+      active: a.active,
+      scheduledAt: a.scheduledAt ? a.scheduledAt.slice(0, 16) : '',
+    });
     setError('');
     setShowModal(true);
   }
@@ -64,9 +71,16 @@ export default function Comunicados() {
     setSaving(true);
     try {
       if (editingId) {
-        await api.patch(`/announcements/${editingId}`, form);
+        await api.patch(`/announcements/${editingId}`, {
+          ...form,
+          scheduledAt: form.scheduledAt || null,
+        });
       } else {
-        await api.post('/announcements', { title: form.title, content: form.content });
+        await api.post('/announcements', {
+          title: form.title,
+          content: form.content,
+          scheduledAt: form.scheduledAt || null,
+        });
       }
       setShowModal(false);
       load();
@@ -149,6 +163,12 @@ export default function Comunicados() {
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${a.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                       {a.active ? 'Ativo' : 'Inativo'}
                     </span>
+                    {a.scheduledAt && new Date(a.scheduledAt) > new Date() && (
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-blue-100 text-blue-700 flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        Agendado: {new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(a.scheduledAt))}
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm text-muted-foreground line-clamp-2">{a.content}</p>
                   <p className="text-xs text-muted-foreground mt-2">Criado em {formatDate(a.createdAt)}</p>
@@ -214,6 +234,19 @@ export default function Comunicados() {
                   className="w-full border rounded-lg px-3 py-2 text-sm resize-none"
                   placeholder="Digite o conteúdo do comunicado..."
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  Agendar publicação
+                </label>
+                <input
+                  type="datetime-local"
+                  value={form.scheduledAt}
+                  onChange={e => setForm({ ...form, scheduledAt: e.target.value })}
+                  className="w-full border rounded-lg px-3 py-2 text-sm"
+                />
+                <p className="text-xs text-muted-foreground mt-1">Deixe em branco para publicar imediatamente.</p>
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
