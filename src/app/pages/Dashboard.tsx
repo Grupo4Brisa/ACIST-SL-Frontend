@@ -100,6 +100,11 @@ interface DashboardResponse {
     landingToApproved:   number | null;
   };
 
+  trend?: {
+    mes: string;
+    cadastros: number;
+  }[];
+
 }
 
 
@@ -113,64 +118,6 @@ interface DashboardResponse {
 
 
 
-const trendData = [
-
-  {
-    id: 'out',
-    mes: 'Out',
-    leads: 45,
-    aprovados: 12,
-  },
-
-
-  {
-    id: 'nov',
-    mes: 'Nov',
-    leads: 52,
-    aprovados: 15,
-  },
-
-
-  {
-    id: 'dez',
-    mes: 'Dez',
-    leads: 61,
-    aprovados: 18,
-  },
-
-
-  {
-    id: 'jan',
-    mes: 'Jan',
-    leads: 58,
-    aprovados: 16,
-  },
-
-
-  {
-    id: 'fev',
-    mes: 'Fev',
-    leads: 68,
-    aprovados: 21,
-  },
-
-
-  {
-    id: 'mar',
-    mes: 'Mar',
-    leads: 75,
-    aprovados: 24,
-  },
-
-
-  {
-    id: 'abr',
-    mes: 'Abr',
-    leads: 82,
-    aprovados: 28,
-  },
-
-];
 
 
 
@@ -1642,7 +1589,7 @@ export default function Dashboard() {
 
             <LineChart
 
-              data={trendData}
+              data={dashboard?.trend ?? []}
 
             >
 
@@ -1696,7 +1643,7 @@ export default function Dashboard() {
                 type="monotone"
 
 
-                dataKey="leads"
+                dataKey="cadastros"
 
 
                 stroke="#3b82f6"
@@ -1712,32 +1659,6 @@ export default function Dashboard() {
               />
 
 
-
-
-
-
-
-
-              <Line
-
-
-                type="monotone"
-
-
-                dataKey="aprovados"
-
-
-                stroke="#10b981"
-
-
-                strokeWidth={2}
-
-
-                name="Aprovados"
-
-
-
-              />
 
 
 
