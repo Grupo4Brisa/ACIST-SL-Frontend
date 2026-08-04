@@ -8,6 +8,9 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  LineChart,
+  Line,
+  Legend,
   PieChart,
   Pie,
   Cell,
@@ -47,6 +50,7 @@ const COLORS = [
 
 export default function Relatorios() {
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [acompanhamento, setAcompanhamento] = useState<{ mes: string; cadastradas: number; aprovadas: number }[]>([]);
 
   const [solucoesData, setSolucoesData] = useState<
     { name: string; value: number }[]
@@ -68,7 +72,6 @@ export default function Relatorios() {
     async function loadCompanies() {
       try {
         const response = await api.get("/companies");
-
         setCompanies(response.data);
       } catch (error) {
         console.error("Erro ao carregar empresas:", error);
@@ -77,7 +80,15 @@ export default function Relatorios() {
       }
     }
 
+    async function loadAcompanhamento() {
+      try {
+        const res = await api.get("/dashboard");
+        setAcompanhamento(res.data.acompanhamento || []);
+      } catch { /* silencioso */ }
+    }
+
     loadCompanies();
+    loadAcompanhamento();
 
     // carrega soluções de interesse
     api
@@ -788,6 +799,44 @@ export default function Relatorios() {
               Considere fortalecer os serviços mais procurados pelos associados.
             </p>
           </div>
+        )}
+      </div>
+
+      {/* ACOMPANHAMENTO MENSAL */}
+      <div className="bg-card border border-border rounded-lg p-6 mt-8">
+        <h2 className="text-lg font-semibold mb-1">Acompanhamento Mensal</h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          Empresas cadastradas vs aprovadas nos últimos 6 meses
+        </p>
+        {acompanhamento.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-8">Sem dados suficientes.</p>
+        ) : (
+          <>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={acompanhamento} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="mes" tick={{ fontSize: 12 }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="cadastradas" stroke="#3b82f6" strokeWidth={2} name="Cadastradas" dot={{ r: 4 }} />
+                <Line type="monotone" dataKey="aprovadas" stroke="#10b981" strokeWidth={2} name="Aprovadas" dot={{ r: 4 }} />
+              </LineChart>
+            </ResponsiveContainer>
+            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-blue-900 font-medium">Análise</p>
+              <p className="text-blue-700 text-sm mt-1">
+                {(() => {
+                  const ultimo = acompanhamento[acompanhamento.length - 1];
+                  if (!ultimo) return 'Sem dados.';
+                  const taxa = ultimo.cadastradas > 0
+                    ? Math.round((ultimo.aprovadas / ultimo.cadastradas) * 100)
+                    : 0;
+                  return `No mês atual (${ultimo.mes}): ${ultimo.cadastradas} cadastro(s) e ${ultimo.aprovadas} aprovação(ões) — taxa de aprovação de ${taxa}%.${taxa < 50 && ultimo.cadastradas > 0 ? ' Há espaço para aumentar a conversão.' : taxa >= 80 ? ' Excelente taxa de aprovação!' : ''}`;
+                })()}
+              </p>
+            </div>
+          </>
         )}
       </div>
     </div>
