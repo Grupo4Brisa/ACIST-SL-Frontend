@@ -94,9 +94,10 @@ interface DashboardResponse {
   }[];
 
   avgTimes?: {
-    landingToFinalized: string;
-    finalizedToDecided: string;
-    landingToDecided: string;
+    landingToPayment: string;
+    paymentToFinalized: string;
+    finalizedToApproved: string;
+    landingToApproved: string;
   };
 
 }
@@ -1970,24 +1971,30 @@ export default function Dashboard() {
 
         <h2 className="text-lg font-semibold mb-6">Tempos Médios do Funil</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
           <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-100">
-            <p className="text-xs text-blue-600 font-medium uppercase tracking-wide mb-2">Landing → Conclusão das 8 etapas</p>
-            <p className="text-3xl font-bold text-blue-700">{dashboard?.avgTimes?.landingToFinalized ?? '-'}</p>
-            <p className="text-xs text-muted-foreground mt-1">Tempo médio para concluir o cadastro</p>
+            <p className="text-xs text-blue-600 font-medium uppercase tracking-wide mb-2">Landing → Pagamento</p>
+            <p className="text-3xl font-bold text-blue-700">{dashboard?.avgTimes?.landingToPayment ?? '-'}</p>
+            <p className="text-xs text-muted-foreground mt-1">Da landing page até o pagamento</p>
+          </div>
+
+          <div className="text-center p-4 bg-purple-50 rounded-xl border border-purple-100">
+            <p className="text-xs text-purple-600 font-medium uppercase tracking-wide mb-2">Pagamento → 8 Etapas</p>
+            <p className="text-3xl font-bold text-purple-700">{dashboard?.avgTimes?.paymentToFinalized ?? '-'}</p>
+            <p className="text-xs text-muted-foreground mt-1">Do pagamento até concluir as 8 etapas</p>
           </div>
 
           <div className="text-center p-4 bg-yellow-50 rounded-xl border border-yellow-100">
-            <p className="text-xs text-yellow-600 font-medium uppercase tracking-wide mb-2">Conclusão → Aprovação/Reprovação</p>
-            <p className="text-3xl font-bold text-yellow-700">{dashboard?.avgTimes?.finalizedToDecided ?? '-'}</p>
-            <p className="text-xs text-muted-foreground mt-1">Tempo médio para decisão após conclusão</p>
+            <p className="text-xs text-yellow-600 font-medium uppercase tracking-wide mb-2">8 Etapas → Aprovação</p>
+            <p className="text-3xl font-bold text-yellow-700">{dashboard?.avgTimes?.finalizedToApproved ?? '-'}</p>
+            <p className="text-xs text-muted-foreground mt-1">Da conclusão das etapas até a aprovação</p>
           </div>
 
           <div className="text-center p-4 bg-green-50 rounded-xl border border-green-100">
-            <p className="text-xs text-green-600 font-medium uppercase tracking-wide mb-2">Landing → Aprovação/Reprovação</p>
-            <p className="text-3xl font-bold text-green-700">{dashboard?.avgTimes?.landingToDecided ?? '-'}</p>
-            <p className="text-xs text-muted-foreground mt-1">Tempo médio total do processo</p>
+            <p className="text-xs text-green-600 font-medium uppercase tracking-wide mb-2">Landing → Aprovação (Total)</p>
+            <p className="text-3xl font-bold text-green-700">{dashboard?.avgTimes?.landingToApproved ?? '-'}</p>
+            <p className="text-xs text-muted-foreground mt-1">Tempo total do processo</p>
           </div>
 
         </div>
