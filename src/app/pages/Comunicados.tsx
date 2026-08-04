@@ -66,7 +66,7 @@ export default function Comunicados() {
       if (editingId) {
         await api.patch(`/announcements/${editingId}`, form);
       } else {
-        await api.post('/announcements', form);
+        await api.post('/announcements', { title: form.title, content: form.content });
       }
       setShowModal(false);
       load();
