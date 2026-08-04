@@ -76,8 +76,8 @@ export default function CadastroContatos() {
 
     const validContacts = contacts.filter(c => c.name.trim());
     if (validContacts.length === 0) {
-      setError('Preencha ao menos o nome de um contato para salvar.');
-      return false;
+      // sem contatos — avança sem salvar
+      return true;
     }
 
     // busca contatos existentes e deleta antes de recriar
