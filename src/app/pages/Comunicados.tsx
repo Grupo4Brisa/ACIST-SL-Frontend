@@ -72,7 +72,8 @@ export default function Comunicados() {
     try {
       if (editingId) {
         await api.patch(`/announcements/${editingId}`, {
-          ...form,
+          title: form.title,
+          content: form.content,
           scheduledAt: form.scheduledAt || null,
         });
       } else {
