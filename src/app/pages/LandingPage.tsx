@@ -1,7 +1,7 @@
 // src/app/pages/LandingPage.tsx
 
 import { useState } from 'react';
-import { features } from '../config/features';
+import { features } from '../../config/features';
 import Header from "../components/Header/Header";
 import Footer from '../components/Footer/Footer';
 
