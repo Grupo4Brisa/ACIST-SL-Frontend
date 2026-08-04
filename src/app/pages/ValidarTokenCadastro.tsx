@@ -14,6 +14,9 @@ export default function ValidarTokenCadastro() {
       .get(`/login-tokens/validate/${token}`)
       .then((res) => {
         const companyId = res.data.companyId;
+        localStorage.removeItem('companyId');
+        localStorage.removeItem('companyData');
+        localStorage.setItem('companyId', String(companyId));
         navigate(`/cadastro/${companyId}`, { replace: true });
       })
       .catch((err) => {
