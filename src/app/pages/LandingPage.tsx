@@ -648,9 +648,9 @@ export default function LandingPage(){
 
                     required
 
-                    placeholder="CPF (11 números) ou CNPJ (até 18 caracteres)"
+                    placeholder="CPF (11 dígitos) ou CNPJ (14 dígitos)"
 
-                    maxLength={18}
+                    maxLength={14}
 
                     className="
                       w-full
