@@ -14,7 +14,7 @@ export default function ValidarTokenCadastro() {
       .get(`/login-tokens/validate/${token}`)
       .then((res) => {
         const companyId = res.data.companyId;
-        navigate(`/cadastro/${companyId}/contatos`, { replace: true });
+        navigate(`/cadastro/${companyId}`, { replace: true });
       })
       .catch((err) => {
         setError(err.response?.data?.message || "Link inválido ou expirado.");
