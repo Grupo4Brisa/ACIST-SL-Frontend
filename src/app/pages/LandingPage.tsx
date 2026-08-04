@@ -1,6 +1,7 @@
 // src/app/pages/LandingPage.tsx
 
 import { useState } from 'react';
+import { features } from '../config/features';
 import Header from "../components/Header/Header";
 import Footer from '../components/Footer/Footer';
 
@@ -199,7 +200,7 @@ export default function LandingPage(){
 
 
             password:
-              formData.password,
+              features.cadastroEmpresaPassword ? formData.password : undefined,
 
 
             companySize:
@@ -907,7 +908,7 @@ export default function LandingPage(){
                 </div>
                                 {/* SENHA */}
 
-                <div>
+                {features.cadastroEmpresaPassword && <div>
 
 
                   <label className="block mb-2">
@@ -1048,7 +1049,7 @@ export default function LandingPage(){
                   </div>
 
 
-                </div>
+                </div>}
 
 
 
