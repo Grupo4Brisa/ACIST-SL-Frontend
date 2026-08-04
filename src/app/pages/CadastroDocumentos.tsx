@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FileText, Save, ArrowRight, LogOut, Upload, CheckCircle, X, Plus, Trash2, Eye, Download } from 'lucide-react';
+import { FileText, Save, ArrowRight, LogOut, Upload, CheckCircle, XCircle, X, Plus, Trash2, Eye, Download, AlertCircle } from 'lucide-react';
 import api from '../services/api';
 import Header from '../components/Header/Header';
 import ProgressoCadastro from '../components/ProgressoCadastro';
@@ -37,6 +37,21 @@ export default function CadastroDocumentos() {
   const [novosArquivos, setNovosArquivos] = useState<Record<string, File[]>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [toastVisible, setToastVisible] = useState(false);
+  const toastRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function showToast(message: string, type: 'success' | 'error' = 'success') {
+    if (toastRef.current) clearTimeout(toastRef.current);
+    setToast({ message, type });
+    requestAnimationFrame(() => setToastVisible(true));
+    toastRef.current = setTimeout(() => {
+      setToastVisible(false);
+      setTimeout(() => setToast(null), 300);
+    }, 4000);
+  }
+
+  useEffect(() => () => { if (toastRef.current) clearTimeout(toastRef.current); }, []);
 
   useEffect(() => {
     api.get(`/documents/company/${id}`)
@@ -129,10 +144,10 @@ export default function CadastroDocumentos() {
     const res = await api.get(`/documents/company/${id}`);
     setDocsSalvos(res.data || []);
     setNovosArquivos({});
-    alert('Rascunho salvo com sucesso!');
+    showToast('Rascunho salvo com sucesso!', 'success');
   } catch (err: any) {
     setError(err.response?.data?.message || 'Erro ao salvar documentos.');
-    alert('Erro ao salvar rascunho.');
+    showToast('Erro ao salvar rascunho.', 'error');
   } finally {
     setLoading(false);
   }
@@ -154,6 +169,22 @@ export default function CadastroDocumentos() {
     <div className="min-h-screen bg-[#0C3A59] flex flex-col">
 
       <Header />
+
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`fixed top-6 right-6 z-50 flex items-start gap-3 w-full max-w-sm rounded-xl border shadow-lg px-4 py-3.5 transition-all duration-300 ease-out ${toastVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'} ${toast.type === 'success' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}
+        >
+          {toast.type === 'success'
+            ? <CheckCircle className="w-5 h-5 mt-0.5 shrink-0" />
+            : <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />}
+          <p className="text-sm flex-1 leading-snug">{toast.message}</p>
+          <button type="button" onClick={() => setToastVisible(false)} aria-label="Fechar" className="opacity-60 hover:opacity-100 transition-opacity">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       <main className="flex-1">
         <div className="max-w-5xl mx-auto px-6 py-12 w-full">
