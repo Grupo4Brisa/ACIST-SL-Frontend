@@ -94,10 +94,10 @@ interface DashboardResponse {
   }[];
 
   avgTimes?: {
-    landingToPayment: string;
-    paymentToFinalized: string;
-    finalizedToApproved: string;
-    landingToApproved: string;
+    landingToPayment:    number | null;
+    paymentToFinalized:  number | null;
+    finalizedToApproved: number | null;
+    landingToApproved:   number | null;
   };
 
 }
@@ -180,6 +180,51 @@ const trendData = [
 // COMPONENTE
 // =====================================================
 
+
+function formatDuration(ms: number | null | undefined): string {
+  if (!ms || ms <= 0) return '-';
+  const totalMinutes = Math.floor(ms / 1000 / 60);
+  const days = Math.floor(totalMinutes / 60 / 24);
+  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+  const minutes = totalMinutes % 60;
+  const parts: string[] = [];
+  if (days > 0) parts.push(`${days}d`);
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0 || parts.length === 0) parts.push(`${minutes}min`);
+  return parts.join(' ');
+}
+
+function getInsight(label: string, ms: number | null | undefined): string {
+  if (!ms || ms <= 0) return 'Sem dados suficientes ainda.';
+  const hours = ms / 1000 / 60 / 60;
+  const days = hours / 24;
+
+  if (label === 'landingToPayment') {
+    if (hours < 1) return 'Excelente! A maioria realiza o pagamento em menos de 1 hora.';
+    if (days < 1) return 'Bom engajamento — pagamento realizado no mesmo dia.';
+    if (days < 3) return 'Pagamento em até 3 dias. Considere um lembrete para agilizar.';
+    return 'Tempo alto até o pagamento. Um e-mail de incentivo pode ajudar.';
+  }
+  if (label === 'paymentToFinalized') {
+    if (hours < 2) return 'Ótimo! O associado conclui o cadastro rapidamente após o pagamento.';
+    if (days < 1) return 'Cadastro concluído no mesmo dia do pagamento.';
+    if (days < 7) return 'A maioria conclui em menos de uma semana.';
+    return 'Tempo elevado para concluir as etapas. Verifique se há etapas com dificuldade.';
+  }
+  if (label === 'finalizedToApproved') {
+    if (hours < 24) return 'Aprovação rápida — menos de 1 dia após o cadastro.';
+    if (days < 3) return 'Aprovação em até 3 dias. Dentro do esperado.';
+    if (days < 7) return 'Aprovação em até 1 semana. Pode ser otimizado.';
+    return 'Tempo elevado para aprovação. Considere revisar o processo interno.';
+  }
+  if (label === 'landingToApproved') {
+    if (days < 3) return 'Processo ágil! Da landing à aprovação em menos de 3 dias.';
+    if (days < 7) return 'Processo concluído em menos de uma semana.';
+    if (days < 30) return 'Processo dentro da média. Há espaço para otimização.';
+    return 'Processo longo. Analise cada etapa para identificar gargalos.';
+  }
+  return '';
+}
 
 export default function Dashboard() {
 
@@ -1973,28 +2018,32 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-          <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-100">
+          <div className="flex flex-col p-4 bg-blue-50 rounded-xl border border-blue-100">
             <p className="text-xs text-blue-600 font-medium uppercase tracking-wide mb-2">Landing → Pagamento</p>
-            <p className="text-3xl font-bold text-blue-700">{dashboard?.avgTimes?.landingToPayment ?? '-'}</p>
-            <p className="text-xs text-muted-foreground mt-1">Da landing page até o pagamento</p>
+            <p className="text-3xl font-bold text-blue-700 mb-1">{formatDuration(dashboard?.avgTimes?.landingToPayment)}</p>
+            <p className="text-xs text-muted-foreground mb-3">Da landing page até o pagamento</p>
+            <p className="text-xs text-blue-800 bg-blue-100 rounded-lg px-3 py-2 mt-auto">{getInsight('landingToPayment', dashboard?.avgTimes?.landingToPayment)}</p>
           </div>
 
-          <div className="text-center p-4 bg-purple-50 rounded-xl border border-purple-100">
+          <div className="flex flex-col p-4 bg-purple-50 rounded-xl border border-purple-100">
             <p className="text-xs text-purple-600 font-medium uppercase tracking-wide mb-2">Pagamento → 8 Etapas</p>
-            <p className="text-3xl font-bold text-purple-700">{dashboard?.avgTimes?.paymentToFinalized ?? '-'}</p>
-            <p className="text-xs text-muted-foreground mt-1">Do pagamento até concluir as 8 etapas</p>
+            <p className="text-3xl font-bold text-purple-700 mb-1">{formatDuration(dashboard?.avgTimes?.paymentToFinalized)}</p>
+            <p className="text-xs text-muted-foreground mb-3">Do pagamento até concluir as 8 etapas</p>
+            <p className="text-xs text-purple-800 bg-purple-100 rounded-lg px-3 py-2 mt-auto">{getInsight('paymentToFinalized', dashboard?.avgTimes?.paymentToFinalized)}</p>
           </div>
 
-          <div className="text-center p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+          <div className="flex flex-col p-4 bg-yellow-50 rounded-xl border border-yellow-100">
             <p className="text-xs text-yellow-600 font-medium uppercase tracking-wide mb-2">8 Etapas → Aprovação</p>
-            <p className="text-3xl font-bold text-yellow-700">{dashboard?.avgTimes?.finalizedToApproved ?? '-'}</p>
-            <p className="text-xs text-muted-foreground mt-1">Da conclusão das etapas até a aprovação</p>
+            <p className="text-3xl font-bold text-yellow-700 mb-1">{formatDuration(dashboard?.avgTimes?.finalizedToApproved)}</p>
+            <p className="text-xs text-muted-foreground mb-3">Da conclusão das etapas até a aprovação</p>
+            <p className="text-xs text-yellow-800 bg-yellow-100 rounded-lg px-3 py-2 mt-auto">{getInsight('finalizedToApproved', dashboard?.avgTimes?.finalizedToApproved)}</p>
           </div>
 
-          <div className="text-center p-4 bg-green-50 rounded-xl border border-green-100">
+          <div className="flex flex-col p-4 bg-green-50 rounded-xl border border-green-100">
             <p className="text-xs text-green-600 font-medium uppercase tracking-wide mb-2">Landing → Aprovação (Total)</p>
-            <p className="text-3xl font-bold text-green-700">{dashboard?.avgTimes?.landingToApproved ?? '-'}</p>
-            <p className="text-xs text-muted-foreground mt-1">Tempo total do processo</p>
+            <p className="text-3xl font-bold text-green-700 mb-1">{formatDuration(dashboard?.avgTimes?.landingToApproved)}</p>
+            <p className="text-xs text-muted-foreground mb-3">Tempo total do processo</p>
+            <p className="text-xs text-green-800 bg-green-100 rounded-lg px-3 py-2 mt-auto">{getInsight('landingToApproved', dashboard?.avgTimes?.landingToApproved)}</p>
           </div>
 
         </div>
