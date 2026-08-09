@@ -488,28 +488,32 @@ export default function AreaAssociado() {
             </div>
 
             <div className="space-y-4">
-              {avisos.map(aviso => (
-                <div
-                  key={aviso.id}
-                  className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-semibold text-gray-900">{aviso.title}</h3>
-                    <span className="text-xs text-gray-500">
-                      {new Date(aviso.data).toLocaleDateString('pt-BR')}
-                    </span>
+              {comunicados.length > 0 ? (
+                comunicados.map(comunicado => (
+                  <div
+                    key={comunicado.id}
+                    className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-gray-900">{comunicado.title}</h3>
+                      <span className="text-xs text-gray-500">
+                        {new Date(comunicado.createdAt).toLocaleDateString('pt-BR')}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700">{comunicado.content}</p>
                   </div>
-                  <p className="text-sm text-gray-700">{aviso.conteudo}</p>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">Nenhum aviso no momento.</p>
+              )}
             </div>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      
-        <Footer />
+
+      <Footer />
 
     </div>
   );
