@@ -72,21 +72,36 @@ A área do colaborador (admin/aprovador) é igual nas duas versões e não muda 
 
 ## Estrutura básica
 
+
+```
 src/
 ├── app/
-│ ├── pages/ # Todas as telas
-│ └── routes/ # Rotas da aplicação
-├── components/ # Componentes reutilizáveis (Header, Footer...)
+│   ├── pages/          # Todas as telas
+│   └── routes/         # Rotas da aplicação
+├── components/         # Componentes reutilizáveis (Header, Footer...)
 ├── config/
-│ └── features.ts # Lê as flags do .env
+│   └── features.ts     # Lê as flags do .env
 └── services/
-└── api.ts # Configuração do Axios (envia o token automaticamente)
+    └── api.ts          # Configuração do Axios (envia o token automaticamente)
+```
 
 ## Login e permissões
 
-- Colaborador loga com email/senha e recebe um token, salvo no navegador.
+### Colaborador (admin/aprovador)
+
+- Loga com email/senha e recebe um token, salvo no navegador.
 - Existem dois perfis: Administrador e Aprovador. Só o Administrador pode criar/editar outros colaboradores. Só o Aprovador pode aprovar cadastros, documentos e pagamentos.
 - As rotas da área interna (`/admin/...`) são protegidas — só abrem pra quem estiver logado com o perfil certo.
+- Esse fluxo é **igual nas duas versões** do sistema e não muda com as flags.
+
+### Associado
+
+O acesso do associado muda conforme a versão configurada:
+
+- **Versão com login (ACIST)**: o associado cria uma senha durante o cadastro (Home/Etapa 1) e pode logar depois na Área do Associado com email e senha.
+- **Versão sem login (Unisinos)**: o associado não cria senha. Ele recebe por e-mail um link com token (válido por 7 dias) que dá acesso direto para continuar ou editar o cadastro, sem precisar fazer login.
+
+Nas duas versões, o associado recebe e-mails automáticos em pontos-chave do processo (ex: ao clicar em "Já fiz o pagamento" e quando o cadastro é aprovado).
 
 ## Build para produção
 
